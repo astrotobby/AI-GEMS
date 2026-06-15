@@ -1,0 +1,36 @@
+# wrangler.toml — Cloudflare Worker deployment config.
+# After running setup-kv (which prints the ids), paste each KV id below.
+name = "blog-monetization-worker"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+# Run the abandoned-cart scan every 15 minutes (Task 6).
+[triggers]
+crons = ["*/15 * * * *"]
+
+# Attach the Worker IN FRONT of your live blog so it can inject into every page.
+# Replace the zone/pattern with your real domain.
+[[routes]]
+pattern = "astrotobby.site/*"
+zone_name = "astrotobby.site"
+
+# ---- KV namespaces. Paste the ids printed by setup-kv.ps1 / setup-kv.sh ----
+[[kv_namespaces]]
+binding = "MZ_SESSIONS"
+id = "REPLACE_MZ_SESSIONS_ID"
+
+[[kv_namespaces]]
+binding = "MZ_LEADS"
+id = "REPLACE_MZ_LEADS_ID"
+
+[[kv_namespaces]]
+binding = "MZ_CARTS"
+id = "REPLACE_MZ_CARTS_ID"
+
+[[kv_namespaces]]
+binding = "MZ_VIDEOS"
+id = "REPLACE_MZ_VIDEOS_ID"
+
+[[kv_namespaces]]
+binding = "MZ_ANALYTICS"
+id = "REPLACE_MZ_ANALYTICS_ID"

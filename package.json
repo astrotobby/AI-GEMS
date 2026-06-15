@@ -1,0 +1,15 @@
+{
+  "name": "blog-monetization-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "seed-video": "node -e \"console.log('use: wrangler kv key put --binding=MZ_VIDEOS')\""
+  },
+  "devDependencies": {
+    "wrangler": "^3.78.0"
+  }
+}
