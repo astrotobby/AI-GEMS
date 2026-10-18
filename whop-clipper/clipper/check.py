@@ -93,7 +93,7 @@ def run(cfg: Settings) -> bool:
     if not (cfg.telegram_bot_token and cfg.telegram_chat_id):
         print(_line(False, "Telegram", "TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID missing"))
         return False
-    sent = Telegram(cfg.telegram_bot_token, cfg.telegram_chat_id).send(report)
-    print(_line(sent, "Telegram", "report delivered to your chat" if sent
-                else "bot token or chat id rejected (message the bot once first, then re-check the chat id)"))
+    tg = Telegram(cfg.telegram_bot_token, cfg.telegram_chat_id)
+    sent = tg.send(report)
+    print(_line(sent, "Telegram", "report delivered to your chat" if sent else tg.last_error))
     return ok and sent

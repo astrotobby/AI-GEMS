@@ -12,6 +12,7 @@ log = logging.getLogger(__name__)
 class Telegram:
     def __init__(self, token: str, chat_id: str):
         self.token, self.chat_id = token, chat_id
+        self.last_error = ""
 
     def send(self, text: str) -> bool:
         log.info("notify: %s", text.replace("\n", " | ")[:300])
@@ -23,6 +24,11 @@ class Telegram:
                                     "disable_web_page_preview": True}, timeout=30)
             if not r.ok:
                 log.warning("telegram rejected message: %s %s", r.status_code, r.text[:200])
+                # 401/404 = the bot token is wrong; 400/403 = the token works but the chat id doesn't
+                self.last_error = ("TELEGRAM_BOT_TOKEN is invalid (copy it again from @BotFather)"
+                                   if r.status_code in (401, 404) else
+                                   f"TELEGRAM_CHAT_ID rejected: {r.text[:120]} "
+                                   "(send your bot a message first, then use chat.id from getUpdates)")
             return r.ok
         except requests.RequestException as e:  # notifications must never break the pipeline
             log.warning("telegram failed: %s", e)

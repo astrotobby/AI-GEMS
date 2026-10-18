@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+import re
 import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -51,6 +52,15 @@ SECRET_FIELDS = {
 }
 
 
+def secret(name: str) -> str:
+    """Read a secret, forgiving the usual copy-paste damage: surrounding whitespace/newlines,
+    quotes, a pasted `NAME=` or `Bearer ` prefix."""
+    v = os.environ.get(name, "").strip().strip("'\"").strip()
+    v = re.sub(r"^[A-Z][A-Z0-9_]*\s*[=:]\s*", "", v)  # e.g. "COMPOSIO_API_KEY=ak_..." or "API_KEY: ..."
+    v = re.sub(r"^Bearer\s+", "", v, flags=re.I)
+    return v.strip().strip("'\"")
+
+
 def load(path: Path | None = None) -> Settings:
     path = path or Path(os.environ.get("CLIPPER_CONFIG", ROOT / "config.toml"))
     s = Settings()
@@ -67,12 +77,12 @@ def load(path: Path | None = None) -> Settings:
             if hasattr(s, k) and k not in SECRET_FIELDS:
                 cur = getattr(s, k)
                 setattr(s, k, (ROOT / v) if isinstance(cur, Path) else v)
-    s.whop_token = os.environ.get("WHOP_TOKEN", "")
-    s.composio_api_key = os.environ.get("COMPOSIO_API_KEY", "")
-    s.composio_user_id = os.environ.get("COMPOSIO_USER_ID", "")
-    s.anthropic_api_key = os.environ.get("ANTHROPIC_API_KEY", "")
-    s.telegram_bot_token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
-    s.telegram_chat_id = os.environ.get("TELEGRAM_CHAT_ID", "")
+    s.whop_token = secret("WHOP_TOKEN")
+    s.composio_api_key = secret("COMPOSIO_API_KEY")
+    s.composio_user_id = secret("COMPOSIO_USER_ID")
+    s.anthropic_api_key = secret("ANTHROPIC_API_KEY")
+    s.telegram_bot_token = secret("TELEGRAM_BOT_TOKEN")
+    s.telegram_chat_id = secret("TELEGRAM_CHAT_ID")
     if os.environ.get("CLIPPER_MODE"):
         s.mode = os.environ["CLIPPER_MODE"]
     return s

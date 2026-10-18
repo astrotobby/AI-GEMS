@@ -245,3 +245,19 @@ def test_instagram_me_is_resolved_to_numeric_id():
     assert publish.ig_user_id(c, target) == "17841400000000000"
     publish.ig_user_id(c, target)
     assert c.calls == ["INSTAGRAM_GET_USER_INFO"]  # resolved once, then cached on the target
+
+
+@pytest.mark.parametrize("raw", [
+    "\nak_abc123\n", "  ak_abc123  ", "COMPOSIO_API_KEY=ak_abc123", "API_KEY: ak_abc123",
+    '"ak_abc123"', "Bearer ak_abc123",
+])
+def test_secrets_survive_copy_paste_damage(raw, monkeypatch):
+    from clipper.config import secret
+    monkeypatch.setenv("X_KEY", raw)
+    assert secret("X_KEY") == "ak_abc123"
+
+
+def test_telegram_token_with_colon_is_untouched(monkeypatch):
+    from clipper.config import secret
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", " 123456789:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw\n")
+    assert secret("TELEGRAM_BOT_TOKEN") == "123456789:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw"
