@@ -19,6 +19,11 @@ def _line(ok: bool, name: str, detail: str) -> str:
 def whop(cfg: Settings) -> str:
     w = Whop(cfg.whop_token)
     bounties = w.open_bounties(cfg.country, limit=100)
+    if not bounties:
+        # a user token sees the whole public bounty board (dozens open to KE); an account/company
+        # API key only sees that account's own bounties, and Whop rejects submissions from it
+        raise RuntimeError("token works but sees 0 open bounties - this looks like a business/account "
+                           "API key. WHOP_TOKEN must be a *user* OAuth token (see README)")
     mine = w._req("GET", "/bounty_submissions", params={"first": 1}).get("data", [])
     return f"{len(bounties)}+ open bounties visible from {cfg.country}; submissions endpoint OK ({len(mine)} recent)"
 
