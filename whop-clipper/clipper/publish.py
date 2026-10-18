@@ -188,8 +188,8 @@ def views(c: Composio, target: dict, url: str) -> int:
         media_id = next((m["id"] for m in items if isinstance(m, dict) and m.get("permalink") == url), None)
         if not media_id:
             return 0
-        data = c.run("INSTAGRAM_GET_IG_MEDIA", {"ig_media_id": media_id,
-                                                "fields": "id,view_count,total_views_count"},
+        # view counts are an insights metric, not a media field (Business/Creator accounts only)
+        data = c.run("INSTAGRAM_GET_IG_MEDIA_INSIGHTS", {"ig_media_id": media_id, "metric": ["views"]},
                      target.get("account_id"))
-        return int(find(data, "total_views_count", "view_count") or 0)
+        return int(find(data, "value") or 0)
     return 0

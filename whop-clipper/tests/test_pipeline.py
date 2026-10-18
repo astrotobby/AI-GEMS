@@ -462,3 +462,21 @@ def test_music_only_source_is_swapped_for_another_file(pipe, monkeypatch):
     p.advance(job)
     assert job["bad_sources"] == ["slots.mov"] and "slots.mov" in fetched[0]
     assert job["status"] == "planned" and "no usable source" in job["errors"][-1]
+
+
+def test_instagram_views_come_from_media_insights():
+    from clipper import publish
+
+    class FakeComposio:
+        calls = []
+
+        def run(self, slug, args, account_id=None):
+            self.calls.append(slug)
+            if slug == "INSTAGRAM_GET_IG_USER_MEDIA":
+                return {"data": [{"id": "1789", "permalink": "https://www.instagram.com/reel/abc/"}]}
+            assert slug == "INSTAGRAM_GET_IG_MEDIA_INSIGHTS" and args["metric"] == ["views"]
+            return {"data": [{"name": "views", "period": "lifetime", "values": [{"value": 1234}]}]}
+
+    c = FakeComposio()
+    target = {"platform": "instagram", "account_id": "ca_x", "ig_user_id": "42"}
+    assert publish.views(c, target, "https://www.instagram.com/reel/abc/") == 1234
