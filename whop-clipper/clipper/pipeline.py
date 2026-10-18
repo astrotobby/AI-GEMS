@@ -201,8 +201,14 @@ class Pipeline:
         br = brief_mod.parse(b["description"], b["title"])
         if job.get("kind") == "ugc":
             out = self.job_dir(job) / "clips" / f"{job['id']}.mp4"
+            try:
+                composio = self.composio
+            except Exception:
+                composio = None  # no Composio key -> offline Piper voice
             clip = ugc.make(b, out, self.cfg.anthropic_api_key, self.cfg.claude_model,
-                            br.product_links, br.required_mentions, self.cfg.caption_font)
+                            br.product_links, br.required_mentions, self.cfg.caption_font,
+                            composio=composio, voice_id=self.cfg.ugc_voice_id,
+                            pexels_key=self.cfg.pexels_api_key)
             self.ledger.move(job, "clipped", clip=clip)
             return
         src = Path(job["source"])

@@ -22,7 +22,7 @@ def _esc(text: str) -> str:
 
 
 def build_ass(words: list[Word], start: float, end: float, hook: str = "",
-              font: str = "DejaVu Sans", chunk: int = 3) -> str:
+              font: str = "DejaVu Sans", chunk: int = 3, boxed: bool = False) -> str:
     """ASS subtitles: 3-word chunks, active word highlighted, optional hook banner."""
     head = f"""[Script Info]
 ScriptType: v4.00+
@@ -32,7 +32,7 @@ WrapStyle: 0
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Cap,{font},92,&H00FFFFFF,&H00FFFFFF,&H00000000,&H64000000,-1,0,0,0,100,100,0,0,1,7,3,2,60,60,560,1
+Style: Cap,{font},92,&H00FFFFFF,&H00FFFFFF,{"&H59000000" if boxed else "&H00000000"},&H64000000,-1,0,0,0,100,100,0,0,{3 if boxed else 1},{14 if boxed else 7},{0 if boxed else 3},2,60,60,{420 if boxed else 560},1
 Style: Hook,{font},70,&H00FFFFFF,&H00FFFFFF,&H00000000,&HC0000000,-1,0,0,0,100,100,0,0,3,18,0,8,70,70,170,1
 
 [Events]

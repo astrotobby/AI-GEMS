@@ -168,6 +168,16 @@ def with_claude(sents: list[Sentence], campaign: dict, lo: int, hi: int, api_key
     return json.loads(next(b.text for b in resp.content if b.type == "text"))
 
 
+def llm_error(e: Exception) -> str:
+    """Short, human explanation of why the Claude step was skipped."""
+    msg = str(e)
+    if "credit balance" in msg:
+        return "Claude skipped: no Anthropic API credit (top up at console.anthropic.com/settings/billing)"
+    if "authentication" in msg.lower() or "api key" in msg.lower():
+        return "Claude skipped: ANTHROPIC_API_KEY is invalid"
+    return f"Claude skipped ({e.__class__.__name__}: {msg[:120]})"
+
+
 def fallback_copy(campaign: dict, text: str) -> dict:
     parts = [p for p in re.split(r"(?<=[.?!])\s", text.strip()) if len(p.split()) >= 5]
     first = re.sub(r"^(okay|ok|so|alright)[,]?\s+(so\s+)?", "", (parts or [text])[0], flags=re.I)
@@ -211,7 +221,7 @@ def pick(words: list[Word], campaign: dict, mentions: list[str], lo: int, hi: in
             else:
                 reason = "claude: " + data.get("reason", "")
         except Exception as e:  # any API/parse problem -> heuristic
-            reason = f"claude failed ({e.__class__.__name__}: {str(e)[:160]}); "
+            reason = llm_error(e) + "; "
             data = None
     if data is None:
         i, j, why = heuristic(sents, f"{campaign.get('title')} {campaign.get('description')}", lo, hi, exclude)

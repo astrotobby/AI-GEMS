@@ -95,7 +95,11 @@ def run(cfg: Settings) -> bool:
     attempt("Whop", whop)
     attempt("Composio", composio)
     if cfg.anthropic_api_key:
-        attempt("Claude", anthropic, required=False)
+        try:
+            lines.append(_line(True, "Claude", anthropic(cfg)))
+        except Exception as e:
+            from .highlights import llm_error
+            lines.append("⚠️ " + llm_error(e) + " - using the free fallbacks")
     else:
         lines.append("➖ Claude: no key, using the free moment picker")
 

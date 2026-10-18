@@ -382,3 +382,12 @@ def test_daily_summary_reports_shortfall_once(pipe):
     text = p.daily_summary(now=evening)
     assert text and "ugc: 0/2 live" in text and "no more eligible ugc campaigns" in text
     assert p.daily_summary(now=evening) is None  # once per day
+
+
+def test_ugc_captions_use_script_words_with_heard_timing():
+    from clipper.ugc import align
+    heard = [Word(0.0, 0.4, "Okay,"), Word(0.4, 0.8, "so"), Word(1.0, 1.4, "urnex"), Word(1.5, 1.9, "today.")]
+    out = align("Okay, so earn XP today.", heard, 2.5)
+    assert [w.text for w in out] == ["Okay,", "so", "earn", "XP", "today."]
+    assert out[0].start == 0.0 and out[-1].start == 1.5
+    assert 0.8 <= out[2].start < out[3].start < 1.5  # unmatched words spread between neighbours

@@ -39,6 +39,7 @@ class Settings:
     whisper_model: str = "small"
     caption_font: str = "DejaVu Sans"
     claude_model: str = "claude-opus-5-5"
+    ugc_voice_id: str = "EXAVITQu4vr4xnSDxMaL"  # ElevenLabs "Sarah" - natural, conversational
 
     # publishing targets: {"platform": "youtube"|"instagram", "kinds": [...], and one of
     # "channel" (YouTube channel title), "username" (Instagram) or "account_id" (Composio ca_...)}
@@ -60,11 +61,12 @@ class Settings:
     anthropic_api_key: str = ""
     telegram_bot_token: str = ""
     telegram_chat_id: str = ""
+    pexels_api_key: str = ""
 
 
 SECRET_FIELDS = {
     "whop_token", "composio_api_key", "composio_user_id",
-    "anthropic_api_key", "telegram_bot_token", "telegram_chat_id",
+    "anthropic_api_key", "telegram_bot_token", "telegram_chat_id", "pexels_api_key",
 }
 
 
@@ -99,6 +101,7 @@ def load(path: Path | None = None) -> Settings:
     s.anthropic_api_key = secret("ANTHROPIC_API_KEY")
     s.telegram_bot_token = secret("TELEGRAM_BOT_TOKEN")
     s.telegram_chat_id = secret("TELEGRAM_CHAT_ID")
+    s.pexels_api_key = secret("PEXELS_API_KEY")
     if s.telegram_chat:  # an explicit chat id in config.toml wins over the secret
         s.telegram_chat_id = str(s.telegram_chat)
     if os.environ.get("CLIPPER_MODE"):
