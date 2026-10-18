@@ -222,3 +222,26 @@ def test_real_unpunctuated_transcript_starts_on_hook_and_ends_on_full_thought():
     assert p.source_text.rstrip().endswith("action.")
     assert 20 <= p.end - p.start <= 60
     assert "being" not in p.hashtags and "gambler" in p.hashtags
+
+
+def test_check_fails_cleanly_without_keys(capsys):
+    from clipper import check
+    assert check.run(Settings()) is False
+    out = capsys.readouterr().out
+    assert "❌ Whop" in out and "❌ Telegram" in out
+
+
+def test_instagram_me_is_resolved_to_numeric_id():
+    from clipper import publish
+
+    class C:
+        calls = []
+
+        def run(self, slug, args, account_id=None):
+            self.calls.append(slug)
+            return {"data": {"id": "17841400000000000", "username": "astr_osignal"}}
+
+    c, target = C(), {"platform": "instagram"}
+    assert publish.ig_user_id(c, target) == "17841400000000000"
+    publish.ig_user_id(c, target)
+    assert c.calls == ["INSTAGRAM_GET_USER_INFO"]  # resolved once, then cached on the target

@@ -38,8 +38,9 @@ class Composio:
         self.user_id = user_id
 
     def run(self, slug: str, args: dict, account_id: str | None = None) -> dict:
+        # no account_id -> Composio uses the default connected account for that toolkit
         res = self.sdk.tools.execute(slug, args, user_id=self.user_id or None,
-                                     connected_account_id=account_id,
+                                     connected_account_id=account_id or None,
                                      dangerously_skip_version_check=True)
         res = dict(res) if not isinstance(res, dict) else res
         if not res.get("successful", True):
@@ -68,8 +69,21 @@ def youtube(c: Composio, target: dict, video: Path, title: str, caption: str, ta
     return f"https://youtube.com/shorts/{vid}"
 
 
+def ig_user_id(c: Composio, target: dict) -> str:
+    """Media containers need the numeric IG user id; resolve 'me' once per target."""
+    ig = str(target.get("ig_user_id") or "me")
+    if ig != "me":
+        return ig
+    info = c.run("INSTAGRAM_GET_USER_INFO", {"ig_user_id": "me", "fields": "id,username"}, target.get("account_id"))
+    resolved = find(info, "id", "user_id")
+    if not resolved:
+        raise PublishError(f"could not resolve Instagram user id: {str(info)[:300]}")
+    target["ig_user_id"] = str(resolved)
+    return target["ig_user_id"]
+
+
 def instagram(c: Composio, target: dict, video: Path, caption: str, tags: list[str]) -> str:
-    ig = target.get("ig_user_id") or "me"
+    ig = ig_user_id(c, target)
     container = c.run("INSTAGRAM_POST_IG_USER_MEDIA", {
         "ig_user_id": ig,
         "video_file": str(video),

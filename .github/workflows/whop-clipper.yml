@@ -3,6 +3,9 @@ name: Whop clipper
 on:
   schedule:
     - cron: "17 */4 * * *"   # every 4 hours
+  push:   # on the feature branch: verify credentials + rank campaigns, never post or submit
+    branches: [claude/whoop-clipping-automation-pdxfm6]
+    paths: ["whop-clipper/**", ".github/workflows/whop-clipper.yml"]
   workflow_dispatch:
     inputs:
       command:
@@ -65,20 +68,21 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           CLIPPER_MODE: ${{ vars.CLIPPER_MODE }}
           YTDLP_COOKIES: ${{ runner.temp }}/cookies.txt
-          CMD: ${{ github.event.inputs.command || 'run' }}
+          CMD: ${{ github.event_name == 'push' && 'check' || github.event.inputs.command || 'run' }}
           DRY: ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
         run: |
           if [ "$CMD" = "run" ]; then
             python -m clipper run $DRY
           else
             python -m clipper $CMD
+            if [ "$CMD" = "check" ]; then python -m clipper scan; fi
             # an approval should go out now, not at the next scheduled run
             case "$CMD" in approve*) python -m clipper run $DRY ;; esac
           fi
           python -m clipper status
 
       - name: Save ledger
-        if: always()
+        if: always() && github.event_name != 'push'
         run: |
           git config user.name "whop-clipper[bot]"
           git config user.email "whop-clipper@users.noreply.github.com"

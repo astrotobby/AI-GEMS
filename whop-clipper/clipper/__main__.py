@@ -1,4 +1,4 @@
-"""CLI: python -m clipper {scan,run,status,approve,skip,done,clip}"""
+"""CLI: python -m clipper {check,scan,run,status,approve,skip,done,clip}"""
 from __future__ import annotations
 
 import argparse
@@ -16,6 +16,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--config", type=Path)
     ap.add_argument("-v", "--verbose", action="store_true")
     sub = ap.add_subparsers(dest="cmd", required=True)
+
+    sub.add_parser("check", help="test every credential (read-only + one Telegram message)")
 
     sc = sub.add_parser("scan", help="rank open Whop campaigns (no side effects)")
     sc.add_argument("--from-file", type=Path, help="score a saved bounties JSON instead of calling Whop")
@@ -41,6 +43,10 @@ def main(argv: list[str] | None = None) -> int:
                         format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     cfg = config.load(a.config)
     pipe = Pipeline(cfg, dry_run=getattr(a, "dry_run", False))
+
+    if a.cmd == "check":
+        from . import check
+        return 0 if check.run(cfg) else 1
 
     if a.cmd == "scan":
         data = json.loads(a.from_file.read_text())["data"] if a.from_file else None
