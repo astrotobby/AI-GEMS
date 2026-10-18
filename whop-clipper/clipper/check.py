@@ -101,4 +101,10 @@ def run(cfg: Settings) -> bool:
     tg = Telegram(cfg.telegram_bot_token, cfg.telegram_chat_id)
     sent = tg.send(report)
     print(_line(sent, "Telegram", "report delivered to your chat" if sent else tg.last_error))
+    if not sent and tg.last_error.startswith("TELEGRAM_CHAT_ID"):
+        chats = tg.recent_chats()
+        print("   Chats that have messaged this bot (put the right number in TELEGRAM_CHAT_ID):"
+              if chats else "   No one has messaged this bot recently - open it in Telegram, send 'hi', re-run.")
+        for cid, who in chats:
+            print(f"   • {cid}  {who}")
     return ok and sent
