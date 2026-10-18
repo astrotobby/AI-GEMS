@@ -48,6 +48,48 @@ class Composio:
         return res.get("data") or {}
 
 
+_RESOLVED: dict[str, str] = {}
+
+
+def target_key(target: dict) -> str:
+    name = target.get("channel") or target.get("username") or target.get("account_id") or ""
+    return f"{target['platform']}:{name}"
+
+
+def resolve(c: Composio, target: dict) -> dict:
+    """Find the Composio connected account behind a target by YouTube channel title or Instagram
+    username, so config.toml can say "Astro Tobby" instead of an opaque ca_... id."""
+    if target.get("account_id"):
+        return target
+    want = (target.get("channel") or target.get("username") or "").strip().lower()
+    if not want:
+        return target  # Composio's default account for the toolkit
+    key = f"{target['platform']}:{want}"
+    if key not in _RESOLVED:
+        accts = c.sdk.connected_accounts.list(
+            user_ids=[c.user_id] if c.user_id else None,
+            toolkit_slugs=[target["platform"]], statuses=["ACTIVE"])
+        seen = []
+        for a in getattr(accts, "items", []) or []:
+            try:
+                if target["platform"] == "youtube":
+                    data = c.run("YOUTUBE_GET_CHANNEL_STATISTICS", {"mine": True, "part": "snippet"}, a.id)
+                    name = str(find(data, "title") or "")
+                else:
+                    data = c.run("INSTAGRAM_GET_USER_INFO", {"ig_user_id": "me", "fields": "id,username"}, a.id)
+                    name = str(find(data, "username") or "")
+            except Exception:
+                continue
+            seen.append(name.strip())
+            if want == name.strip().lower() or want in name.strip().lower():
+                _RESOLVED[key] = a.id
+                break
+        else:
+            raise PublishError(f"no connected {target['platform']} account named {want!r} (found: {seen})")
+    target["account_id"] = _RESOLVED[key]
+    return target
+
+
 def hashtags(tags: list[str]) -> str:
     return " ".join(f"#{t}" for t in tags)
 
@@ -108,6 +150,7 @@ def instagram(c: Composio, target: dict, video: Path, caption: str, tags: list[s
 
 def post(c: Composio, target: dict, video: Path, title: str, caption: str, tags: list[str],
          privacy: str = "public", category: str = "24") -> str:
+    target = resolve(c, dict(target))
     platform = target["platform"]
     if platform == "youtube":
         return youtube(c, target, video, title, caption, tags, privacy, category)
@@ -117,6 +160,7 @@ def post(c: Composio, target: dict, video: Path, title: str, caption: str, tags:
 
 
 def views(c: Composio, target: dict, url: str) -> int:
+    target = resolve(c, dict(target))
     if target["platform"] == "youtube":
         vid = url.rstrip("/").split("/")[-1]
         data = c.run("YOUTUBE_GET_VIDEO_DETAILS_BATCH", {"id": [vid], "parts": ["statistics"]},

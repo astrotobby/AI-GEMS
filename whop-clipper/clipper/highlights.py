@@ -211,7 +211,7 @@ def pick(words: list[Word], campaign: dict, mentions: list[str], lo: int, hi: in
             else:
                 reason = "claude: " + data.get("reason", "")
         except Exception as e:  # any API/parse problem -> heuristic
-            reason = f"claude failed ({e.__class__.__name__}); "
+            reason = f"claude failed ({e.__class__.__name__}: {str(e)[:160]}); "
             data = None
     if data is None:
         i, j, why = heuristic(sents, f"{campaign.get('title')} {campaign.get('description')}", lo, hi, exclude)

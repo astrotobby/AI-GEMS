@@ -45,8 +45,8 @@ class Ledger:
     def for_bounty(self, bounty_id: str) -> list[dict]:
         return [j for j in self.jobs.values() if j["bounty_id"] == bounty_id]
 
-    def add(self, bounty: dict, index: int, score: float) -> dict:
-        jid = f"{bounty['id']}-{index}"
+    def add(self, bounty: dict, index: int | str, score: float) -> dict:
+        jid = index if isinstance(index, str) else f"{bounty['id']}-{index}"
         job = self.jobs.setdefault(jid, {
             "id": jid, "bounty_id": bounty["id"], "title": bounty["title"], "score": score,
             "status": "planned", "created": now(), "posts": {}, "history": [],

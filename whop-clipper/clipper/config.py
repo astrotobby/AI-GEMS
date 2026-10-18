@@ -26,6 +26,13 @@ class Settings:
     whop_via: str = "connector"
     campaigns_max_age_hours: int = 12
 
+    # daily schedule: how many videos of each kind per day, and the local go-live times.
+    # Each slot gets an even share (2 per kind over 2 slots = 1 clipping + 1 UGC per slot).
+    daily_quota: dict = field(default_factory=lambda: {"clipping": 2, "ugc": 2})
+    slots: list[str] = field(default_factory=lambda: ["08:20", "14:00"])
+    timezone: str = "Africa/Nairobi"
+    max_per_campaign_per_day: int = 2  # repeat posts only for campaigns that allow several
+
     # clip style
     min_clip_seconds: int = 20
     max_clip_seconds: int = 60
@@ -33,7 +40,8 @@ class Settings:
     caption_font: str = "DejaVu Sans"
     claude_model: str = "claude-opus-5-5"
 
-    # publishing targets: list of {"platform": "youtube"|"instagram", "account_id": "...", "ig_user_id": "..."}
+    # publishing targets: {"platform": "youtube"|"instagram", "kinds": [...], and one of
+    # "channel" (YouTube channel title), "username" (Instagram) or "account_id" (Composio ca_...)}
     targets: list[dict] = field(default_factory=list)
     youtube_privacy: str = "public"
     youtube_category_id: str = "24"  # Entertainment

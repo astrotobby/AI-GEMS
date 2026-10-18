@@ -135,18 +135,21 @@ class FakeWhop:
 
 @pytest.fixture
 def pipe(tmp_path, monkeypatch):
-    def make(bounty, mode="auto", views=5000, whop_via="api"):
+    def make(bounty, mode="auto", views=5000, whop_via="api", slots=("00:00", "00:01")):
+        slots = list(slots)
         cfg = Settings(mode=mode, work_dir=tmp_path / "work", ledger_path=tmp_path / "ledger.json",
                        whop_via=whop_via, campaigns_path=tmp_path / "campaigns.json",
-                       targets=[{"platform": "youtube", "account_id": "ca_yt"},
-                                {"platform": "instagram", "account_id": "ca_ig"}])
+                       slots=slots, timezone="UTC",
+                       targets=[{"platform": "youtube", "channel": "Astro Tobby", "kinds": ["clipping"]},
+                                {"platform": "youtube", "channel": "DIJITOL NOMAD", "kinds": ["ugc"]},
+                                {"platform": "instagram", "username": "astr_osignal", "kinds": ["clipping", "ugc"]}])
         p = Pipeline(cfg)
         p._whop = FakeWhop(bounty)
         p._composio = object()
         posted = []
 
         def fake_post(c, target, video, title, caption, tags, privacy, category):
-            posted.append(target["platform"])
+            posted.append(target.get("channel") or target["platform"])
             return f"https://{target['platform']}.example/{len(posted)}"
 
         monkeypatch.setattr("clipper.publish.post", fake_post)
@@ -158,7 +161,7 @@ def pipe(tmp_path, monkeypatch):
 
 def clipped_job(p, bounty):
     p.plan(p.scan([bounty]))
-    job = next(iter(p.ledger.jobs.values()))
+    job = sorted(p.ledger.jobs.values(), key=lambda j: j["slot"])[0]
     clip = p.cfg.work_dir / "clip.mp4"
     clip.parent.mkdir(parents=True, exist_ok=True)
     clip.write_bytes(b"x")
@@ -174,7 +177,7 @@ def test_auto_mode_runs_to_submission(pipe):
     job = clipped_job(p, b)
     p.advance(job)
     assert job["status"] == "submitted"
-    assert sorted(p.posted) == ["instagram", "youtube"]
+    assert sorted(p.posted) == ["Astro Tobby", "instagram"]  # clipping -> Astro Tobby + IG
     bounty_id, urls, files = p.whop.submissions[0]
     assert bounty_id == ANON["id"] and len(urls) == 2 and files == ["file_1"]
 
@@ -207,12 +210,21 @@ def test_closed_campaign_is_skipped_before_posting(pipe):
     assert job["status"] == "skipped" and p.posted == []
 
 
-def test_plan_respects_active_limit_and_dedupes(pipe):
-    p = pipe(ANON)
+def test_plan_fills_daily_quota_once_across_runs(pipe):
+    p = pipe(ANON)  # Anon allows "as many clips as you like" -> may fill both clipping slots
     p.plan(p.scan([ANON]))
     p.plan(p.scan([ANON]))
-    assert len(p.ledger.jobs) == 1
+    jobs = sorted(p.ledger.jobs.values(), key=lambda j: j["slot"])
+    assert [(j["kind"], j["slot"]) for j in jobs] == [("clipping", 0), ("clipping", 1)]
+    assert "ugc" in p.shortfall  # no UGC campaigns offered -> reported, not an error
     assert Ledger(p.cfg.ledger_path).jobs  # persisted
+
+
+def test_non_repeatable_campaign_is_used_once(pipe):
+    b = dict(ANON, id="bnty_once", description=ANON["description"].replace("as many clips as you like", "one clip"))
+    p = pipe(b)
+    p.plan(p.scan([b]))
+    assert len(p.ledger.jobs) == 1 and "clipping" in p.shortfall
 
 
 def test_real_unpunctuated_transcript_starts_on_hook_and_ends_on_full_thought():
@@ -319,3 +331,54 @@ def test_ledger_merge_keeps_newest_copy_of_each_job(tmp_path):
     }, "seen": {}}
     assert led.merge(other) == 2
     assert [led.jobs[k]["status"] for k in "abc"] == ["submitted", "clipped", "planned"]
+
+
+def test_publish_waits_for_its_slot(pipe):
+    from datetime import datetime, timedelta, timezone as tz
+    later = (datetime.now(tz.utc) + timedelta(hours=2)).strftime("%H:%M")
+    p = pipe(ANON, slots=(later, later))
+    job = clipped_job(p, ANON)
+    if datetime.now(tz.utc).strftime("%H:%M") > later:  # crossed midnight; slot is tomorrow's time
+        return
+    p.advance(job)
+    assert job["status"] == "approved" and p.posted == []  # made and approved, not yet live
+
+
+def test_ugc_job_is_made_from_brief_and_routed_to_dijitol(pipe, monkeypatch):
+    ugc_b = dict(BY_ID["bnty_lyJ5DBAjGJ6gF"], id="bnty_ugc", business_goal_type="ugc_content",
+                 description="Make a short promo for the FocusPad app. Post it on Instagram Reels or YouTube Shorts.")
+    made = []
+
+    def fake_make(b, out, *a, **k):
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_bytes(b"x")
+        made.append(b["id"])
+        return {"path": str(out), "start": 0.0, "end": 0.0, "title": "t", "caption": "c",
+                "hashtags": ["a"], "hook": "h", "reason": "template script", "text": "x"}
+
+    monkeypatch.setattr("clipper.ugc.make", fake_make)
+    p = pipe(ugc_b)
+    p.plan(p.scan([ugc_b]))
+    job = next(j for j in p.ledger.jobs.values() if j["kind"] == "ugc")
+    p.advance(job)
+    assert made == ["bnty_ugc"]
+    assert sorted(p.posted) == ["DIJITOL NOMAD", "instagram"]
+
+
+def test_old_review_job_is_migrated_into_todays_first_slot(pipe):
+    p = pipe(ANON)
+    job = p.ledger.add(ANON, 0, 50)
+    p.ledger.move(job, "awaiting_approval")
+    p._migrate()
+    assert job["status"] == "approved" and job["slot"] == 0 and job["kind"] == "clipping"
+
+
+def test_daily_summary_reports_shortfall_once(pipe):
+    p = pipe(ANON)
+    p.plan(p.scan([ANON]))
+    from datetime import datetime, time, timezone as tz
+    evening = datetime.combine(p.today(), time(23, 0), tz.utc)
+    assert p.daily_summary(now=evening.replace(hour=0, minute=10)) is None  # before last slot + 30m
+    text = p.daily_summary(now=evening)
+    assert text and "ugc: 0/2 live" in text and "no more eligible ugc campaigns" in text
+    assert p.daily_summary(now=evening) is None  # once per day
