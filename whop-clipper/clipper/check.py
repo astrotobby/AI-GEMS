@@ -102,6 +102,14 @@ def run(cfg: Settings) -> bool:
     sent = tg.send(report)
     print(_line(sent, "Telegram", "report delivered to your chat" if sent else tg.last_error))
     if not sent and tg.last_error.startswith("TELEGRAM_CHAT_ID"):
+        # say which mistake it is without printing either secret
+        bot_id = cfg.telegram_bot_token.split(":", 1)[0]
+        if cfg.telegram_chat_id == bot_id:
+            print("   TELEGRAM_CHAT_ID equals the number at the start of TELEGRAM_BOT_TOKEN - that is the "
+                  "bot's own id, not yours. Get yours from @userinfobot.")
+        elif "can't send messages to the bot" in tg.last_error:
+            print("   TELEGRAM_CHAT_ID belongs to a bot (a different one from this bot). "
+                  "Use your personal id from @userinfobot.")
         chats = tg.recent_chats()
         print("   Chats that have messaged this bot (put the right number in TELEGRAM_CHAT_ID):"
               if chats else "   No one has messaged this bot recently - open it in Telegram, send 'hi', re-run.")
