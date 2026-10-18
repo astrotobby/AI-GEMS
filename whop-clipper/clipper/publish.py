@@ -37,6 +37,17 @@ class Composio:
         self.sdk = SDK(api_key=api_key, dangerously_allow_auto_upload_download_files=True)
         self.user_id = user_id
 
+    def account_for(self, toolkit: str) -> str | None:
+        """An ACTIVE connected account for a toolkit: this user's first, else any in the project
+        (connections made from a different Composio user/session still work)."""
+        for users in ([self.user_id] if self.user_id else [], None):
+            accts = self.sdk.connected_accounts.list(user_ids=users or None, toolkit_slugs=[toolkit],
+                                                     statuses=["ACTIVE"])
+            items = getattr(accts, "items", []) or []
+            if items:
+                return items[0].id
+        return None
+
     def run(self, slug: str, args: dict, account_id: str | None = None) -> dict:
         # no account_id -> Composio uses the default connected account for that toolkit
         res = self.sdk.tools.execute(slug, args, user_id=self.user_id or None,

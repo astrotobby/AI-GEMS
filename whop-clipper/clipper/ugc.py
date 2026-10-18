@@ -88,7 +88,8 @@ def _short_name(campaign: dict, prod: product_mod.Product) -> str:
 def _soft(sentence: str) -> str:
     """Lower-case the first letter after a lead-in ("Okay, so ..."), but never a name or acronym."""
     first = sentence.split(" ", 1)[0]
-    if first[:1].isupper() and (len(first) == 1 or first[1:].islower()) and first.lower() in {
+    bare = first.rstrip(",.;:!?")
+    if bare[:1].isupper() and (len(bare) == 1 or bare[1:].islower()) and bare.lower() in {
             "a", "an", "the", "your", "this", "it", "its", "every", "daily", "one", "most", "gamified",
             "proof", "real", "turn", "build", "track", "get", "make", "keep", "earn", "snap"}:
         return first.lower() + sentence[len(first):]
@@ -110,7 +111,8 @@ def script_template(campaign: dict, prod: product_mod.Product) -> dict:
         "product": name,
         "voiceover": [ln if ln.endswith((".", "!", "?")) else ln + "." for ln in lines],
         "broll": [name] * len(lines),
-        "title": f"{name}: {first[:70]}" if first else f"Have you seen {name}?",
+        "title": (first if name.lower() in first.lower() else f"{name}: {first}")[:90] if first
+                 else f"Have you seen {name}?",
         "caption": first or f"Have you seen {name}?",
         "hashtags": list(dict.fromkeys([re.sub(r"\W", "", name.lower())] + tags + ["shorts"])),
     }
@@ -120,10 +122,13 @@ def script_template(campaign: dict, prod: product_mod.Product) -> dict:
 def voice_elevenlabs(composio, text: str, out: Path, voice_id: str) -> Path:
     from .publish import find
 
+    account = composio.account_for("elevenlabs")
+    if not account:
+        raise RuntimeError("no ElevenLabs connection in Composio")
     data = composio.run("ELEVENLABS_TEXT_TO_SPEECH", {
         "voice_id": voice_id, "text": text, "model_id": "eleven_multilingual_v2",
         "voice_settings": {"stability": 0.4, "similarity_boost": 0.8, "style": 0.2, "use_speaker_boost": True},
-    })
+    }, account)
     url = find(data, "s3url", "url")
     local = find(data, "file_path", "path", "file")
     if isinstance(url, str) and url.startswith("http"):
