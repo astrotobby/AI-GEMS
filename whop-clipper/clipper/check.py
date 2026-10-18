@@ -46,6 +46,22 @@ def composio(cfg: Settings) -> list[str]:
     except Exception as e:
         out.append(f"   (could not list connected accounts: {e})")
 
+    # what this API key can see, so missing connections (e.g. ElevenLabs) are obvious
+    try:
+        seen = {}
+        for users in ([cfg.composio_user_id] if cfg.composio_user_id else [], None):
+            for a in getattr(c.sdk.connected_accounts.list(user_ids=users or None, account_type="ALL",
+                                                           limit=100), "items", []) or []:
+                tk = getattr(getattr(a, "toolkit", None), "slug", "?")
+                seen.setdefault(tk, set()).add(f"{getattr(a, 'status', '?')}{'' if users else '*'}")
+        out.append("   connections visible to COMPOSIO_API_KEY (* = other user): "
+                   + ", ".join(f"{k}[{'/'.join(sorted(v))}]" for k, v in sorted(seen.items())))
+        voice = c.account_for("elevenlabs")
+        out.append(_line(bool(voice), "ElevenLabs voice", f"connected [{voice}]" if voice else
+                         "not connected for this API key - UGC uses the offline voice"))
+    except Exception as e:
+        out.append(f"   (could not list connections: {str(e)[:150]})")
+
     # every configured target must resolve to a real connected account
     for t in cfg.targets or [{"platform": "youtube"}, {"platform": "instagram"}]:
         label = f"{t['platform'].title()} ({'/'.join(t.get('kinds', ['all']))})"

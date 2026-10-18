@@ -42,7 +42,7 @@ class Composio:
         (connections made from a different Composio user/session still work)."""
         for users in ([self.user_id] if self.user_id else [], None):
             accts = self.sdk.connected_accounts.list(user_ids=users or None, toolkit_slugs=[toolkit],
-                                                     statuses=["ACTIVE"])
+                                                     statuses=["ACTIVE"], account_type="ALL")
             items = getattr(accts, "items", []) or []
             if items:
                 return items[0].id
