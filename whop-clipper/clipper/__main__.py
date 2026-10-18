@@ -109,7 +109,8 @@ def main(argv: list[str] | None = None) -> int:
             composio = None
         clip = ugc.make(b, out, cfg.anthropic_api_key, cfg.claude_model, br.product_links,
                         br.required_mentions, cfg.caption_font, composio=composio,
-                        voice_id=cfg.ugc_voice_id, pexels_key=cfg.pexels_api_key)
+                        voice_id=cfg.ugc_voice_id, pexels_key=cfg.pexels_api_key,
+                        elevenlabs_key=cfg.elevenlabs_api_key)
         print(json.dumps(clip, indent=2))
         pipe.tg.send_video(out, f"🧪 UGC test render (not posted): {b['title']}\n{clip['caption']}\n"
                                 f"Made with: {clip['reason']}")

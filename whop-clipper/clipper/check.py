@@ -56,9 +56,9 @@ def composio(cfg: Settings) -> list[str]:
                 seen.setdefault(tk, set()).add(f"{getattr(a, 'status', '?')}{'' if users else '*'}")
         out.append("   connections visible to COMPOSIO_API_KEY (* = other user): "
                    + ", ".join(f"{k}[{'/'.join(sorted(v))}]" for k, v in sorted(seen.items())))
-        voice = c.account_for("elevenlabs")
-        out.append(_line(bool(voice), "ElevenLabs voice", f"connected [{voice}]" if voice else
-                         "not connected for this API key - UGC uses the offline voice"))
+        voice = "ELEVENLABS_API_KEY" if cfg.elevenlabs_api_key else c.account_for("elevenlabs")
+        out.append(("✅ ElevenLabs voice: " + str(voice)) if voice else
+                   "⚠️ ElevenLabs voice: add an ELEVENLABS_API_KEY secret - UGC uses the offline voice until then")
     except Exception as e:
         out.append(f"   (could not list connections: {str(e)[:150]})")
 
@@ -119,6 +119,8 @@ def run(cfg: Settings) -> bool:
     else:
         lines.append("➖ Claude: no key, using the free moment picker")
 
+    lines.append("✅ Stock b-roll: Pexels" if cfg.pexels_api_key else
+                 "➖ Stock b-roll: off (optional PEXELS_API_KEY) - UGC uses product screenshots")
     lines.append(f"mode: {cfg.mode} · country: {cfg.country} · python {platform.python_version()}")
     report = "🔌 Whop clipper connection check\n" + "\n".join(lines)
     print(report)

@@ -70,6 +70,8 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           CLIPPER_MODE: ${{ vars.CLIPPER_MODE }}
           YTDLP_COOKIES: ${{ runner.temp }}/cookies.txt
           CMD: ${{ github.event_name == 'push' && 'check' || github.event.inputs.command || 'run' }}

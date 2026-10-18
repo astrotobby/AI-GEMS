@@ -119,6 +119,22 @@ def script_template(campaign: dict, prod: product_mod.Product) -> dict:
 
 
 # ---- voice ----------------------------------------------------------------------------
+VOICE_SETTINGS = {"stability": 0.4, "similarity_boost": 0.8, "style": 0.2, "use_speaker_boost": True}
+
+
+def voice_elevenlabs_direct(api_key: str, text: str, out: Path, voice_id: str) -> Path:
+    """ElevenLabs REST API with your own key (ELEVENLABS_API_KEY)."""
+    r = requests.post(f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}",
+                      params={"output_format": "mp3_44100_128"},
+                      headers={"xi-api-key": api_key, "accept": "audio/mpeg"},
+                      json={"text": text, "model_id": "eleven_multilingual_v2", "voice_settings": VOICE_SETTINGS},
+                      timeout=180)
+    if not r.ok:
+        raise RuntimeError(f"ElevenLabs {r.status_code}: {r.text[:150]}")
+    out.write_bytes(r.content)
+    return out
+
+
 def voice_elevenlabs(composio, text: str, out: Path, voice_id: str) -> Path:
     from .publish import find
 
@@ -126,8 +142,7 @@ def voice_elevenlabs(composio, text: str, out: Path, voice_id: str) -> Path:
     if not account:
         raise RuntimeError("no ElevenLabs connection in Composio")
     data = composio.run("ELEVENLABS_TEXT_TO_SPEECH", {
-        "voice_id": voice_id, "text": text, "model_id": "eleven_multilingual_v2",
-        "voice_settings": {"stability": 0.4, "similarity_boost": 0.8, "style": 0.2, "use_speaker_boost": True},
+        "voice_id": voice_id, "text": text, "model_id": "eleven_multilingual_v2", "voice_settings": VOICE_SETTINGS,
     }, account)
     url = find(data, "s3url", "url")
     local = find(data, "file_path", "path", "file")
@@ -244,7 +259,7 @@ def align(script: str, heard: list, total: float) -> list:
 def make(campaign: dict, out: Path, api_key: str = "", model: str = "claude-opus-5-5",
          product_links: list[str] | None = None, mentions: list[str] | None = None,
          font: str = "DejaVu Sans", composio=None, voice_id: str = "EXAVITQu4vr4xnSDxMaL",
-         pexels_key: str = "", whisper_model: str = "base") -> dict:
+         pexels_key: str = "", whisper_model: str = "base", elevenlabs_key: str = "") -> dict:
     out.parent.mkdir(parents=True, exist_ok=True)
     work = out.with_suffix("")
     work.mkdir(exist_ok=True)
@@ -270,7 +285,13 @@ def make(campaign: dict, out: Path, api_key: str = "", model: str = "claude-opus
     text = " ".join(script["voiceover"])
 
     audio = None
-    if composio is not None:
+    if elevenlabs_key:
+        try:
+            audio = voice_elevenlabs_direct(elevenlabs_key, text, work / "voice.mp3", voice_id)
+            notes.append("ElevenLabs voice")
+        except Exception as e:
+            notes.append(f"ElevenLabs key failed ({str(e)[:80]})")
+    if audio is None and composio is not None:
         try:
             audio = voice_elevenlabs(composio, text, work / "voice.mp3", voice_id)
             notes.append("ElevenLabs voice")

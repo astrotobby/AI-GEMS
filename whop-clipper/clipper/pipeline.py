@@ -208,7 +208,8 @@ class Pipeline:
             clip = ugc.make(b, out, self.cfg.anthropic_api_key, self.cfg.claude_model,
                             br.product_links, br.required_mentions, self.cfg.caption_font,
                             composio=composio, voice_id=self.cfg.ugc_voice_id,
-                            pexels_key=self.cfg.pexels_api_key)
+                            pexels_key=self.cfg.pexels_api_key,
+                            elevenlabs_key=self.cfg.elevenlabs_api_key)
             self.ledger.move(job, "clipped", clip=clip)
             return
         src = Path(job["source"])
