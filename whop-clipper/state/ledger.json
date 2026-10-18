@@ -1,6 +1,9 @@
 {
   "jobs": {
     "bnty_4nQb37p7bvjna-0": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov"
+      ],
       "bounty_id": "bnty_4nQb37p7bvjna",
       "clip": {
         "caption": "Here's three signs that you are a degenerate gambler.\n@ANON_BETTING @AnonPicks",
@@ -14,7 +17,7 @@
         ],
         "hook": "Here's three signs that you are a",
         "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4",
-        "reason": "claude failed (BadRequestError); heuristic score 26.5",
+        "reason": "Claude skipped: no API credit, and the Claude plan failed too (Claude Code: claude-opus-5-5: Claude Code: Credit balance is too low / sonnet: Claude Code: Credit balance is too low / haiku: Claude Code: Credit balance is too low); heuristic score 26.5",
         "start": 1.31,
         "text": "Here's three signs that you are a degenerate gambler. First things first, if you're never in the present, you're going out to dinner with family, you're spending time with your wife, your kids, whoever it is, but you're constantly on your phone, checking to see if your parlay hit or if that big bet that you put, what's going on in the game, pitch by pitch, play by play, that is the first sign of you being a degenerate gambler. If you're constantly thinking about previous losses and they dwell in",
         "title": "Here's three signs that you are a degenerate gambler."
@@ -25,7 +28,8 @@
         "approved: youtube:Astro Tobby: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\": the file does not exist on disk.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nProcess cwd:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper\nParent exists:    yes (/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips)\n\nCommon causes:\n  - Typo in the filename passed to the tool.\n  - Relative path resolved against the wrong working directory\n    (relative paths use os.getcwd() at the moment of upload).\n  - File was deleted between the tool being called and the upload starting.\n\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.; instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\": the file does not exist on disk.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nProcess cwd:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper\nParent exists:    yes (/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips)\n\nCommon causes:\n  - Typo in the filename passed to the tool.\n  - Relative path resolved against the wrong working directory\n    (relative paths use os.getcwd() at the moment of upload).\n  - File was deleted between the tool being called and the upload starting.\n\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
         "approved: youtube:Astro Tobby: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\": the file does not exist on disk.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nProcess cwd:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper\nParent exists:    yes (/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips)\n\nCommon causes:\n  - Typo in the filename passed to the tool.\n  - Relative path resolved against the wrong working directory\n    (relative paths use os.getcwd() at the moment of upload).\n  - File was deleted between the tool being called and the upload starting.\n\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.; instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\": the file does not exist on disk.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nProcess cwd:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper\nParent exists:    yes (/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips)\n\nCommon causes:\n  - Typo in the filename passed to the tool.\n  - Relative path resolved against the wrong working directory\n    (relative paths use os.getcwd() at the moment of upload).\n  - File was deleted between the tool being called and the upload starting.\n\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
         "approved: youtube:Astro Tobby: no connected youtube account named 'astro tobby' (found: []); instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\": the file does not exist on disk.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nProcess cwd:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper\nParent exists:    yes (/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips)\n\nCommon causes:\n  - Typo in the filename passed to the tool.\n  - Relative path resolved against the wrong working directory\n    (relative paths use os.getcwd() at the moment of upload).\n  - File was deleted between the tool being called and the upload starting.\n\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
-        "sourced: no speech found in source"
+        "sourced: no speech found in source",
+        "youtube:Astro Tobby: no connected youtube account named 'astro tobby' (found: ['ca_0F8f5MFgMjpu: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr', 'ca_bWtdXryu11HE: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr'])"
       ],
       "history": [
         {
@@ -57,18 +61,58 @@
           "at": "2026-10-18T18:47:09+00:00",
           "from": "planned",
           "to": "sourced"
+        },
+        {
+          "at": "2026-10-18T18:52:31+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-10-18T18:52:35+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-10-18T18:54:47+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-10-18T18:54:47+00:00",
+          "from": "clipped",
+          "to": "approved"
+        },
+        {
+          "at": "2026-10-18T18:55:55+00:00",
+          "from": "approved",
+          "to": "published"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-0",
       "kind": "clipping",
-      "posts": {},
-      "reason": "clip file missing - re-rendering",
+      "posts": {
+        "instagram:astr_osignal": {
+          "at": "2026-10-18T18:55:55.882927+00:00",
+          "target": {
+            "kinds": [
+              "clipping",
+              "ugc"
+            ],
+            "platform": "instagram",
+            "username": "astr_osignal"
+          },
+          "url": "https://www.instagram.com/reel/DepX_2ZAnkx/",
+          "views": 0
+        }
+      },
+      "published_at": "2026-10-18T18:55:55.884054+00:00",
+      "reason": "100kCashCasinoSlots.mov has no speech - fetching another source",
       "score": 50.7,
       "slot": 0,
-      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/100kCashCasinoSlots.mov",
-      "status": "sourced",
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/3SignsOfDegenerateGamblers.MOV",
+      "status": "published",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-18T18:47:09+00:00"
+      "updated": "2026-10-18T18:55:55+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-10-18-clipping1": {
       "bounty_id": "bnty_4nQb37p7bvjna",
