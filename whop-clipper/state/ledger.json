@@ -102,7 +102,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/DepX_2ZAnkx/",
-          "views": 103
+          "views": 126
         }
       },
       "published_at": "2026-10-18T18:55:55.884054+00:00",
@@ -178,7 +178,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/DepXIs-iAt3/",
-          "views": 168
+          "views": 169
         }
       },
       "published_at": "2026-10-18T18:48:04.464432+00:00",
@@ -188,6 +188,196 @@
       "status": "published",
       "title": "Clip Content into Short Video (1k view minimum)",
       "updated": "2026-10-18T18:48:04+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-10-19-clipping0": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "Well, let me break it down for you like this, okay?\n@ANON_BETTING @AnonPicks",
+        "end": 44.29,
+        "hashtags": [
+          "approach",
+          "thousand",
+          "willing",
+          "shorts",
+          "clips"
+        ],
+        "hook": "Well, let me break it down for",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-19-clipping0.mp4",
+        "reason": "Claude skipped: no API credit, and the Claude plan failed too (Claude Code: claude-opus-5-5: Claude Code: Credit balance is too low / sonnet: Claude Code: Credit balance is too low / haiku: Claude Code: Credit balance is too low); heuristic score 24.5",
+        "start": 2.68,
+        "text": "Well, let me break it down for you like this, okay? We've seen tons of cases of John T. Porter, Terry Rosear, Malik Beasley, and other guys who've been indicted on crimes for illegal gambling and essentially throwing their lines to help random people that approach them for a few thousand bucks at a time sometimes. And so you wonder, are sports actually rigged? Well, let me tell you what, if people are willing to take bribes with 50 hundred million dollar contracts in the NBA for a couple thousan",
+        "title": "Well, let me break it down for you like this, okay?"
+      },
+      "created": "2026-10-18T22:25:59+00:00",
+      "date": "2026-10-19",
+      "history": [
+        {
+          "at": "2026-10-18T22:26:13+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-10-18T22:26:13+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-10-18T22:26:15+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-10-18T22:26:18+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-10-18T22:26:20+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-10-18T22:26:23+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-10-18T22:26:25+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-10-18T22:26:27+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-10-18T22:26:31+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-10-18T22:28:24+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-10-18T22:28:24+00:00",
+          "from": "clipped",
+          "to": "approved"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-10-19-clipping0",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 50.7,
+      "slot": 0,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/AreSportsRigged.mov",
+      "status": "approved",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-10-18T22:28:24+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-10-19-clipping1": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "Let me break it down for you in the most simple of forms, okay?\n@ANON_BETTING @AnonPicks",
+        "end": 46.3,
+        "hashtags": [
+          "doing",
+          "dollars",
+          "sports",
+          "shorts",
+          "clips"
+        ],
+        "hook": "Let me break it down for you",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-19-clipping1.mp4",
+        "reason": "Claude skipped: no API credit, and the Claude plan failed too (Claude Code: claude-opus-5-5: Claude Code: Credit balance is too low / sonnet: Claude Code: Credit balance is too low / haiku: Claude Code: Credit balance is too low); heuristic score 25.7",
+        "start": 5.03,
+        "text": "Let me break it down for you in the most simple of forms, okay? You've had guys like Terry Rozier, Malik Beasley, John T. Porter and so many others that have been indicted on illegal gambling charges and essentially rigging their lines, right? Now, they were doing this for a few thousand dollars in most cases, okay? And these guys had 50, a hundred million dollar contract. Some of them have earned hundreds of millions of dollars in their professional sports careers. So now ask yourself, when the",
+        "title": "Let me break it down for you in the most simple of forms, okay?"
+      },
+      "created": "2026-10-18T22:26:00+00:00",
+      "date": "2026-10-19",
+      "history": [
+        {
+          "at": "2026-10-18T22:28:24+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-10-18T22:28:24+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-10-18T22:28:25+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-10-18T22:28:25+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-10-18T22:28:25+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-10-18T22:28:25+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-10-18T22:28:26+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-10-18T22:28:26+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-10-18T22:28:30+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-10-18T22:30:20+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-10-18T22:30:20+00:00",
+          "from": "clipped",
+          "to": "approved"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-10-19-clipping1",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 50.7,
+      "slot": 1,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/AreSportsRigged2.mov",
+      "status": "approved",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-10-18T22:30:20+00:00"
     }
   },
   "seen": {
