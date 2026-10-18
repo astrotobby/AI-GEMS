@@ -424,3 +424,23 @@ def test_lost_clip_file_is_re_rendered_not_failed(pipe, monkeypatch):
     monkeypatch.setattr(p, "_clip", lambda j: (rendered.append(j["id"]), p.ledger.move(j, "failed")))
     p.advance(job)
     assert rendered == [job["id"]] and not p.posted and "errors" not in job
+
+
+def test_platform_that_failed_is_retried_on_a_later_run(pipe, monkeypatch):
+    b = dict(ANON, description=ANON["description"].replace("livestream", "video"))
+    p = pipe(b, views=0)
+    job = clipped_job(p, b)
+    real_post = __import__("clipper.publish", fromlist=["post"]).post
+    quota = {"on": True}
+
+    def flaky(c, target, *a):
+        if target["platform"] == "youtube" and quota["on"]:
+            raise RuntimeError("403 quota exceeded")
+        return real_post(c, target, *a)
+    monkeypatch.setattr("clipper.publish.post", flaky)
+    p.advance(job)
+    assert job["status"] == "published" and list(job["posts"]) == ["instagram:astr_osignal"]
+    quota["on"] = False  # next run, after the quota reset
+    p.advance(job)
+    assert sorted(job["posts"]) == ["instagram:astr_osignal", "youtube:Astro Tobby"]
+    assert sorted(p.posted) == ["Astro Tobby", "instagram"]  # each platform exactly once
