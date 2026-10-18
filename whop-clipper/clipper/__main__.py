@@ -35,6 +35,9 @@ def main(argv: list[str] | None = None) -> int:
         p = sub.add_parser(name, help=help_)
         p.add_argument("job_id")
 
+    u = sub.add_parser("make-ugc", help="render a UGC video for a campaign in the snapshot (no posting)")
+    u.add_argument("bounty_id")
+
     c = sub.add_parser("clip", help="make a clip from any local video for a bounty (testing)")
     c.add_argument("video", type=Path)
     c.add_argument("--bounty-file", type=Path, help="bounty JSON for the brief/copy")
@@ -92,6 +95,18 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         pipe.ledger.move(job, {"approve": "approved", "skip": "skipped", "done": "submitted"}[a.cmd])
         print(f"{a.job_id} -> {job['status']}")
+        return 0
+
+    if a.cmd == "make-ugc":
+        from . import brief as brief_mod
+        from . import ugc
+        b = next(x for x in pipe.campaigns() if x["id"] == a.bounty_id)
+        br = brief_mod.parse(b["description"], b["title"])
+        out = cfg.work_dir / "ugc-test" / f"{a.bounty_id}.mp4"
+        clip = ugc.make(b, out, cfg.anthropic_api_key, cfg.claude_model, br.product_links,
+                        br.required_mentions, cfg.caption_font)
+        print(json.dumps(clip, indent=2))
+        pipe.tg.send_video(out, f"🧪 UGC test render (not posted): {b['title']}\n{clip['caption']}")
         return 0
 
     if a.cmd == "clip":
