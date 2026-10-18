@@ -92,6 +92,20 @@ def anthropic(cfg: Settings) -> str:
     return f"{cfg.claude_model} picked sentences {pick['start_index']}-{pick['end_index']}: \"{pick['hook']}\""
 
 
+def plan_token(tok: str) -> str:
+    """Say what kind of token CLAUDE_CODE_OAUTH_TOKEN holds - by its public prefix only, never the value."""
+    if not tok:
+        return "➖ Claude plan: no CLAUDE_CODE_OAUTH_TOKEN"
+    if tok.startswith("sk-ant-api"):
+        return ("❌ Claude plan: CLAUDE_CODE_OAUTH_TOKEN holds an API key (sk-ant-api...), which bills API "
+                "credit. Run `claude setup-token` and paste the sk-ant-oat... token it prints")
+    if tok.startswith("sk-ant-oat"):
+        return ("ℹ️ Claude plan: token is a setup-token (sk-ant-oat...). If Claude Code says 'credit balance', "
+                "it was made while logged in with an Anthropic Console account - run `claude /logout`, log in "
+                "with your Claude Pro account, then `claude setup-token` again")
+    return "⚠️ Claude plan: CLAUDE_CODE_OAUTH_TOKEN doesn't look like a `claude setup-token` token"
+
+
 def run(cfg: Settings) -> bool:
     lines, ok = [], True
 
@@ -118,6 +132,7 @@ def run(cfg: Settings) -> bool:
             lines.append("⚠️ " + llm_error(e) + " - using the free fallbacks")
     else:
         lines.append("➖ Claude: no key, using the free moment picker")
+    lines.append(plan_token(cfg.claude_oauth_token))
 
     lines.append("✅ Stock b-roll: Pexels" if cfg.pexels_api_key else
                  "➖ Stock b-roll: off (optional PEXELS_API_KEY) - UGC uses product screenshots")
