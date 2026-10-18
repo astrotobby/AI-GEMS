@@ -2,7 +2,11 @@ name: Whop clipper
 
 on:
   schedule:
-    - cron: "17 */4 * * *"   # every 4 hours
+    # all times UTC; Kenya (EAT) = UTC+3
+    - cron: "0 2 * * *"      # 05:00 EAT: plan today's 2 clipping + 2 UGC videos and make them
+    - cron: "50 4 * * *"     # 07:50 EAT: finish anything left, wait, go live at 08:20
+    - cron: "30 10 * * *"    # 13:30 EAT: wait, go live at 14:00
+    - cron: "17 */4 * * *"   # every 4h: views, submissions, catch-up if a slot was missed
   push:   # on the feature branch: verify credentials + rank campaigns, never post or submit
     branches: [claude/whoop-clipping-automation-pdxfm6]
     paths: ["whop-clipper/**", ".github/workflows/whop-clipper.yml"]

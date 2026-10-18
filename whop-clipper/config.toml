@@ -1,7 +1,7 @@
 # Behaviour settings. Secrets go in environment variables (see .env.example), never here.
 
 [pipeline]
-mode = "review"              # "review": stop before posting and ask on Telegram. "auto": fully end to end.
+mode = "auto"                # "auto": posts at the slot times below. "review": waits for your approve first.
 country = "KE"               # only campaigns open to this country
 max_active_campaigns = 2
 clips_per_campaign = 1
@@ -10,6 +10,12 @@ allow_livestream_campaigns = true   # clip + post them, then hand the livestream
 goal_types = ["clipping", "ugc_content"]
 whop_via = "connector"       # Whop runs through your Whop connector (see CONNECTOR_TASK.md)
 telegram_chat = "6295868962" # @astrotobby - where updates and clips for review are sent
+
+[schedule]
+daily_quota = { clipping = 2, ugc = 2 }
+slots = ["08:20", "14:00"]   # Kenyan time; each slot posts 1 clipping + 1 UGC video
+timezone = "Africa/Nairobi"
+max_per_campaign_per_day = 2
 
 [clip]
 min_clip_seconds = 20
@@ -22,12 +28,19 @@ claude_model = "claude-opus-5-5"
 youtube_privacy = "public"
 youtube_category_id = "24"   # Entertainment
 
-# Where clips get posted. account_id = the Composio connected-account id (ca_...) from
-# https://dashboard.composio.dev -> Connected accounts. Only platforms a campaign allows are used.
+# Where videos get posted. Accounts are matched by channel title / Instagram username among
+# your Composio connections, so no ids are needed. Only platforms a campaign allows are used.
 [[targets]]
 platform = "youtube"
-account_id = ""              # Astro Tobby channel
+channel = "Astro Tobby"      # @astrotobyc - clipping videos
+kinds = ["clipping"]
+
+[[targets]]
+platform = "youtube"
+channel = "DIJITOL NOMAD"    # @dijitolnomad001 - UGC videos
+kinds = ["ugc"]
+
 [[targets]]
 platform = "instagram"
-account_id = ""              # @astr_osignal
-ig_user_id = "me"
+username = "astr_osignal"    # all videos
+kinds = ["clipping", "ugc"]

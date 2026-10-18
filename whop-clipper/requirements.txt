@@ -5,3 +5,4 @@ yt-dlp>=2026.8.19
 gdown>=6.4
 faster-whisper>=1.2
 pytest>=9.0
+piper-tts>=1.2

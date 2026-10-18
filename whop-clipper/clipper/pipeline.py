@@ -3,12 +3,15 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, timedelta, timezone
+import time
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from . import brief as brief_mod
-from . import highlights, publish, render, scoring, sources, transcribe
+from . import highlights, publish, render, scoring, sources, transcribe, ugc
 from .config import Settings
+from . import ledger as ledger_mod
 from .ledger import Ledger
 from .notify import Telegram
 from .whop import Whop
@@ -81,29 +84,72 @@ class Pipeline:
         return scoring.rank(bounties, country=self.cfg.country, goal_types=self.cfg.goal_types,
                             min_clip=self.cfg.min_clip_seconds)
 
+    # ---- schedule helpers ------------------------------------------------------
+    @property
+    def tz(self) -> ZoneInfo:
+        return ZoneInfo(self.cfg.timezone)
+
+    def today(self) -> date:
+        return datetime.now(self.tz).date()
+
+    def slot_time(self, day: str, slot: int) -> datetime:
+        hh, mm = (int(x) for x in self.cfg.slots[min(slot, len(self.cfg.slots) - 1)].split(":"))
+        return datetime.combine(date.fromisoformat(day), datetime.min.time(), self.tz).replace(hour=hh, minute=mm)
+
+    def jobs_on(self, day: date, kind: str | None = None) -> list[dict]:
+        return [j for j in self.ledger.jobs.values() if j.get("date") == day.isoformat()
+                and (kind is None or j.get("kind") == kind) and j["status"] not in ("skipped",)]
+
+    def _migrate(self) -> None:
+        """Jobs from before the daily schedule: give them a kind/date/slot so they post in a slot."""
+        for j in self.ledger.jobs.values():
+            if "kind" not in j:
+                j["kind"] = "clipping"
+            if "date" not in j and j["status"] not in ledger_mod.TERMINAL:
+                j["date"], j["slot"] = self.today().isoformat(), 0
+            if j["status"] == "awaiting_approval" and self.cfg.mode == "auto":
+                self.ledger.move(j, "approved")
+        self.ledger.save()
+
+    # ---- 1b. plan today's videos ------------------------------------------------
     def plan(self, ranked: list[scoring.Scored]) -> list[dict]:
-        new = []
-        slots = self.cfg.max_active_campaigns - len({j["bounty_id"] for j in self.ledger.active()})
-        for s in ranked:
-            if slots <= 0:
-                break
-            if not (s.eligible and s.automatable) or s.score < self.cfg.min_score:
-                continue
-            if s.brief.livestream_required and not self.cfg.allow_livestream_campaigns:
-                continue
-            if self.ledger.for_bounty(s.id):
-                continue
-            d = self.cfg.work_dir / s.id
-            d.mkdir(parents=True, exist_ok=True)
-            (d / "bounty.json").write_text(json.dumps(s.bounty, indent=1))
-            for i in range(self.cfg.clips_per_campaign):
-                new.append(self.ledger.add(s.bounty, i, s.score))
-            self.ledger.save()
-            slots -= 1
-            self.tg.send(f"🎯 New campaign picked ({s.score}): {s.bounty['title']}\n"
-                         f"${s.bounty.get('net_reward_amount')} net, {s.bounty.get('spots_remaining')} spots\n"
-                         + "\n".join(f"• {r}" for r in s.reasons)
-                         + ("\n⚠️ " + "; ".join(s.human_steps) if s.human_steps else ""))
+        """Fill today's quota per kind (e.g. 2 clipping + 2 UGC) from the best campaigns, one slot each."""
+        new, day = [], self.today()
+        per_slot = {k: max(1, -(-n // len(self.cfg.slots))) for k, n in self.cfg.daily_quota.items()}
+        self.shortfall: dict[str, str] = {}
+        for kind, quota in self.cfg.daily_quota.items():
+            have = len(self.jobs_on(day, kind))
+            pool = [s for s in ranked if s.kind == kind and s.eligible and s.automatable
+                    and s.score >= self.cfg.min_score
+                    and (self.cfg.allow_livestream_campaigns or not s.brief.livestream_required)]
+            while have < quota:
+                pick = None
+                for s in pool:
+                    used = self.ledger.for_bounty(s.id)
+                    used_today = [j for j in used if j.get("date") == day.isoformat()]
+                    if used and not s.brief.repeatable:
+                        continue  # one post per campaign unless it asks for more
+                    if len(used_today) >= self.cfg.max_per_campaign_per_day:
+                        continue
+                    pick = s
+                    break
+                if pick is None:
+                    self.shortfall[kind] = (f"{quota - have} of {quota} {kind} not planned: no more eligible "
+                                            f"{kind} campaigns open to {self.cfg.country}")
+                    break
+                slot = min(have // per_slot[kind], len(self.cfg.slots) - 1)
+                d = self.cfg.work_dir / pick.id
+                d.mkdir(parents=True, exist_ok=True)
+                (d / "bounty.json").write_text(json.dumps(pick.bounty, indent=1))
+                jid = f"{pick.id}-{day.isoformat()}-{kind}{have}"
+                job = self.ledger.add(pick.bounty, jid, pick.score)
+                job.update(kind=kind, date=day.isoformat(), slot=slot)
+                self.ledger.save()
+                new.append(job)
+                have += 1
+                self.tg.send(f"🎯 {kind.upper()} #{have} for today ({self.cfg.slots[slot]}): {pick.bounty['title']}\n"
+                             f"${pick.bounty.get('net_reward_amount')} net, {pick.bounty.get('spots_remaining')} spots"
+                             + ("\n⚠️ " + "; ".join(pick.human_steps) if pick.human_steps else ""))
         return new
 
     # ---- 2-6. advance one job as far as it can go this run -------------------
@@ -120,7 +166,7 @@ class Pipeline:
                 log.exception("job %s failed at %s", job["id"], before)
                 job.setdefault("errors", []).append(f"{before}: {e}")
                 fails = sum(1 for x in job["errors"] if x.startswith(before))
-                if fails >= 3:
+                if fails >= (8 if before == "approved" else 3):
                     self.ledger.move(job, "failed")
                     self.tg.send(f"❌ {job['title']}: gave up at '{before}' after 3 tries.\n{e}")
                 else:
@@ -130,6 +176,9 @@ class Pipeline:
                 return
 
     def _source(self, job: dict) -> None:
+        if job.get("kind") == "ugc":  # UGC is made from the brief, not from provided footage
+            self.ledger.move(job, "sourced", source="")
+            return
         b = self.bounty(job)
         br = brief_mod.parse(b["description"], b["title"])
         src_dir = self.job_dir(job) / "src"
@@ -150,6 +199,12 @@ class Pipeline:
     def _clip(self, job: dict) -> None:
         b = self.bounty(job)
         br = brief_mod.parse(b["description"], b["title"])
+        if job.get("kind") == "ugc":
+            out = self.job_dir(job) / "clips" / f"{job['id']}.mp4"
+            clip = ugc.make(b, out, self.cfg.anthropic_api_key, self.cfg.claude_model,
+                            br.product_links, br.required_mentions, self.cfg.caption_font)
+            self.ledger.move(job, "clipped", clip=clip)
+            return
         src = Path(job["source"])
         lo, hi = br.clip_seconds or (self.cfg.min_clip_seconds, self.cfg.max_clip_seconds)
         lo, hi = max(lo, self.cfg.min_clip_seconds), min(hi, self.cfg.max_clip_seconds)
@@ -182,10 +237,13 @@ class Pipeline:
     def _targets(self, job: dict) -> list[dict]:
         b = self.bounty(job)
         wanted = brief_mod.parse(b["description"], b["title"]).platforms
-        ts = [t for t in self.cfg.targets if not wanted or t["platform"] in wanted]
-        return ts or self.cfg.targets
+        mine = [t for t in self.cfg.targets if job.get("kind", "clipping") in t.get("kinds", ["clipping", "ugc"])]
+        ts = [t for t in mine if not wanted or t["platform"] in wanted]
+        return ts or mine
 
     def _publish(self, job: dict) -> None:
+        if job.get("date") and datetime.now(self.tz) < self.slot_time(job["date"], job.get("slot", 0)):
+            return  # holds until its go-live slot (08:20 / 14:00); later runs catch up if one is missed
         if self.dry_run:
             log.info("dry run: would publish %s", job["id"])
             return
@@ -200,13 +258,14 @@ class Pipeline:
             raise RuntimeError("no publish targets configured in config.toml")
         errors = []
         for t in targets:
-            key = f"{t['platform']}:{t.get('account_id', '')}"
+            key = publish.target_key(t)
             if key in job["posts"]:
                 continue  # already live - never double-post
             try:
                 url = publish.post(self.composio, t, Path(c["path"]), c["title"], c["caption"],
                                    c["hashtags"], self.cfg.youtube_privacy, self.cfg.youtube_category_id)
-                job["posts"][key] = {"url": url, "at": datetime.now(timezone.utc).isoformat(), "views": 0}
+                job["posts"][key] = {"url": url, "at": datetime.now(timezone.utc).isoformat(), "views": 0,
+                                     "target": t}
                 self.ledger.save()
             except Exception as e:
                 errors.append(f"{key}: {e}")
@@ -222,9 +281,8 @@ class Pipeline:
         need = brief_mod.parse(b["description"], b["title"]).min_views
         best = 0
         for key, post in job["posts"].items():
-            platform, account = key.split(":", 1)
-            target = next((t for t in self.cfg.targets if t["platform"] == platform
-                           and t.get("account_id", "") == account), {"platform": platform})
+            target = post.get("target") or next(
+                (t for t in self.cfg.targets if publish.target_key(t) == key), {"platform": key.split(":")[0]})
             try:
                 post["views"] = publish.views(self.composio, target, post["url"])
             except Exception as e:
@@ -277,12 +335,57 @@ class Pipeline:
         self.tg.send(f"✅ Submitted to Whop: {job['title']}\n" + "\n".join(urls))
 
     # ---- one scheduled run ---------------------------------------------------
+    def _wait_for_slot(self, max_wait_min: int = 45) -> None:
+        """Runs are scheduled a little before each slot (GitHub cron can start late); sleep until
+        the slot if one with approved jobs is due within max_wait_min, so posts go live on time."""
+        now = datetime.now(self.tz)
+        due = [self.slot_time(j["date"], j.get("slot", 0)) for j in self.ledger.active()
+               if j["status"] == "approved" and j.get("date")]
+        upcoming = [t for t in due if now < t <= now + timedelta(minutes=max_wait_min)]
+        if upcoming and not self.dry_run:
+            wait = (min(upcoming) - now).total_seconds()
+            log.info("waiting %.0fs for the %s slot", wait, min(upcoming).strftime("%H:%M"))
+            time.sleep(wait)
+
+    def daily_summary(self, now: datetime | None = None) -> str | None:
+        """Once per day, after the last slot: what went live, and why anything is missing."""
+        now = now or datetime.now(self.tz)
+        day = now.date()
+        key = f"summary:{day.isoformat()}"
+        last = self.slot_time(day.isoformat(), len(self.cfg.slots) - 1)
+        if now < last + timedelta(minutes=30) or key in self.ledger.data["seen"]:
+            return None
+        lines = [f"📊 Whop clipper - {day.isoformat()}"]
+        for kind, quota in self.cfg.daily_quota.items():
+            jobs = self.jobs_on(day, kind)
+            live = [j for j in jobs if j.get("posts")]
+            lines.append(f"{kind}: {len(live)}/{quota} live")
+            for j in live:
+                lines += [f"  • {p['url']}" for p in j["posts"].values()]
+            for j in jobs:
+                if not j.get("posts"):
+                    lines.append(f"  ⚠️ {j['title'][:50]}: {j['status']} {(j.get('errors') or [''])[-1][:120]}")
+            if getattr(self, "shortfall", {}).get(kind):
+                lines.append(f"  ➖ {self.shortfall[kind]}")
+        self.ledger.data["seen"][key] = ledger_mod.now()
+        self.ledger.save()
+        text = "\n".join(lines)
+        self.tg.send(text)
+        return text
+
     def run(self) -> None:
+        self._migrate()
         try:
             self.plan(self.scan())
         except Exception as e:
             log.exception("discovery failed")
-            self.tg.send(f"⚠️ Whop discovery failed: {e}")
+            self.shortfall = {k: f"campaign list unavailable: {e}" for k in self.cfg.daily_quota}
+            self.tg.send(f"⚠️ Whop campaign list unavailable: {e}")
+        for job in list(self.ledger.active()):  # make anything due later today first
+            if job["status"] != "approved":
+                self.advance(job)
+        self._wait_for_slot()
         for job in list(self.ledger.active()):
             self.advance(job)
+        self.daily_summary()
         self.ledger.save()

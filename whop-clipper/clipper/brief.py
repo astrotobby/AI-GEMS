@@ -32,6 +32,9 @@ class Brief:
     needs_physical_presence: bool = False
     clip_count: int = 1
     vertical: bool = True
+    repeatable: bool = False       # campaign accepts several posts from the same person
+    needs_real_person: bool = False  # face/voice of a real person, or AI content forbidden
+    product_links: list[str] = field(default_factory=list)  # links the post must carry (UGC)
 
 
 def _num(text: str, k: str | None) -> int:
@@ -70,6 +73,15 @@ def parse(description: str, title: str = "") -> Brief:
     b.livestream_required = "livestream" in low or "live stream" in low or "go live" in low
     b.needs_physical_presence = any(w in low for w in (
         "head mount", "military base", "on air", "in person", "your location", "record yourself"))
+
+    b.repeatable = bool(re.search(
+        r"as many (clips|posts|videos)|multiple (clips|posts|videos)|unlimited (clips|posts|submissions)", low))
+    b.needs_real_person = bool(re.search(
+        r"no ai|not ai|ai[- ]generated (content )?(is )?(not allowed|prohibited|will be rejected)|"
+        r"show (your|ur) face|face on camera|on[- ]camera|film yourself|your (own )?voice|real person\b|"
+        r"selfie|talking head of you|unboxing|in your hands|wear(ing)? (it|the)", low))
+    b.product_links = [u for u in dict.fromkeys(b.reference_links)
+                       if not any(h in u for h in ("whop.com", "discord.gg", "docs.google.com", "drive.google.com"))]
 
     m = re.search(r"(?:clip|cut|attach)\s+(\d{1,2})\s+(?:\w+\s+){0,3}(?:clips|moments|videos)", low)
     if m:

@@ -13,6 +13,30 @@ Whop bounties ─► score & pick ─► download source ─► transcribe ─�
 Every step reports to your Telegram bot. A JSON ledger (`state/ledger.json`) records each
 job, so runs resume where they stopped and nothing is ever posted or submitted twice.
 
+## Daily schedule (Kenya time)
+
+| When | What |
+|---|---|
+| 05:00 | Pick today's videos from the freshest campaign list: **2 clipping + 2 UGC**, best-scoring campaigns first (a campaign is reused only if its brief allows several posts). Make all four. |
+| **08:20** | 1 clipping + 1 UGC go live |
+| **14:00** | the other clipping + UGC go live |
+| every 4h | track views, submit what's ready, re-try anything that failed, catch up a missed slot |
+| ~14:30 | Telegram summary: what went live, and why anything is missing |
+
+Routing: **clipping → YouTube Astro Tobby (@astrotobyc)**, **UGC → YouTube DIJITOL NOMAD**, everything
+→ **Instagram @astr_osignal** (only on platforms each campaign accepts). Accounts are matched by
+name among your Composio connections, see `[[targets]]` in `config.toml`.
+
+If a day comes up short, the only expected reason is **no eligible campaign**: none open to Kenya,
+none accepting YouTube/Instagram, or every one needs a real person on camera, long-form editing or
+footage that isn't provided. Temporary errors (YouTube quota, a slow Instagram upload) are retried on
+the next runs; posting gets 8 attempts before it gives up.
+
+**UGC videos** are made from the brief: a script (Claude when `ANTHROPIC_API_KEY` has credit, a plain
+template otherwise), a free Piper voiceover, and a 9:16 slideshow with big captions; the product
+link and required @mentions go in the caption. Briefs that need a real face/voice or forbid AI are
+skipped.
+
 ## What each stage does
 
 | Stage | How |

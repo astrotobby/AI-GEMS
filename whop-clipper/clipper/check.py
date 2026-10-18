@@ -46,23 +46,21 @@ def composio(cfg: Settings) -> list[str]:
     except Exception as e:
         out.append(f"   (could not list connected accounts: {e})")
 
-    platforms = {t["platform"] for t in cfg.targets} or {"youtube", "instagram"}
-    if "youtube" in platforms:
-        yt = next((t for t in cfg.targets if t["platform"] == "youtube"), {})
+    # every configured target must resolve to a real connected account
+    for t in cfg.targets or [{"platform": "youtube"}, {"platform": "instagram"}]:
+        label = f"{t['platform'].title()} ({'/'.join(t.get('kinds', ['all']))})"
         try:
-            data = c.run("YOUTUBE_GET_CHANNEL_STATISTICS", {"mine": True, "part": "snippet"}, yt.get("account_id"))
-            out.insert(0, _line(True, "YouTube", f"posting as {publish.find(data, 'title')}"))
+            r = publish.resolve(c, dict(t))
+            if t["platform"] == "youtube":
+                data = c.run("YOUTUBE_GET_CHANNEL_STATISTICS", {"mine": True, "part": "snippet"}, r.get("account_id"))
+                who = publish.find(data, "title")
+            else:
+                data = c.run("INSTAGRAM_GET_USER_INFO", {"ig_user_id": "me", "fields": "id,username"},
+                             r.get("account_id"))
+                who = "@" + str(publish.find(data, "username"))
+            out.insert(0, _line(True, label, f"posting as {who} [{r.get('account_id') or 'default'}]"))
         except Exception as e:
-            out.insert(0, _line(False, "YouTube", str(e)[:200]))
-    if "instagram" in platforms:
-        ig = next((t for t in cfg.targets if t["platform"] == "instagram"), {})
-        try:
-            data = c.run("INSTAGRAM_GET_USER_INFO", {"ig_user_id": "me", "fields": "id,username,account_type"},
-                         ig.get("account_id"))
-            out.insert(1, _line(True, "Instagram", f"posting as @{publish.find(data, 'username')} "
-                                                   f"({publish.find(data, 'account_type') or 'business/creator'})"))
-        except Exception as e:
-            out.insert(1, _line(False, "Instagram", str(e)[:200]))
+            out.insert(0, _line(False, label, str(e)[:200]))
     return out
 
 
