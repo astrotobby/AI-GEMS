@@ -1,0 +1,7 @@
+requests>=2.32
+composio>=0.28
+anthropic>=1.15
+yt-dlp>=2026.8.19
+gdown>=6.4
+faster-whisper>=1.2
+pytest>=9.0

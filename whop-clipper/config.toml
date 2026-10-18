@@ -1,0 +1,33 @@
+# Behaviour settings. Secrets go in environment variables (see .env.example), never here.
+
+[pipeline]
+mode = "review"              # "review": stop before posting and ask on Telegram. "auto": fully end to end.
+country = "KE"               # only campaigns open to this country
+max_active_campaigns = 2
+clips_per_campaign = 1
+min_score = 40
+allow_livestream_campaigns = true   # clip + post them, then hand the livestream submission to you
+goal_types = ["clipping", "ugc_content"]
+whop_via = "connector"       # Whop runs through your Whop connector (see CONNECTOR_TASK.md)
+telegram_chat = "6295868962" # @astrotobby - where updates and clips for review are sent
+
+[clip]
+min_clip_seconds = 20
+max_clip_seconds = 60
+whisper_model = "small"      # tiny/base/small/medium - bigger = better captions, slower
+caption_font = "DejaVu Sans"
+claude_model = "claude-opus-5-5"
+
+[publish]
+youtube_privacy = "public"
+youtube_category_id = "24"   # Entertainment
+
+# Where clips get posted. account_id = the Composio connected-account id (ca_...) from
+# https://dashboard.composio.dev -> Connected accounts. Only platforms a campaign allows are used.
+[[targets]]
+platform = "youtube"
+account_id = ""              # Astro Tobby channel
+[[targets]]
+platform = "instagram"
+account_id = ""              # @astr_osignal
+ig_user_id = "me"
