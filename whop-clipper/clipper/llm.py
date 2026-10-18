@@ -28,7 +28,21 @@ def _api(prompt: str, schema: dict, api_key: str, model: str) -> dict:
     return json.loads(next(b.text for b in resp.content if b.type == "text"))
 
 
+# when the plan's limit for one model is used up, a smaller model often still has room
+PLAN_MODELS = ["sonnet", "haiku"]
+
+
 def _cli(prompt: str, schema: dict, token: str, model: str) -> dict:
+    errors = []
+    for m in dict.fromkeys([model, *PLAN_MODELS]):
+        try:
+            return _cli_once(prompt, schema, token, m)
+        except Exception as e:
+            errors.append(f"{m}: {e}")
+    raise RuntimeError("Claude Code: " + " / ".join(errors))
+
+
+def _cli_once(prompt: str, schema: dict, token: str, model: str) -> dict:
     exe = shutil.which("claude")
     if not exe:
         raise RuntimeError("Claude Code CLI is not installed")

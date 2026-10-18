@@ -18,6 +18,7 @@ from .whop import Whop
 
 log = logging.getLogger(__name__)
 VIEW_DEADLINE_DAYS = 14
+RETRY_POST_DAYS = 2  # keep retrying a platform that failed at posting time (e.g. YouTube quota) this long
 
 
 def bounty_link(b: dict) -> str:
@@ -43,7 +44,8 @@ class Pipeline:
     @property
     def composio(self) -> publish.Composio:
         if self._composio is None:
-            self._composio = publish.Composio(self.cfg.composio_api_key, self.cfg.composio_user_id)
+            self._composio = publish.Composio(self.cfg.composio_api_key, self.cfg.composio_user_id,
+                                             upload_dirs=[self.cfg.work_dir])
         return self._composio
 
     def job_dir(self, job: dict) -> Path:
@@ -262,6 +264,22 @@ class Pipeline:
             self.tg.send(f"⏭️ {job['title']} closed before posting - skipped.")
             return
         c = job["clip"]
+        if not Path(c["path"]).exists():
+            # the render was lost between runs (cache eviction) - make it again, it's deterministic
+            src_ok = job.get("kind") == "ugc" or (job.get("source") and Path(job["source"]).exists())
+            self.ledger.move(job, "sourced" if src_ok else "planned", reason="clip file missing - re-rendering")
+            return
+        errors = self._post_missing(job)
+        if not job["posts"]:
+            raise RuntimeError("; ".join(errors))
+        if errors:
+            job.setdefault("errors", []).extend(errors)
+        self.ledger.move(job, "published", published_at=datetime.now(timezone.utc).isoformat())
+        self.tg.send("📤 Posted: " + job["title"] + "\n" + "\n".join(p["url"] for p in job["posts"].values()))
+
+    def _post_missing(self, job: dict) -> list[str]:
+        """Post the clip to every target it isn't live on yet; returns the per-target errors."""
+        c = job["clip"]
         targets = self._targets(job)
         if not targets:
             raise RuntimeError("no publish targets configured in config.toml")
@@ -276,16 +294,19 @@ class Pipeline:
                 job["posts"][key] = {"url": url, "at": datetime.now(timezone.utc).isoformat(), "views": 0,
                                      "target": t}
                 self.ledger.save()
+                if job["status"] == "published":  # a late retry (e.g. after a YouTube quota reset)
+                    self.tg.send(f"📤 Also posted: {job['title']}\n{url}")
             except Exception as e:
                 errors.append(f"{key}: {e}")
-        if not job["posts"]:
-            raise RuntimeError("; ".join(errors))
-        if errors:
-            job.setdefault("errors", []).extend(errors)
-        self.ledger.move(job, "published", published_at=datetime.now(timezone.utc).isoformat())
-        self.tg.send("📤 Posted: " + job["title"] + "\n" + "\n".join(p["url"] for p in job["posts"].values()))
+        return errors
 
     def _track(self, job: dict) -> None:
+        # a target that failed at posting time (quota, expired login) is retried for a while
+        age = datetime.now(timezone.utc) - datetime.fromisoformat(job["published_at"])
+        if (not self.dry_run and age < timedelta(days=RETRY_POST_DAYS) and Path(job["clip"]["path"]).exists()
+                and len(job["posts"]) < len(self._targets(job))):
+            for err in self._post_missing(job):
+                log.warning("retry post for %s: %s", job["id"], err)
         b = self.bounty(job)
         need = brief_mod.parse(b["description"], b["title"]).min_views
         best = 0
@@ -301,7 +322,6 @@ class Pipeline:
         if best >= need:
             self.ledger.move(job, "ready_to_submit")
             return
-        age = datetime.now(timezone.utc) - datetime.fromisoformat(job["published_at"])
         if age > timedelta(days=VIEW_DEADLINE_DAYS):
             self.ledger.move(job, "failed", reason=f"only {best}/{need} views after {VIEW_DEADLINE_DAYS} days")
             self.tg.send(f"📉 {job['title']}: {best}/{need} views after {VIEW_DEADLINE_DAYS} days - stopped tracking.")

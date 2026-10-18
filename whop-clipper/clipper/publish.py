@@ -28,13 +28,15 @@ def find(obj: Any, *keys: str) -> Any:
 
 
 class Composio:
-    def __init__(self, api_key: str, user_id: str):
+    def __init__(self, api_key: str, user_id: str, upload_dirs: list[Path] | None = None):
         if not api_key:
             raise PublishError("COMPOSIO_API_KEY is not set")
         from composio import Composio as SDK
 
-        # auto-upload lets us pass a local file path for file fields (videoFile / video_file)
-        self.sdk = SDK(api_key=api_key, dangerously_allow_auto_upload_download_files=True)
+        # Local file paths are uploaded for file fields (videoFile / video_file). Newer SDKs only
+        # upload from an allowlist of directories, so allow our clips folder (plus the SDK's own temp).
+        dirs = [str(Path(d).resolve()) for d in upload_dirs or []] + [str(Path("~/.composio/temp").expanduser())]
+        self.sdk = SDK(api_key=api_key, dangerously_allow_auto_upload_download_files=True, file_upload_dirs=dirs)
         self.user_id = user_id
 
     def account_for(self, toolkit: str) -> str | None:
@@ -89,7 +91,8 @@ def resolve(c: Composio, target: dict) -> dict:
                 else:
                     data = c.run("INSTAGRAM_GET_USER_INFO", {"ig_user_id": "me", "fields": "id,username"}, a.id)
                     name = str(find(data, "username") or "")
-            except Exception:
+            except Exception as e:  # keep the reason, e.g. an expired login or API quota
+                seen.append(f"{a.id}: {str(e)[:160]}")
                 continue
             seen.append(name.strip())
             if want == name.strip().lower() or want in name.strip().lower():

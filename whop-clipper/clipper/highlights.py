@@ -163,7 +163,7 @@ def llm_error(e: Exception) -> str:
         return ("Claude skipped: no Anthropic API credit - add a CLAUDE_CODE_OAUTH_TOKEN secret to use "
                 "your Claude plan instead")
     if "credit balance" in msg:
-        return f"Claude skipped: no API credit, and the Claude plan failed too ({msg.split('|')[-1].strip()[:120]})"
+        return f"Claude skipped: no API credit, and the Claude plan failed too ({msg.split('|')[-1].strip()[:300]})"
     if "authentication" in msg.lower() or "api key" in msg.lower():
         return "Claude skipped: ANTHROPIC_API_KEY is invalid"
     return f"Claude skipped ({e.__class__.__name__}: {msg[:120]})"

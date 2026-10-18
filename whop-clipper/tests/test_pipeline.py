@@ -410,3 +410,37 @@ def test_claude_plan_used_when_api_has_no_credit(monkeypatch):
     monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-no-credit")
     assert llm.structured("pick", {"type": "object"}, "sk-no-credit", "claude-opus-5-5", "oat-token") == {"n": 3}
     assert "ANTHROPIC_API_KEY" not in seen["env"] and seen["env"]["CLAUDE_CODE_OAUTH_TOKEN"] == "oat-token"
+
+
+def test_lost_clip_file_is_re_rendered_not_failed(pipe, monkeypatch):
+    b = dict(ANON, description=ANON["description"].replace("livestream", "video"))
+    p = pipe(b)
+    job = clipped_job(p, b)
+    src = p.cfg.work_dir / "src.mp4"
+    src.write_bytes(b"x")
+    p.ledger.move(job, "approved", source=str(src))
+    Path(job["clip"]["path"]).unlink()  # e.g. evicted from the Actions cache between runs
+    rendered = []
+    monkeypatch.setattr(p, "_clip", lambda j: (rendered.append(j["id"]), p.ledger.move(j, "failed")))
+    p.advance(job)
+    assert rendered == [job["id"]] and not p.posted and "errors" not in job
+
+
+def test_platform_that_failed_is_retried_on_a_later_run(pipe, monkeypatch):
+    b = dict(ANON, description=ANON["description"].replace("livestream", "video"))
+    p = pipe(b, views=0)
+    job = clipped_job(p, b)
+    real_post = __import__("clipper.publish", fromlist=["post"]).post
+    quota = {"on": True}
+
+    def flaky(c, target, *a):
+        if target["platform"] == "youtube" and quota["on"]:
+            raise RuntimeError("403 quota exceeded")
+        return real_post(c, target, *a)
+    monkeypatch.setattr("clipper.publish.post", flaky)
+    p.advance(job)
+    assert job["status"] == "published" and list(job["posts"]) == ["instagram:astr_osignal"]
+    quota["on"] = False  # next run, after the quota reset
+    p.advance(job)
+    assert sorted(job["posts"]) == ["instagram:astr_osignal", "youtube:Astro Tobby"]
+    assert sorted(p.posted) == ["Astro Tobby", "instagram"]  # each platform exactly once
