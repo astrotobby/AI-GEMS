@@ -444,3 +444,21 @@ def test_platform_that_failed_is_retried_on_a_later_run(pipe, monkeypatch):
     p.advance(job)
     assert sorted(job["posts"]) == ["instagram:astr_osignal", "youtube:Astro Tobby"]
     assert sorted(p.posted) == ["Astro Tobby", "instagram"]  # each platform exactly once
+
+
+def test_music_only_source_is_swapped_for_another_file(pipe, monkeypatch):
+    b = dict(ANON, description=ANON["description"].replace("livestream", "video"))
+    p = pipe(b)
+    p.plan(p.scan([b]))
+    job = sorted(p.ledger.jobs.values(), key=lambda j: j["slot"])[0]
+    src = p.cfg.work_dir / "src" / "slots.mov"
+    src.parent.mkdir(parents=True, exist_ok=True)
+    src.write_bytes(b"x")
+    p.ledger.move(job, "sourced", source=str(src))
+    monkeypatch.setattr("clipper.transcribe.transcribe", lambda *a: [])
+    fetched = []
+    monkeypatch.setattr("clipper.sources.fetch", lambda url, d, skip=None: fetched.append(set(skip)) or [])
+    monkeypatch.setattr("clipper.sources._videos", lambda d: [src])
+    p.advance(job)
+    assert job["bad_sources"] == ["slots.mov"] and "slots.mov" in fetched[0]
+    assert job["status"] == "planned" and "no usable source" in job["errors"][-1]
