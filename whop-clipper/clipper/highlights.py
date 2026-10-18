@@ -155,10 +155,12 @@ def with_claude(sents: list[Sentence], campaign: dict, lo: int, hi: int, api_key
         f"<transcript>\n{lines}\n</transcript>"
     )
     client = anthropic.Anthropic(api_key=api_key)
-    resp = client.messages.create(
+    resp = client.beta.messages.create(
         model=model,
         max_tokens=4000,
         output_config={"effort": "medium", "format": {"type": "json_schema", "schema": SCHEMA}},
+        betas=["server-side-fallback-2026-07-01"],
+        fallbacks="default",
         messages=[{"role": "user", "content": prompt}],
     )
     if resp.stop_reason == "refusal":
