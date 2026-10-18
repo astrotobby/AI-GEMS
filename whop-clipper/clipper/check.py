@@ -103,7 +103,10 @@ def plan_token(tok: str) -> str:
         return ("ℹ️ Claude plan: token is a setup-token (sk-ant-oat...). If Claude Code says 'credit balance', "
                 "it was made while logged in with an Anthropic Console account - run `claude /logout`, log in "
                 "with your Claude Pro account, then `claude setup-token` again")
-    return "⚠️ Claude plan: CLAUDE_CODE_OAUTH_TOKEN doesn't look like a `claude setup-token` token"
+    import re
+    kind = re.match(r"sk-ant-[a-z]+\d*", tok)  # the public type marker, e.g. sk-ant-sid01; never the secret part
+    return (f"⚠️ Claude plan: CLAUDE_CODE_OAUTH_TOKEN is a {kind.group(0) + '...' if kind else 'non-Anthropic'} "
+            f"value ({len(tok)} chars), not a `claude setup-token` token (sk-ant-oat01...)")
 
 
 def run(cfg: Settings) -> bool:
