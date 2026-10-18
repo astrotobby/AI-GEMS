@@ -53,6 +53,20 @@ class Ledger:
         })
         return job
 
+    def merge(self, other: dict) -> int:
+        """Fold in a ledger written concurrently elsewhere (the Whop connector task), keeping the
+        most recently updated copy of each job. Returns how many jobs came from `other`."""
+        taken = 0
+        for jid, theirs in other.get("jobs", {}).items():
+            mine = self.jobs.get(jid)
+            stamp = lambda j: j.get("updated") or j.get("created") or ""
+            if mine is None or stamp(theirs) > stamp(mine):
+                self.jobs[jid] = theirs
+                taken += 1
+        for k, v in other.get("seen", {}).items():
+            self.data["seen"].setdefault(k, v)
+        return taken
+
     def move(self, job: dict, status: str, **fields) -> None:
         job.update(fields)
         job["history"].append({"at": now(), "from": job["status"], "to": status})

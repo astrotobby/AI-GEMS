@@ -28,8 +28,11 @@ Read `whop-clipper/state/ledger.json`. For every job with `"status": "awaiting_s
    `bounty_id` = `job.submission.bounty_id`, deliverable `urls` = `job.submission.urls`,
    `caption` = `job.submission.caption`, and `idempotency_key` = `submit-<job.id>` so a retry
    can never double-submit.
-3. Set the job's status to `submitted` and record `submission_id` (the returned `btys_...` id),
-   then append `{"at": <now>, "from": "awaiting_submission", "to": "submitted"}` to its `history`.
+3. Set the job's status to `submitted`, record `submission_id` (the returned `btys_...` id),
+   set `updated` to now (UTC ISO-8601), and append
+   `{"at": <now>, "from": "awaiting_submission", "to": "submitted"}` to its `history`.
+   `updated` matters: when GitHub Actions and this task both touched the ledger, the copy of each
+   job with the newer `updated` wins.
 
 Never submit jobs in any other status. In particular, `needs_livestream` jobs are for the owner
 to submit with a livestream, and must not be submitted without one.
@@ -37,7 +40,9 @@ to submit with a livestream, and must not be submitted without one.
 ## 3. Commit
 
 Commit only `whop-clipper/state/campaigns.json` and `whop-clipper/state/ledger.json` to `main`
-with the message `whop connector: refresh campaigns[, submit N]`, pull with rebase first, and push.
+with the message `whop connector: refresh campaigns[, submit N]` and push. If the push is
+rejected because Actions committed meanwhile, fetch, re-apply only your job changes to the
+fresh ledger (never revert jobs you did not touch), and push again.
 If nothing changed except `fetched_at`, still commit (the pipeline needs a fresh timestamp).
 
 ## 4. Report

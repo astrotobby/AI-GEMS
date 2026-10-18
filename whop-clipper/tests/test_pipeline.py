@@ -227,7 +227,7 @@ def test_real_unpunctuated_transcript_starts_on_hook_and_ends_on_full_thought():
 
 def test_check_fails_cleanly_without_keys(capsys):
     from clipper import check
-    assert check.run(Settings()) is False
+    assert check.run(Settings(whop_via="api")) is False
     out = capsys.readouterr().out
     assert "❌ Whop" in out and "❌ Telegram" in out
 
@@ -305,3 +305,18 @@ def test_config_chat_fallback_replaces_bot_id(tmp_path, monkeypatch):
     assert load(cfg).telegram_chat_id == "555000111"
     monkeypatch.setenv("TELEGRAM_CHAT_ID", "777")
     assert load(cfg).telegram_chat_id == "777"  # a real secret value still wins
+
+
+def test_ledger_merge_keeps_newest_copy_of_each_job(tmp_path):
+    led = Ledger(tmp_path / "l.json")
+    led.data["jobs"] = {
+        "a": {"id": "a", "status": "published", "updated": "2026-10-18T10:00:00+00:00"},
+        "b": {"id": "b", "status": "clipped", "updated": "2026-10-18T12:00:00+00:00"},
+    }
+    other = {"jobs": {
+        "a": {"id": "a", "status": "submitted", "updated": "2026-10-18T11:00:00+00:00"},  # newer -> taken
+        "b": {"id": "b", "status": "planned", "updated": "2026-10-18T09:00:00+00:00"},    # older -> ignored
+        "c": {"id": "c", "status": "planned", "created": "2026-10-18T09:00:00+00:00"},    # new job -> taken
+    }, "seen": {}}
+    assert led.merge(other) == 2
+    assert [led.jobs[k]["status"] for k in "abc"] == ["submitted", "clipped", "planned"]

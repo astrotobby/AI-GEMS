@@ -27,6 +27,8 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("--dry-run", action="store_true", help="clip but never publish or submit")
 
     sub.add_parser("status", help="show jobs in the ledger")
+    m = sub.add_parser("merge-ledger", help="fold another copy of the ledger into ours (newest job wins)")
+    m.add_argument("other", type=Path)
     for name, help_ in (("approve", "approve a clip for publishing (review mode)"),
                         ("skip", "drop a job"),
                         ("done", "mark a livestream job as submitted by you")):
@@ -64,6 +66,13 @@ def main(argv: list[str] | None = None) -> int:
 
     if a.cmd == "run":
         pipe.run()
+        return 0
+
+    if a.cmd == "merge-ledger":
+        if a.other.exists() and a.other.stat().st_size:
+            n = pipe.ledger.merge(json.loads(a.other.read_text()))
+            pipe.ledger.save()
+            print(f"merged: {n} job(s) taken from {a.other}")
         return 0
 
     if a.cmd == "status":
