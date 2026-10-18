@@ -18,6 +18,7 @@ from .whop import Whop
 
 log = logging.getLogger(__name__)
 VIEW_DEADLINE_DAYS = 14
+MAX_BAD_SOURCES = 5  # music-only source files to skip before giving up on a clip
 RETRY_POST_DAYS = 2  # keep retrying a platform that failed at posting time (e.g. YouTube quota) this long
 
 
@@ -186,6 +187,7 @@ class Pipeline:
         src_dir = self.job_dir(job) / "src"
         # prefer footage no earlier clip of this campaign used
         used = {Path(j["source"]).name for j in self.ledger.for_bounty(job["bounty_id"]) if j.get("source")}
+        used |= set(job.get("bad_sources", []))  # e.g. music-only footage with nothing to transcribe
         files: list[Path] = []
         for url in br.source_links:
             try:
@@ -195,7 +197,10 @@ class Pipeline:
         files = sorted(set(files)) or sources._videos(src_dir)
         if not files:
             raise RuntimeError("could not download any source video")
-        fresh = [f for f in files if f.name not in used] or files
+        bad = set(job.get("bad_sources", []))
+        fresh = [f for f in files if f.name not in used] or [f for f in files if f.name not in bad]
+        if not fresh:
+            raise RuntimeError("no usable source video (all downloaded files have no speech)")
         self.ledger.move(job, "sourced", source=str(max(fresh, key=sources.duration)))
 
     def _clip(self, job: dict) -> None:
@@ -221,6 +226,13 @@ class Pipeline:
         words = transcribe.transcribe(src, self.cfg.whisper_model)
         used = [(j["clip"]["start"], j["clip"]["end"]) for j in self.ledger.for_bounty(job["bounty_id"])
                 if j.get("clip") and j.get("source") == job["source"] and j["id"] != job["id"]]
+        if not highlights.sentences(words):  # music-only footage: nothing to clip on - try another file from the campaign
+            bad = job.setdefault("bad_sources", [])
+            bad.append(src.name)
+            if len(bad) >= MAX_BAD_SOURCES:
+                raise RuntimeError(f"{len(bad)} source videos had no speech: {', '.join(bad)}")
+            self.ledger.move(job, "planned", reason=f"{src.name} has no speech - fetching another source")
+            return
         p = highlights.pick(words, b, br.required_mentions, lo, hi,
                             api_key=self.cfg.anthropic_api_key, model=self.cfg.claude_model, exclude=used,
                             oauth_token=self.cfg.claude_oauth_token)
