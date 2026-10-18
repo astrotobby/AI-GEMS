@@ -297,14 +297,13 @@ def test_connector_mode_refuses_stale_snapshot(pipe):
         p.campaigns()
 
 
-def test_config_chat_fallback_replaces_bot_id(tmp_path, monkeypatch):
+def test_config_chat_id_overrides_secret(tmp_path, monkeypatch):
     cfg = tmp_path / "c.toml"
-    cfg.write_text('telegram_chat = "555000111"\n')
-    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "8135417299:AAAexample")
     monkeypatch.setenv("TELEGRAM_CHAT_ID", "8135417299")
+    cfg.write_text("")
+    assert load(cfg).telegram_chat_id == "8135417299"
+    cfg.write_text('telegram_chat = "555000111"\n')
     assert load(cfg).telegram_chat_id == "555000111"
-    monkeypatch.setenv("TELEGRAM_CHAT_ID", "777")
-    assert load(cfg).telegram_chat_id == "777"  # a real secret value still wins
 
 
 def test_ledger_merge_keeps_newest_copy_of_each_job(tmp_path):

@@ -8,6 +8,8 @@ clips_per_campaign = 1
 min_score = 40
 allow_livestream_campaigns = true   # clip + post them, then hand the livestream submission to you
 goal_types = ["clipping", "ugc_content"]
+whop_via = "connector"       # Whop runs through your Whop connector (see CONNECTOR_TASK.md)
+telegram_chat = "6295868962" # @astrotobby - where updates and clips for review are sent
 
 [clip]
 min_clip_seconds = 20

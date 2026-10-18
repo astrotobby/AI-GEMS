@@ -42,7 +42,7 @@ class Settings:
     work_dir: Path = ROOT / "work"
     ledger_path: Path = ROOT / "state" / "ledger.json"
     campaigns_path: Path = ROOT / "state" / "campaigns.json"
-    # your personal Telegram chat id (not a secret); used when TELEGRAM_CHAT_ID is unset or wrong
+    # your personal Telegram chat id (not a secret); overrides TELEGRAM_CHAT_ID when set
     telegram_chat: str = ""
 
     # secrets (env only)
@@ -91,8 +91,7 @@ def load(path: Path | None = None) -> Settings:
     s.anthropic_api_key = secret("ANTHROPIC_API_KEY")
     s.telegram_bot_token = secret("TELEGRAM_BOT_TOKEN")
     s.telegram_chat_id = secret("TELEGRAM_CHAT_ID")
-    bot_id = s.telegram_bot_token.split(":", 1)[0]
-    if s.telegram_chat and (not s.telegram_chat_id or s.telegram_chat_id == bot_id):
+    if s.telegram_chat:  # an explicit chat id in config.toml wins over the secret
         s.telegram_chat_id = str(s.telegram_chat)
     if os.environ.get("CLIPPER_MODE"):
         s.mode = os.environ["CLIPPER_MODE"]
