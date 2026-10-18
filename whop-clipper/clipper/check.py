@@ -88,7 +88,7 @@ def anthropic(cfg: Settings) -> str:
              Sentence(4, 12, "Most people lose because they chase parlays instead of tracking every single pick."),
              Sentence(12, 25, "Bet singles, keep a log, and walk away when the numbers say so.")]
     pick = with_claude(sents, {"title": "test", "description": "Clip the strongest moment."}, 10, 25,
-                       cfg.anthropic_api_key, cfg.claude_model)
+                       cfg.anthropic_api_key, cfg.claude_model, oauth_token=cfg.claude_oauth_token)
     return f"{cfg.claude_model} picked sentences {pick['start_index']}-{pick['end_index']}: \"{pick['hook']}\""
 
 
@@ -110,7 +110,7 @@ def run(cfg: Settings) -> bool:
 
     attempt("Whop", whop)
     attempt("Composio", composio)
-    if cfg.anthropic_api_key:
+    if cfg.anthropic_api_key or cfg.claude_oauth_token:
         try:
             lines.append(_line(True, "Claude", anthropic(cfg)))
         except Exception as e:

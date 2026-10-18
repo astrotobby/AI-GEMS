@@ -22,6 +22,7 @@ from pathlib import Path
 
 import requests
 
+from . import llm
 from . import product as product_mod
 from .highlights import llm_error, sentences
 from .render import H, W, build_ass
@@ -48,9 +49,8 @@ SCHEMA = {
 
 
 # ---- script -------------------------------------------------------------------------
-def script_with_claude(campaign: dict, prod: product_mod.Product, api_key: str, model: str) -> dict:
-    import anthropic
-
+def script_with_claude(campaign: dict, prod: product_mod.Product, api_key: str, model: str,
+                       oauth_token: str = "") -> dict:
     prompt = (
         "Write the voiceover for a 25-40 second vertical promo video (TikTok/Reels/Shorts style) for this "
         "content-rewards campaign. Make it sound like a real creator talking: punchy hook in the first "
@@ -63,15 +63,7 @@ def script_with_claude(campaign: dict, prod: product_mod.Product, api_key: str, 
         f"<product_name>{prod.name}</product_name>\n"
         f"<product_description>\n{prod.description[:3000]}\n</product_description>"
     )
-    resp = anthropic.Anthropic(api_key=api_key).beta.messages.create(
-        model=model, max_tokens=4000,
-        output_config={"effort": "medium", "format": {"type": "json_schema", "schema": SCHEMA}},
-        betas=["server-side-fallback-2026-07-01"], fallbacks="default",
-        messages=[{"role": "user", "content": prompt}],
-    )
-    if resp.stop_reason == "refusal":
-        raise RuntimeError("model declined")
-    data = json.loads(next(b.text for b in resp.content if b.type == "text"))
+    data = llm.structured(prompt, SCHEMA, api_key, model, oauth_token)
     if not 3 <= len(data["voiceover"]) <= 9:
         raise ValueError("script shape off")
     return data
@@ -259,7 +251,8 @@ def align(script: str, heard: list, total: float) -> list:
 def make(campaign: dict, out: Path, api_key: str = "", model: str = "claude-opus-5-5",
          product_links: list[str] | None = None, mentions: list[str] | None = None,
          font: str = "DejaVu Sans", composio=None, voice_id: str = "EXAVITQu4vr4xnSDxMaL",
-         pexels_key: str = "", whisper_model: str = "base", elevenlabs_key: str = "") -> dict:
+         pexels_key: str = "", whisper_model: str = "base", elevenlabs_key: str = "",
+         oauth_token: str = "") -> dict:
     out.parent.mkdir(parents=True, exist_ok=True)
     work = out.with_suffix("")
     work.mkdir(exist_ok=True)
@@ -273,9 +266,9 @@ def make(campaign: dict, out: Path, api_key: str = "", model: str = "claude-opus
     notes.append(f"{len(prod.images)} product images")
 
     script = None
-    if api_key:
+    if api_key or oauth_token:
         try:
-            script = script_with_claude(campaign, prod, api_key, model)
+            script = script_with_claude(campaign, prod, api_key, model, oauth_token)
             notes.append("Claude script")
         except Exception as e:
             notes.append(llm_error(e))

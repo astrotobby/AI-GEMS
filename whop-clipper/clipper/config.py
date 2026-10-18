@@ -59,6 +59,7 @@ class Settings:
     composio_api_key: str = ""
     composio_user_id: str = ""
     anthropic_api_key: str = ""
+    claude_oauth_token: str = ""  # `claude setup-token`: use the Claude Pro/Max plan
     telegram_bot_token: str = ""
     telegram_chat_id: str = ""
     pexels_api_key: str = ""
@@ -67,7 +68,7 @@ class Settings:
 
 SECRET_FIELDS = {
     "whop_token", "composio_api_key", "composio_user_id",
-    "anthropic_api_key", "telegram_bot_token", "telegram_chat_id", "pexels_api_key", "elevenlabs_api_key",
+    "anthropic_api_key", "claude_oauth_token", "telegram_bot_token", "telegram_chat_id", "pexels_api_key", "elevenlabs_api_key",
 }
 
 
@@ -100,6 +101,7 @@ def load(path: Path | None = None) -> Settings:
     s.composio_api_key = secret("COMPOSIO_API_KEY")
     s.composio_user_id = secret("COMPOSIO_USER_ID")
     s.anthropic_api_key = secret("ANTHROPIC_API_KEY")
+    s.claude_oauth_token = secret("CLAUDE_CODE_OAUTH_TOKEN")
     s.telegram_bot_token = secret("TELEGRAM_BOT_TOKEN")
     s.telegram_chat_id = secret("TELEGRAM_CHAT_ID")
     s.pexels_api_key = secret("PEXELS_API_KEY")

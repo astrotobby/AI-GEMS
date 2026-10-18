@@ -209,7 +209,8 @@ class Pipeline:
                             br.product_links, br.required_mentions, self.cfg.caption_font,
                             composio=composio, voice_id=self.cfg.ugc_voice_id,
                             pexels_key=self.cfg.pexels_api_key,
-                            elevenlabs_key=self.cfg.elevenlabs_api_key)
+                            elevenlabs_key=self.cfg.elevenlabs_api_key,
+                            oauth_token=self.cfg.claude_oauth_token)
             self.ledger.move(job, "clipped", clip=clip)
             return
         src = Path(job["source"])
@@ -219,7 +220,8 @@ class Pipeline:
         used = [(j["clip"]["start"], j["clip"]["end"]) for j in self.ledger.for_bounty(job["bounty_id"])
                 if j.get("clip") and j.get("source") == job["source"] and j["id"] != job["id"]]
         p = highlights.pick(words, b, br.required_mentions, lo, hi,
-                            api_key=self.cfg.anthropic_api_key, model=self.cfg.claude_model, exclude=used)
+                            api_key=self.cfg.anthropic_api_key, model=self.cfg.claude_model, exclude=used,
+                            oauth_token=self.cfg.claude_oauth_token)
         out = self.job_dir(job) / "clips" / f"{job['id']}.mp4"
         render.render(src, words, p.start, p.end, out, hook=p.hook, font=self.cfg.caption_font)
         self.ledger.move(job, "clipped", clip={
