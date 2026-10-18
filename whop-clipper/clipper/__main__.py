@@ -103,10 +103,17 @@ def main(argv: list[str] | None = None) -> int:
         b = next(x for x in pipe.campaigns() if x["id"] == a.bounty_id)
         br = brief_mod.parse(b["description"], b["title"])
         out = cfg.work_dir / "ugc-test" / f"{a.bounty_id}.mp4"
+        try:
+            composio = pipe.composio
+        except Exception:
+            composio = None
         clip = ugc.make(b, out, cfg.anthropic_api_key, cfg.claude_model, br.product_links,
-                        br.required_mentions, cfg.caption_font)
+                        br.required_mentions, cfg.caption_font, composio=composio,
+                        voice_id=cfg.ugc_voice_id, pexels_key=cfg.pexels_api_key,
+                        elevenlabs_key=cfg.elevenlabs_api_key, oauth_token=cfg.claude_oauth_token)
         print(json.dumps(clip, indent=2))
-        pipe.tg.send_video(out, f"🧪 UGC test render (not posted): {b['title']}\n{clip['caption']}")
+        pipe.tg.send_video(out, f"🧪 UGC test render (not posted): {b['title']}\n{clip['caption']}\n"
+                                f"Made with: {clip['reason']}")
         return 0
 
     if a.cmd == "clip":
@@ -116,7 +123,8 @@ def main(argv: list[str] | None = None) -> int:
         br = brief_mod.parse(bounty.get("description", ""), bounty.get("title", ""))
         words = transcribe.transcribe(a.video, cfg.whisper_model)
         p = highlights.pick(words, bounty, br.required_mentions, cfg.min_clip_seconds, cfg.max_clip_seconds,
-                            api_key=cfg.anthropic_api_key, model=cfg.claude_model)
+                            api_key=cfg.anthropic_api_key, model=cfg.claude_model,
+                            oauth_token=cfg.claude_oauth_token)
         render.render(a.video, words, p.start, p.end, a.out, hook=p.hook, font=cfg.caption_font)
         print(json.dumps({"out": str(a.out), "start": p.start, "end": p.end, "title": p.title,
                           "caption": p.caption, "hashtags": p.hashtags, "reason": p.reason}, indent=2))

@@ -32,7 +32,7 @@ none accepting YouTube/Instagram, or every one needs a real person on camera, lo
 footage that isn't provided. Temporary errors (YouTube quota, a slow Instagram upload) are retried on
 the next runs; posting gets 8 attempts before it gives up.
 
-**UGC videos** are made from the brief: a script (Claude when `ANTHROPIC_API_KEY` has credit, a plain
+**UGC videos** are made from the brief: a script (Claude when `ANTHROPIC_API_KEY` has credit or `CLAUDE_CODE_OAUTH_TOKEN` is set, a plain
 template otherwise), a free Piper voiceover, and a 9:16 slideshow with big captions; the product
 link and required @mentions go in the caption. Briefs that need a real face/voice or forbid AI are
 skipped.
@@ -74,6 +74,7 @@ clips in a single submission.
    | `COMPOSIO_USER_ID` | The Composio user id your YouTube/Instagram are connected under |
    | `TELEGRAM_BOT_TOKEN` | Your existing bot (BotFather). Your chat id is set as `telegram_chat` in `config.toml` (it isn't a secret). |
    | `ANTHROPIC_API_KEY` | Optional: better moment picking and captions |
+   | `CLAUDE_CODE_OAUTH_TOKEN` | Optional: same, paid by your Claude Pro/Max plan instead of API credit. Run `claude setup-token` on your computer and paste the token |
    | `YTDLP_COOKIES_TXT` | Optional: contents of a `cookies.txt` exported from a logged-in browser. YouTube blocks most cloud IPs; Google Drive sources don't need this. |
 
 2. **Targets**: in `config.toml`, fill `account_id` for each `[[targets]]` with the Composio

@@ -46,6 +46,22 @@ def composio(cfg: Settings) -> list[str]:
     except Exception as e:
         out.append(f"   (could not list connected accounts: {e})")
 
+    # what this API key can see, so missing connections (e.g. ElevenLabs) are obvious
+    try:
+        seen = {}
+        for users in ([cfg.composio_user_id] if cfg.composio_user_id else [], None):
+            for a in getattr(c.sdk.connected_accounts.list(user_ids=users or None, account_type="ALL",
+                                                           limit=100), "items", []) or []:
+                tk = getattr(getattr(a, "toolkit", None), "slug", "?")
+                seen.setdefault(tk, set()).add(f"{getattr(a, 'status', '?')}{'' if users else '*'}")
+        out.append("   connections visible to COMPOSIO_API_KEY (* = other user): "
+                   + ", ".join(f"{k}[{'/'.join(sorted(v))}]" for k, v in sorted(seen.items())))
+        voice = "ELEVENLABS_API_KEY" if cfg.elevenlabs_api_key else c.account_for("elevenlabs")
+        out.append(("✅ ElevenLabs voice: " + str(voice)) if voice else
+                   "⚠️ ElevenLabs voice: add an ELEVENLABS_API_KEY secret - UGC uses the offline voice until then")
+    except Exception as e:
+        out.append(f"   (could not list connections: {str(e)[:150]})")
+
     # every configured target must resolve to a real connected account
     for t in cfg.targets or [{"platform": "youtube"}, {"platform": "instagram"}]:
         label = f"{t['platform'].title()} ({'/'.join(t.get('kinds', ['all']))})"
@@ -72,7 +88,7 @@ def anthropic(cfg: Settings) -> str:
              Sentence(4, 12, "Most people lose because they chase parlays instead of tracking every single pick."),
              Sentence(12, 25, "Bet singles, keep a log, and walk away when the numbers say so.")]
     pick = with_claude(sents, {"title": "test", "description": "Clip the strongest moment."}, 10, 25,
-                       cfg.anthropic_api_key, cfg.claude_model)
+                       cfg.anthropic_api_key, cfg.claude_model, oauth_token=cfg.claude_oauth_token)
     return f"{cfg.claude_model} picked sentences {pick['start_index']}-{pick['end_index']}: \"{pick['hook']}\""
 
 
@@ -94,11 +110,17 @@ def run(cfg: Settings) -> bool:
 
     attempt("Whop", whop)
     attempt("Composio", composio)
-    if cfg.anthropic_api_key:
-        attempt("Claude", anthropic, required=False)
+    if cfg.anthropic_api_key or cfg.claude_oauth_token:
+        try:
+            lines.append(_line(True, "Claude", anthropic(cfg)))
+        except Exception as e:
+            from .highlights import llm_error
+            lines.append("⚠️ " + llm_error(e) + " - using the free fallbacks")
     else:
         lines.append("➖ Claude: no key, using the free moment picker")
 
+    lines.append("✅ Stock b-roll: Pexels" if cfg.pexels_api_key else
+                 "➖ Stock b-roll: off (optional PEXELS_API_KEY) - UGC uses product screenshots")
     lines.append(f"mode: {cfg.mode} · country: {cfg.country} · python {platform.python_version()}")
     report = "🔌 Whop clipper connection check\n" + "\n".join(lines)
     print(report)

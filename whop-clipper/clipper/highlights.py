@@ -10,6 +10,7 @@ import re
 from collections import Counter
 from dataclasses import dataclass, field
 
+from . import llm
 from .transcribe import Word
 
 HOOK_WORDS = {"you", "never", "secret", "why", "how", "stop", "best", "worst", "nobody",
@@ -136,9 +137,7 @@ SCHEMA = {
 
 
 def with_claude(sents: list[Sentence], campaign: dict, lo: int, hi: int, api_key: str, model: str,
-                exclude: list[tuple[float, float]] | None = None) -> dict:
-    import anthropic
-
+                exclude: list[tuple[float, float]] | None = None, oauth_token: str = "") -> dict:
     lines = "\n".join(f"[{k}] {s.start:7.1f}-{s.end:7.1f}s  {s.text}" for k, s in enumerate(sents))
     avoid = ("Already used (do not overlap): " + ", ".join(f"{a:.0f}-{b:.0f}s" for a, b in exclude) + "\n"
              if exclude else "")
@@ -154,18 +153,20 @@ def with_claude(sents: list[Sentence], campaign: dict, lo: int, hi: int, api_key
         "results or statistics; 3-6 relevant hashtags without the # sign.\n\n"
         f"<transcript>\n{lines}\n</transcript>"
     )
-    client = anthropic.Anthropic(api_key=api_key)
-    resp = client.beta.messages.create(
-        model=model,
-        max_tokens=4000,
-        output_config={"effort": "medium", "format": {"type": "json_schema", "schema": SCHEMA}},
-        betas=["server-side-fallback-2026-07-01"],
-        fallbacks="default",
-        messages=[{"role": "user", "content": prompt}],
-    )
-    if resp.stop_reason == "refusal":
-        raise RuntimeError("model declined")
-    return json.loads(next(b.text for b in resp.content if b.type == "text"))
+    return llm.structured(prompt, SCHEMA, api_key, model, oauth_token)
+
+
+def llm_error(e: Exception) -> str:
+    """Short, human explanation of why the Claude step was skipped."""
+    msg = str(e)
+    if "credit balance" in msg and "Claude Code" not in msg:
+        return ("Claude skipped: no Anthropic API credit - add a CLAUDE_CODE_OAUTH_TOKEN secret to use "
+                "your Claude plan instead")
+    if "credit balance" in msg:
+        return f"Claude skipped: no API credit, and the Claude plan failed too ({msg.split('|')[-1].strip()[:120]})"
+    if "authentication" in msg.lower() or "api key" in msg.lower():
+        return "Claude skipped: ANTHROPIC_API_KEY is invalid"
+    return f"Claude skipped ({e.__class__.__name__}: {msg[:120]})"
 
 
 def fallback_copy(campaign: dict, text: str) -> dict:
@@ -195,14 +196,14 @@ def dedupe_mentions(mentions: list[str]) -> list[str]:
 
 def pick(words: list[Word], campaign: dict, mentions: list[str], lo: int, hi: int,
          api_key: str = "", model: str = "claude-opus-5-5",
-         exclude: list[tuple[float, float]] | None = None) -> Pick:
+         exclude: list[tuple[float, float]] | None = None, oauth_token: str = "") -> Pick:
     sents = sentences(words)
     if not sents:
         raise ValueError("no speech found in source")
     data, i, j, reason = None, 0, 0, ""
-    if api_key:
+    if api_key or oauth_token:
         try:
-            data = with_claude(sents, campaign, lo, hi, api_key, model, exclude)
+            data = with_claude(sents, campaign, lo, hi, api_key, model, exclude, oauth_token)
             i, j = data["start_index"], data["end_index"]
             ok = (0 <= i <= j < len(sents) and lo - 5 <= sents[j].end - sents[i].start <= hi + 5
                   and not _overlaps(sents[i].start, sents[j].end, exclude or []))
@@ -211,7 +212,7 @@ def pick(words: list[Word], campaign: dict, mentions: list[str], lo: int, hi: in
             else:
                 reason = "claude: " + data.get("reason", "")
         except Exception as e:  # any API/parse problem -> heuristic
-            reason = f"claude failed ({e.__class__.__name__}: {str(e)[:160]}); "
+            reason = llm_error(e) + "; "
             data = None
     if data is None:
         i, j, why = heuristic(sents, f"{campaign.get('title')} {campaign.get('description')}", lo, hi, exclude)

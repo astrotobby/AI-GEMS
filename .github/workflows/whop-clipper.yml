@@ -46,6 +46,8 @@ jobs:
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
 
       - run: pip install -r requirements.txt
+      # Claude Code CLI: lets CLAUDE_CODE_OAUTH_TOKEN (a Claude Pro/Max plan) write scripts and pick clips
+      - run: npm install -g @anthropic-ai/claude-code
 
       # rendered clips, downloads and whisper models survive between runs
       - uses: actions/cache@v4
@@ -68,8 +70,11 @@ jobs:
           COMPOSIO_API_KEY: ${{ secrets.COMPOSIO_API_KEY }}
           COMPOSIO_USER_ID: ${{ secrets.COMPOSIO_USER_ID }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           CLIPPER_MODE: ${{ vars.CLIPPER_MODE }}
           YTDLP_COOKIES: ${{ runner.temp }}/cookies.txt
           CMD: ${{ github.event_name == 'push' && 'check' || github.event.inputs.command || 'run' }}
