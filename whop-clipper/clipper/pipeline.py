@@ -43,7 +43,8 @@ class Pipeline:
     @property
     def composio(self) -> publish.Composio:
         if self._composio is None:
-            self._composio = publish.Composio(self.cfg.composio_api_key, self.cfg.composio_user_id)
+            self._composio = publish.Composio(self.cfg.composio_api_key, self.cfg.composio_user_id,
+                                             upload_dirs=[self.cfg.work_dir])
         return self._composio
 
     def job_dir(self, job: dict) -> Path:
@@ -262,6 +263,11 @@ class Pipeline:
             self.tg.send(f"⏭️ {job['title']} closed before posting - skipped.")
             return
         c = job["clip"]
+        if not Path(c["path"]).exists():
+            # the render was lost between runs (cache eviction) - make it again, it's deterministic
+            src_ok = job.get("kind") == "ugc" or (job.get("source") and Path(job["source"]).exists())
+            self.ledger.move(job, "sourced" if src_ok else "planned", reason="clip file missing - re-rendering")
+            return
         targets = self._targets(job)
         if not targets:
             raise RuntimeError("no publish targets configured in config.toml")

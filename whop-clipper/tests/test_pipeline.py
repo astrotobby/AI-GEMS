@@ -410,3 +410,17 @@ def test_claude_plan_used_when_api_has_no_credit(monkeypatch):
     monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-no-credit")
     assert llm.structured("pick", {"type": "object"}, "sk-no-credit", "claude-opus-5-5", "oat-token") == {"n": 3}
     assert "ANTHROPIC_API_KEY" not in seen["env"] and seen["env"]["CLAUDE_CODE_OAUTH_TOKEN"] == "oat-token"
+
+
+def test_lost_clip_file_is_re_rendered_not_failed(pipe, monkeypatch):
+    b = dict(ANON, description=ANON["description"].replace("livestream", "video"))
+    p = pipe(b)
+    job = clipped_job(p, b)
+    src = p.cfg.work_dir / "src.mp4"
+    src.write_bytes(b"x")
+    p.ledger.move(job, "approved", source=str(src))
+    Path(job["clip"]["path"]).unlink()  # e.g. evicted from the Actions cache between runs
+    rendered = []
+    monkeypatch.setattr(p, "_clip", lambda j: (rendered.append(j["id"]), p.ledger.move(j, "failed")))
+    p.advance(job)
+    assert rendered == [job["id"]] and not p.posted and "errors" not in job

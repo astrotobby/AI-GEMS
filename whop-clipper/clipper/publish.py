@@ -28,13 +28,15 @@ def find(obj: Any, *keys: str) -> Any:
 
 
 class Composio:
-    def __init__(self, api_key: str, user_id: str):
+    def __init__(self, api_key: str, user_id: str, upload_dirs: list[Path] | None = None):
         if not api_key:
             raise PublishError("COMPOSIO_API_KEY is not set")
         from composio import Composio as SDK
 
-        # auto-upload lets us pass a local file path for file fields (videoFile / video_file)
-        self.sdk = SDK(api_key=api_key, dangerously_allow_auto_upload_download_files=True)
+        # Local file paths are uploaded for file fields (videoFile / video_file). Newer SDKs only
+        # upload from an allowlist of directories, so allow our clips folder (plus the SDK's own temp).
+        dirs = [str(Path(d).resolve()) for d in upload_dirs or []] + [str(Path("~/.composio/temp").expanduser())]
+        self.sdk = SDK(api_key=api_key, dangerously_allow_auto_upload_download_files=True, file_upload_dirs=dirs)
         self.user_id = user_id
 
     def account_for(self, toolkit: str) -> str | None:
