@@ -91,7 +91,8 @@ def resolve(c: Composio, target: dict) -> dict:
                 else:
                     data = c.run("INSTAGRAM_GET_USER_INFO", {"ig_user_id": "me", "fields": "id,username"}, a.id)
                     name = str(find(data, "username") or "")
-            except Exception:
+            except Exception as e:  # keep the reason, e.g. an expired login or API quota
+                seen.append(f"{a.id}: {str(e)[:160]}")
                 continue
             seen.append(name.strip())
             if want == name.strip().lower() or want in name.strip().lower():
