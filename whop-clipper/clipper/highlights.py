@@ -155,12 +155,10 @@ def with_claude(sents: list[Sentence], campaign: dict, lo: int, hi: int, api_key
         f"<transcript>\n{lines}\n</transcript>"
     )
     client = anthropic.Anthropic(api_key=api_key)
-    resp = client.beta.messages.create(
+    resp = client.messages.create(
         model=model,
         max_tokens=4000,
         output_config={"effort": "medium", "format": {"type": "json_schema", "schema": SCHEMA}},
-        betas=["server-side-fallback-2026-07-01"],
-        fallbacks="default",
         messages=[{"role": "user", "content": prompt}],
     )
     if resp.stop_reason == "refusal":
@@ -211,7 +209,7 @@ def pick(words: list[Word], campaign: dict, mentions: list[str], lo: int, hi: in
             else:
                 reason = "claude: " + data.get("reason", "")
         except Exception as e:  # any API/parse problem -> heuristic
-            reason = f"claude failed ({e.__class__.__name__}); "
+            reason = f"claude failed ({e.__class__.__name__}: {str(e)[:160]}); "
             data = None
     if data is None:
         i, j, why = heuristic(sents, f"{campaign.get('title')} {campaign.get('description')}", lo, hi, exclude)

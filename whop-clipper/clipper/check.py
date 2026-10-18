@@ -67,10 +67,15 @@ def composio(cfg: Settings) -> list[str]:
 
 
 def anthropic(cfg: Settings) -> str:
-    import anthropic as sdk
+    # exercise the exact structured-output request the clipper makes, on a tiny transcript
+    from .highlights import Sentence, with_claude
 
-    m = sdk.Anthropic(api_key=cfg.anthropic_api_key).models.retrieve(cfg.claude_model)
-    return f"{m.id} reachable"
+    sents = [Sentence(0, 4, "Here's the one rule nobody tells you about betting."),
+             Sentence(4, 12, "Most people lose because they chase parlays instead of tracking every single pick."),
+             Sentence(12, 25, "Bet singles, keep a log, and walk away when the numbers say so.")]
+    pick = with_claude(sents, {"title": "test", "description": "Clip the strongest moment."}, 10, 25,
+                       cfg.anthropic_api_key, cfg.claude_model)
+    return f"{cfg.claude_model} picked sentences {pick['start_index']}-{pick['end_index']}: \"{pick['hook']}\""
 
 
 def run(cfg: Settings) -> bool:
