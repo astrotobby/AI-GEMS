@@ -1,0 +1,50 @@
+{
+  "jobs": {
+    "bnty_4nQb37p7bvjna-0": {
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "Here's three signs that you are a degenerate gambler.\n@ANON_BETTING @AnonPicks",
+        "end": 43.68,
+        "hashtags": [
+          "degenerate",
+          "gambler",
+          "present",
+          "shorts",
+          "clips"
+        ],
+        "hook": "Here's three signs that you are a",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4",
+        "reason": "claude failed (BadRequestError); heuristic score 26.5",
+        "start": 1.31,
+        "text": "Here's three signs that you are a degenerate gambler. First things first, if you're never in the present, you're going out to dinner with family, you're spending time with your wife, your kids, whoever it is, but you're constantly on your phone, checking to see if your parlay hit or if that big bet that you put, what's going on in the game, pitch by pitch, play by play, that is the first sign of you being a degenerate gambler. If you're constantly thinking about previous losses and they dwell in",
+        "title": "Here's three signs that you are a degenerate gambler."
+      },
+      "created": "2026-10-18T08:44:23+00:00",
+      "history": [
+        {
+          "at": "2026-10-18T08:44:28+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-10-18T08:46:33+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-10-18T08:46:33+00:00",
+          "from": "clipped",
+          "to": "awaiting_approval"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-0",
+      "posts": {},
+      "score": 50.7,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/3SignsOfDegenerateGamblers.MOV",
+      "status": "awaiting_approval",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-10-18T08:46:33+00:00"
+    }
+  },
+  "seen": {}
+}
