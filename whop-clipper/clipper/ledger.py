@@ -16,6 +16,7 @@ STAGES = [
     "published",        # live on socials
     "ready_to_submit",  # view threshold met (or none)
     "needs_livestream", # everything ready; you must livestream + submit
+    "awaiting_submission",  # connector mode: the scheduled Whop-connector task submits it
     "submitted",
 ]
 TERMINAL = {"submitted", "skipped", "failed", "needs_livestream"}

@@ -20,6 +20,11 @@ class Settings:
     min_score: float = 40.0
     allow_livestream_campaigns: bool = True  # still produced, but submission is handed to you
     goal_types: list[str] = field(default_factory=lambda: ["clipping", "ugc_content"])
+    # "connector": campaigns come from / submissions go through the Whop connector in a scheduled
+    # Claude task, via state/campaigns.json and the ledger. "api": call Whop directly with WHOP_TOKEN
+    # (needs a *user* OAuth token).
+    whop_via: str = "connector"
+    campaigns_max_age_hours: int = 12
 
     # clip style
     min_clip_seconds: int = 20
@@ -36,6 +41,9 @@ class Settings:
     # paths
     work_dir: Path = ROOT / "work"
     ledger_path: Path = ROOT / "state" / "ledger.json"
+    campaigns_path: Path = ROOT / "state" / "campaigns.json"
+    # your personal Telegram chat id (not a secret); used when TELEGRAM_CHAT_ID is unset or wrong
+    telegram_chat: str = ""
 
     # secrets (env only)
     whop_token: str = ""
@@ -83,6 +91,9 @@ def load(path: Path | None = None) -> Settings:
     s.anthropic_api_key = secret("ANTHROPIC_API_KEY")
     s.telegram_bot_token = secret("TELEGRAM_BOT_TOKEN")
     s.telegram_chat_id = secret("TELEGRAM_CHAT_ID")
+    bot_id = s.telegram_bot_token.split(":", 1)[0]
+    if s.telegram_chat and (not s.telegram_chat_id or s.telegram_chat_id == bot_id):
+        s.telegram_chat_id = str(s.telegram_chat)
     if os.environ.get("CLIPPER_MODE"):
         s.mode = os.environ["CLIPPER_MODE"]
     return s

@@ -17,6 +17,10 @@ def _line(ok: bool, name: str, detail: str) -> str:
 
 
 def whop(cfg: Settings) -> str:
+    if cfg.whop_via != "api":
+        from .pipeline import Pipeline
+        n = len(Pipeline(cfg).campaigns())  # raises if the snapshot is missing or stale
+        return f"connector mode: {n} open campaigns in the latest snapshot from your Whop connector"
     w = Whop(cfg.whop_token)
     bounties = w.open_bounties(cfg.country, limit=100)
     if not bounties:

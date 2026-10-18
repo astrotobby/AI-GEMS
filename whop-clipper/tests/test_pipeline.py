@@ -135,8 +135,9 @@ class FakeWhop:
 
 @pytest.fixture
 def pipe(tmp_path, monkeypatch):
-    def make(bounty, mode="auto", views=5000):
+    def make(bounty, mode="auto", views=5000, whop_via="api"):
         cfg = Settings(mode=mode, work_dir=tmp_path / "work", ledger_path=tmp_path / "ledger.json",
+                       whop_via=whop_via, campaigns_path=tmp_path / "campaigns.json",
                        targets=[{"platform": "youtube", "account_id": "ca_yt"},
                                 {"platform": "instagram", "account_id": "ca_ig"}])
         p = Pipeline(cfg)
@@ -261,3 +262,46 @@ def test_telegram_token_with_colon_is_untouched(monkeypatch):
     from clipper.config import secret
     monkeypatch.setenv("TELEGRAM_BOT_TOKEN", " 123456789:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw\n")
     assert secret("TELEGRAM_BOT_TOKEN") == "123456789:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw"
+
+
+def write_snapshot(p, bounties, hours_old=0):
+    from datetime import datetime, timedelta, timezone
+    at = datetime.now(timezone.utc) - timedelta(hours=hours_old)
+    p.cfg.campaigns_path.write_text(json.dumps({"fetched_at": at.isoformat(), "data": bounties}))
+
+
+def test_connector_mode_queues_submission_instead_of_calling_whop(pipe):
+    b = dict(ANON, description=ANON["description"].replace("livestream", "video"))
+    p = pipe(b, whop_via="connector")
+    write_snapshot(p, [b])
+    job = clipped_job(p, b)
+    p.advance(job)
+    assert job["status"] == "awaiting_submission"
+    assert job["submission"]["bounty_id"] == b["id"] and len(job["submission"]["urls"]) == 2
+    assert p.whop.submissions == []  # the connector task does the actual submit
+
+
+def test_connector_mode_skips_campaign_gone_from_snapshot(pipe):
+    p = pipe(ANON, whop_via="connector")
+    write_snapshot(p, [ANON])
+    job = clipped_job(p, ANON)
+    write_snapshot(p, [])  # campaign closed / no longer listed
+    p.advance(job)
+    assert job["status"] == "skipped" and p.posted == []
+
+
+def test_connector_mode_refuses_stale_snapshot(pipe):
+    p = pipe(ANON, whop_via="connector")
+    write_snapshot(p, [ANON], hours_old=30)
+    with pytest.raises(RuntimeError, match="old"):
+        p.campaigns()
+
+
+def test_config_chat_fallback_replaces_bot_id(tmp_path, monkeypatch):
+    cfg = tmp_path / "c.toml"
+    cfg.write_text('telegram_chat = "555000111"\n')
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "8135417299:AAAexample")
+    monkeypatch.setenv("TELEGRAM_CHAT_ID", "8135417299")
+    assert load(cfg).telegram_chat_id == "555000111"
+    monkeypatch.setenv("TELEGRAM_CHAT_ID", "777")
+    assert load(cfg).telegram_chat_id == "777"  # a real secret value still wins

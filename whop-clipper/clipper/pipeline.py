@@ -46,8 +46,28 @@ class Pipeline:
     def job_dir(self, job: dict) -> Path:
         return self.cfg.work_dir / job["bounty_id"]
 
+    # ---- Whop data: direct API, or the snapshot the Whop-connector task commits ----
+    def campaigns(self) -> list[dict]:
+        if self.cfg.whop_via == "api":
+            return self.whop.open_bounties(self.cfg.country)
+        path = self.cfg.campaigns_path
+        if not path.exists():
+            raise RuntimeError(f"{path.name} missing - the Whop connector task has not run yet")
+        snap = json.loads(path.read_text())
+        age = datetime.now(timezone.utc) - datetime.fromisoformat(snap["fetched_at"])
+        if age > timedelta(hours=self.cfg.campaigns_max_age_hours):
+            raise RuntimeError(f"{path.name} is {age.total_seconds() / 3600:.0f}h old - the Whop connector "
+                               "task has stopped updating it")
+        return snap.get("data", [])
+
     def bounty(self, job: dict, refresh: bool = False) -> dict:
         path = self.job_dir(job) / "bounty.json"
+        if refresh and self.cfg.whop_via != "api":
+            # a campaign missing from a fresh snapshot is no longer open to us
+            snap = {b["id"]: b for b in self.campaigns()}
+            data = snap.get(job["bounty_id"]) or dict(json.loads(path.read_text()), status="closed")
+            path.write_text(json.dumps(data, indent=1))
+            return data
         if refresh or not path.exists():
             data = self.whop.bounty(job["bounty_id"])
             path.parent.mkdir(parents=True, exist_ok=True)
@@ -57,7 +77,7 @@ class Pipeline:
 
     # ---- 1. discover --------------------------------------------------------
     def scan(self, bounties: list[dict] | None = None) -> list[scoring.Scored]:
-        bounties = bounties if bounties is not None else self.whop.open_bounties(self.cfg.country)
+        bounties = bounties if bounties is not None else self.campaigns()
         return scoring.rank(bounties, country=self.cfg.country, goal_types=self.cfg.goal_types,
                             min_clip=self.cfg.min_clip_seconds)
 
@@ -242,6 +262,12 @@ class Pipeline:
             return
         if b.get("status") != "open" or (b.get("spots_remaining") or 0) <= 0:
             self.ledger.move(job, "skipped", reason="campaign closed before submission")
+            return
+        if self.cfg.whop_via != "api":
+            # the scheduled Whop-connector task picks this up, submits as you, and marks it submitted
+            self.ledger.move(job, "awaiting_submission", submission={
+                "bounty_id": b["id"], "urls": urls, "caption": self._submission_caption(job)})
+            self.tg.send(f"📨 Queued for Whop submission: {job['title']}\n" + "\n".join(urls))
             return
         file_ids = []
         if "attach" in b["description"].lower():
