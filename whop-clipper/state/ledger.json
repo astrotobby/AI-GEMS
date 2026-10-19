@@ -103,6 +103,18 @@
           },
           "url": "https://www.instagram.com/reel/DepX_2ZAnkx/",
           "views": 129
+        },
+        "youtube:Astro Tobby": {
+          "at": "2026-10-19T07:22:48.526855+00:00",
+          "target": {
+            "channel": "Astro Tobby",
+            "kinds": [
+              "clipping"
+            ],
+            "platform": "youtube"
+          },
+          "url": "https://youtube.com/shorts/IYjWIDGfwzI",
+          "views": 0
         }
       },
       "published_at": "2026-10-18T18:55:55.884054+00:00",
@@ -179,6 +191,18 @@
           },
           "url": "https://www.instagram.com/reel/DepXIs-iAt3/",
           "views": 169
+        },
+        "youtube:Astro Tobby": {
+          "at": "2026-10-19T07:22:55.768575+00:00",
+          "target": {
+            "channel": "Astro Tobby",
+            "kinds": [
+              "clipping"
+            ],
+            "platform": "youtube"
+          },
+          "url": "https://youtube.com/shorts/cVFv8XkNme4",
+          "views": 0
         }
       },
       "published_at": "2026-10-18T18:48:04.464432+00:00",
@@ -295,6 +319,18 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/Deqfjdhio0y/",
+          "views": 6
+        },
+        "youtube:Astro Tobby": {
+          "at": "2026-10-19T07:23:02.580909+00:00",
+          "target": {
+            "channel": "Astro Tobby",
+            "kinds": [
+              "clipping"
+            ],
+            "platform": "youtube"
+          },
+          "url": "https://youtube.com/shorts/yYJ6SxUci6Y",
           "views": 0
         }
       },
