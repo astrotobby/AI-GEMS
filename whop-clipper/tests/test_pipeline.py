@@ -480,3 +480,12 @@ def test_instagram_views_come_from_media_insights():
     c = FakeComposio()
     target = {"platform": "instagram", "account_id": "ca_x", "ig_user_id": "42"}
     assert publish.views(c, target, "https://www.instagram.com/reel/abc/") == 1234
+
+
+def test_livestream_campaigns_are_skipped_when_turned_off(pipe):
+    p = pipe(ANON)
+    job = clipped_job(p, ANON)  # e.g. planned before the switch was turned off
+    p.cfg.allow_livestream_campaigns = False
+    assert p.plan(p.scan([ANON])) == []  # no new ones are planned
+    p.advance(job)
+    assert job["status"] == "skipped" and not p.posted and not p.whop.submissions
