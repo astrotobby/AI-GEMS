@@ -86,6 +86,11 @@
           "at": "2026-10-18T18:55:55+00:00",
           "from": "approved",
           "to": "published"
+        },
+        {
+          "at": "2026-10-19T09:50:42+00:00",
+          "from": "published",
+          "to": "skipped"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-0",
@@ -118,13 +123,13 @@
         }
       },
       "published_at": "2026-10-18T18:55:55.884054+00:00",
-      "reason": "100kCashCasinoSlots.mov has no speech - fetching another source",
+      "reason": "needs livestream proof (livestream campaigns are off)",
       "score": 50.7,
       "slot": 0,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/3SignsOfDegenerateGamblers.MOV",
-      "status": "published",
+      "status": "skipped",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-18T18:55:55+00:00"
+      "updated": "2026-10-19T09:50:42+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-10-18-clipping1": {
       "bounty_id": "bnty_4nQb37p7bvjna",
@@ -174,6 +179,11 @@
           "at": "2026-10-18T18:48:04+00:00",
           "from": "approved",
           "to": "published"
+        },
+        {
+          "at": "2026-10-19T09:50:42+00:00",
+          "from": "published",
+          "to": "skipped"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-10-18-clipping1",
@@ -206,12 +216,13 @@
         }
       },
       "published_at": "2026-10-18T18:48:04.464432+00:00",
+      "reason": "needs livestream proof (livestream campaigns are off)",
       "score": 50.7,
       "slot": 1,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/65KCashPayoutSportsbook.mov",
-      "status": "published",
+      "status": "skipped",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-18T18:48:04+00:00"
+      "updated": "2026-10-19T09:50:42+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-10-19-clipping0": {
       "bad_sources": [
@@ -303,6 +314,11 @@
           "at": "2026-10-19T05:21:11+00:00",
           "from": "approved",
           "to": "published"
+        },
+        {
+          "at": "2026-10-19T09:50:42+00:00",
+          "from": "published",
+          "to": "skipped"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-10-19-clipping0",
@@ -335,13 +351,13 @@
         }
       },
       "published_at": "2026-10-19T05:21:11.743311+00:00",
-      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "reason": "needs livestream proof (livestream campaigns are off)",
       "score": 50.7,
       "slot": 0,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/AreSportsRigged.mov",
-      "status": "published",
+      "status": "skipped",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-19T05:21:11+00:00"
+      "updated": "2026-10-19T09:50:42+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-10-19-clipping1": {
       "bad_sources": [
@@ -425,18 +441,23 @@
           "at": "2026-10-18T22:30:20+00:00",
           "from": "clipped",
           "to": "approved"
+        },
+        {
+          "at": "2026-10-19T09:50:42+00:00",
+          "from": "approved",
+          "to": "skipped"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-10-19-clipping1",
       "kind": "clipping",
       "posts": {},
-      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "reason": "needs livestream proof (livestream campaigns are off)",
       "score": 50.7,
       "slot": 1,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/AreSportsRigged2.mov",
-      "status": "approved",
+      "status": "skipped",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-18T22:30:20+00:00"
+      "updated": "2026-10-19T09:50:42+00:00"
     }
   },
   "seen": {
