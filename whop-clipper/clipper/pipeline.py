@@ -161,6 +161,12 @@ class Pipeline:
             "planned": self._source, "sourced": self._clip, "clipped": self._gate,
             "approved": self._publish, "published": self._track, "ready_to_submit": self._submit,
         }
+        if not self.cfg.allow_livestream_campaigns and job["status"] in handlers:
+            b = self.bounty(job)
+            if brief_mod.parse(b["description"], b["title"]).livestream_required:
+                # submission would need a human livestream - drop it instead of handing it over
+                self.ledger.move(job, "skipped", reason="needs livestream proof (livestream campaigns are off)")
+                return
         while job["status"] in handlers:
             before = job["status"]
             try:
