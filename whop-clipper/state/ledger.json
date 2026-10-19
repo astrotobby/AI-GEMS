@@ -102,7 +102,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/DepX_2ZAnkx/",
-          "views": 126
+          "views": 129
         }
       },
       "published_at": "2026-10-18T18:55:55.884054+00:00",
@@ -216,6 +216,9 @@
       },
       "created": "2026-10-18T22:25:59+00:00",
       "date": "2026-10-19",
+      "errors": [
+        "youtube:Astro Tobby: no connected youtube account named 'astro tobby' (found: ['ca_0F8f5MFgMjpu: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr', 'ca_bWtdXryu11HE: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr'])"
+      ],
       "history": [
         {
           "at": "2026-10-18T22:26:13+00:00",
@@ -271,18 +274,38 @@
           "at": "2026-10-18T22:28:24+00:00",
           "from": "clipped",
           "to": "approved"
+        },
+        {
+          "at": "2026-10-19T05:21:11+00:00",
+          "from": "approved",
+          "to": "published"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-10-19-clipping0",
       "kind": "clipping",
-      "posts": {},
+      "posts": {
+        "instagram:astr_osignal": {
+          "at": "2026-10-19T05:21:11.742001+00:00",
+          "target": {
+            "kinds": [
+              "clipping",
+              "ugc"
+            ],
+            "platform": "instagram",
+            "username": "astr_osignal"
+          },
+          "url": "https://www.instagram.com/reel/Deqfjdhio0y/",
+          "views": 0
+        }
+      },
+      "published_at": "2026-10-19T05:21:11.743311+00:00",
       "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
       "score": 50.7,
       "slot": 0,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/AreSportsRigged.mov",
-      "status": "approved",
+      "status": "published",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-18T22:28:24+00:00"
+      "updated": "2026-10-19T05:21:11+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-10-19-clipping1": {
       "bad_sources": [
