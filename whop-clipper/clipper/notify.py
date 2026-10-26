@@ -14,8 +14,9 @@ class Telegram:
         self.token, self.chat_id = token, chat_id
         self.last_error = ""
 
-    def send(self, text: str) -> bool:
-        log.info("notify: %s", text.replace("\n", " | ")[:300])
+    def send(self, text: str, private: bool = False) -> bool:
+        # private: keep the text out of the (public) Actions log, e.g. a login link
+        log.info("notify: %s", "(private message)" if private else text.replace("\n", " | ")[:300])
         if not (self.token and self.chat_id):
             return False
         try:

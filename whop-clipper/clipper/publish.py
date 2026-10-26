@@ -61,6 +61,18 @@ class Composio:
         accts = self.accounts(toolkit)
         return accts[0].id if accts else None
 
+    def link(self, toolkit: str, auth_config_id: str = "") -> str:
+        """A Composio Connect link that adds a login for `toolkit` to this project and user. Uses the
+        given auth config (e.g. your own Google OAuth app) or the newest one for the toolkit."""
+        if not auth_config_id:
+            configs = getattr(self.sdk.client.auth_configs.list(toolkit_slug=toolkit), "items", []) or []
+            if not configs:
+                raise PublishError(f"no {toolkit} auth config in this Composio project - create one first")
+            auth_config_id = max(configs, key=lambda x: str(getattr(x, "created_at", ""))).id
+        req = self.sdk.connected_accounts.link(user_id=self.user_id or "default",
+                                               auth_config_id=auth_config_id, allow_multiple=True)
+        return str(req.redirect_url)
+
     def run(self, slug: str, args: dict, account_id: str | None = None) -> dict:
         # no account_id -> Composio uses the default connected account for that toolkit;
         # an account made under another Composio user must be called as that user

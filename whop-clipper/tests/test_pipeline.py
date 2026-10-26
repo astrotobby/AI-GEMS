@@ -518,3 +518,24 @@ def test_resolve_falls_back_to_another_users_connection():
     assert t["account_id"] == "ca_new"
     assert c.sdk.tools.calls == [("ca_dead", "pipeline"), ("ca_new", "dashboard")]
     publish._RESOLVED.clear()
+
+
+def test_connect_link_uses_newest_auth_config_for_this_user():
+    from types import SimpleNamespace as NS
+    from clipper import publish
+
+    made = {}
+
+    def link(user_id, auth_config_id, **kw):
+        made.update(user=user_id, ac=auth_config_id)
+        return NS(redirect_url="https://connect.composio.dev/link/lk_x")
+
+    configs = NS(items=[NS(id="ac_old", created_at="2026-01-01"), NS(id="ac_new", created_at="2026-10-01")])
+    c = publish.Composio.__new__(publish.Composio)
+    c.user_id = "pipeline"
+    c.sdk = NS(client=NS(auth_configs=NS(list=lambda toolkit_slug: configs)),
+               connected_accounts=NS(link=link))
+    assert c.link("instagram") == "https://connect.composio.dev/link/lk_x"
+    assert made == {"user": "pipeline", "ac": "ac_new"}
+    c.link("youtube", "ac_mine")
+    assert made["ac"] == "ac_mine"
