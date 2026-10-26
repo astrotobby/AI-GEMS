@@ -1,580 +1,586 @@
 {
-  "jobs": {
-    "bnty_4nQb37p7bvjna-0": {
-      "bad_sources": [
-        "100kCashCasinoSlots.mov"
-      ],
-      "bounty_id": "bnty_4nQb37p7bvjna",
-      "clip": {
-        "caption": "Here's three signs that you are a degenerate gambler.\n@ANON_BETTING @AnonPicks",
-        "end": 43.68,
-        "hashtags": [
-          "degenerate",
-          "gambler",
-          "present",
-          "shorts",
-          "clips"
-        ],
-        "hook": "Here's three signs that you are a",
-        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4",
-        "reason": "Claude skipped: no API credit, and the Claude plan failed too (Claude Code: claude-opus-5-5: Claude Code: Credit balance is too low / sonnet: Claude Code: Credit balance is too low / haiku: Claude Code: Credit balance is too low); heuristic score 26.5",
-        "start": 1.31,
-        "text": "Here's three signs that you are a degenerate gambler. First things first, if you're never in the present, you're going out to dinner with family, you're spending time with your wife, your kids, whoever it is, but you're constantly on your phone, checking to see if your parlay hit or if that big bet that you put, what's going on in the game, pitch by pitch, play by play, that is the first sign of you being a degenerate gambler. If you're constantly thinking about previous losses and they dwell in",
-        "title": "Here's three signs that you are a degenerate gambler."
-      },
-      "created": "2026-10-18T08:44:23+00:00",
-      "date": "2026-10-18",
-      "errors": [
-        "approved: youtube:Astro Tobby: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\": the file does not exist on disk.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nProcess cwd:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper\nParent exists:    yes (/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips)\n\nCommon causes:\n  - Typo in the filename passed to the tool.\n  - Relative path resolved against the wrong working directory\n    (relative paths use os.getcwd() at the moment of upload).\n  - File was deleted between the tool being called and the upload starting.\n\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.; instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\": the file does not exist on disk.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nProcess cwd:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper\nParent exists:    yes (/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips)\n\nCommon causes:\n  - Typo in the filename passed to the tool.\n  - Relative path resolved against the wrong working directory\n    (relative paths use os.getcwd() at the moment of upload).\n  - File was deleted between the tool being called and the upload starting.\n\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
-        "approved: youtube:Astro Tobby: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\": the file does not exist on disk.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nProcess cwd:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper\nParent exists:    yes (/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips)\n\nCommon causes:\n  - Typo in the filename passed to the tool.\n  - Relative path resolved against the wrong working directory\n    (relative paths use os.getcwd() at the moment of upload).\n  - File was deleted between the tool being called and the upload starting.\n\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.; instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\": the file does not exist on disk.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nProcess cwd:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper\nParent exists:    yes (/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips)\n\nCommon causes:\n  - Typo in the filename passed to the tool.\n  - Relative path resolved against the wrong working directory\n    (relative paths use os.getcwd() at the moment of upload).\n  - File was deleted between the tool being called and the upload starting.\n\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
-        "approved: youtube:Astro Tobby: no connected youtube account named 'astro tobby' (found: []); instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\": the file does not exist on disk.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nProcess cwd:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper\nParent exists:    yes (/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips)\n\nCommon causes:\n  - Typo in the filename passed to the tool.\n  - Relative path resolved against the wrong working directory\n    (relative paths use os.getcwd() at the moment of upload).\n  - File was deleted between the tool being called and the upload starting.\n\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
-        "sourced: no speech found in source",
-        "youtube:Astro Tobby: no connected youtube account named 'astro tobby' (found: ['ca_0F8f5MFgMjpu: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr', 'ca_bWtdXryu11HE: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr'])"
-      ],
-      "history": [
-        {
-          "at": "2026-10-18T08:44:28+00:00",
-          "from": "planned",
-          "to": "sourced"
-        },
-        {
-          "at": "2026-10-18T08:46:33+00:00",
-          "from": "sourced",
-          "to": "clipped"
-        },
-        {
-          "at": "2026-10-18T08:46:33+00:00",
-          "from": "clipped",
-          "to": "awaiting_approval"
-        },
-        {
-          "at": "2026-10-18T14:06:49+00:00",
-          "from": "awaiting_approval",
-          "to": "approved"
-        },
-        {
-          "at": "2026-10-18T18:47:06+00:00",
-          "from": "approved",
-          "to": "planned"
-        },
-        {
-          "at": "2026-10-18T18:47:09+00:00",
-          "from": "planned",
-          "to": "sourced"
-        },
-        {
-          "at": "2026-10-18T18:52:31+00:00",
-          "from": "sourced",
-          "to": "planned"
-        },
-        {
-          "at": "2026-10-18T18:52:35+00:00",
-          "from": "planned",
-          "to": "sourced"
-        },
-        {
-          "at": "2026-10-18T18:54:47+00:00",
-          "from": "sourced",
-          "to": "clipped"
-        },
-        {
-          "at": "2026-10-18T18:54:47+00:00",
-          "from": "clipped",
-          "to": "approved"
-        },
-        {
-          "at": "2026-10-18T18:55:55+00:00",
-          "from": "approved",
-          "to": "published"
-        },
-        {
-          "at": "2026-10-19T09:50:42+00:00",
-          "from": "published",
-          "to": "skipped"
-        }
-      ],
-      "id": "bnty_4nQb37p7bvjna-0",
-      "kind": "clipping",
-      "posts": {
-        "instagram:astr_osignal": {
-          "at": "2026-10-18T18:55:55.882927+00:00",
-          "target": {
-            "kinds": [
-              "clipping",
-              "ugc"
-            ],
-            "platform": "instagram",
-            "username": "astr_osignal"
-          },
-          "url": "https://www.instagram.com/reel/DepX_2ZAnkx/",
-          "views": 129
-        },
-        "youtube:Astro Tobby": {
-          "at": "2026-10-19T07:22:48.526855+00:00",
-          "target": {
-            "channel": "Astro Tobby",
-            "kinds": [
-              "clipping"
-            ],
-            "platform": "youtube"
-          },
-          "url": "https://youtube.com/shorts/IYjWIDGfwzI",
-          "views": 3
-        }
-      },
-      "published_at": "2026-10-18T18:55:55.884054+00:00",
-      "reason": "needs livestream proof (livestream campaigns are off)",
-      "score": 50.7,
-      "slot": 0,
-      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/3SignsOfDegenerateGamblers.MOV",
-      "status": "skipped",
-      "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-19T09:50:42+00:00"
+ "jobs": {
+  "bnty_4nQb37p7bvjna-0": {
+   "bad_sources": [
+    "100kCashCasinoSlots.mov"
+   ],
+   "bounty_id": "bnty_4nQb37p7bvjna",
+   "clip": {
+    "caption": "Here's three signs that you are a degenerate gambler.\n@ANON_BETTING @AnonPicks",
+    "end": 43.68,
+    "hashtags": [
+     "degenerate",
+     "gambler",
+     "present",
+     "shorts",
+     "clips"
+    ],
+    "hook": "Here's three signs that you are a",
+    "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4",
+    "reason": "Claude skipped: no API credit, and the Claude plan failed too (Claude Code: claude-opus-5-5: Claude Code: Credit balance is too low / sonnet: Claude Code: Credit balance is too low / haiku: Claude Code: Credit balance is too low); heuristic score 26.5",
+    "start": 1.31,
+    "text": "Here's three signs that you are a degenerate gambler. First things first, if you're never in the present, you're going out to dinner with family, you're spending time with your wife, your kids, whoever it is, but you're constantly on your phone, checking to see if your parlay hit or if that big bet that you put, what's going on in the game, pitch by pitch, play by play, that is the first sign of you being a degenerate gambler. If you're constantly thinking about previous losses and they dwell in",
+    "title": "Here's three signs that you are a degenerate gambler."
+   },
+   "created": "2026-10-18T08:44:23+00:00",
+   "date": "2026-10-18",
+   "errors": [
+    "approved: youtube:Astro Tobby: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\": the file does not exist on disk.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nProcess cwd:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper\nParent exists:    yes (/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips)\n\nCommon causes:\n  - Typo in the filename passed to the tool.\n  - Relative path resolved against the wrong working directory\n    (relative paths use os.getcwd() at the moment of upload).\n  - File was deleted between the tool being called and the upload starting.\n\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.; instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\": the file does not exist on disk.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nProcess cwd:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper\nParent exists:    yes (/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips)\n\nCommon causes:\n  - Typo in the filename passed to the tool.\n  - Relative path resolved against the wrong working directory\n    (relative paths use os.getcwd() at the moment of upload).\n  - File was deleted between the tool being called and the upload starting.\n\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
+    "approved: youtube:Astro Tobby: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\": the file does not exist on disk.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nProcess cwd:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper\nParent exists:    yes (/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips)\n\nCommon causes:\n  - Typo in the filename passed to the tool.\n  - Relative path resolved against the wrong working directory\n    (relative paths use os.getcwd() at the moment of upload).\n  - File was deleted between the tool being called and the upload starting.\n\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.; instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\": the file does not exist on disk.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nProcess cwd:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper\nParent exists:    yes (/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips)\n\nCommon causes:\n  - Typo in the filename passed to the tool.\n  - Relative path resolved against the wrong working directory\n    (relative paths use os.getcwd() at the moment of upload).\n  - File was deleted between the tool being called and the upload starting.\n\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
+    "approved: youtube:Astro Tobby: no connected youtube account named 'astro tobby' (found: []); instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\": the file does not exist on disk.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-0.mp4\nProcess cwd:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper\nParent exists:    yes (/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips)\n\nCommon causes:\n  - Typo in the filename passed to the tool.\n  - Relative path resolved against the wrong working directory\n    (relative paths use os.getcwd() at the moment of upload).\n  - File was deleted between the tool being called and the upload starting.\n\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
+    "sourced: no speech found in source",
+    "youtube:Astro Tobby: no connected youtube account named 'astro tobby' (found: ['ca_0F8f5MFgMjpu: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr', 'ca_bWtdXryu11HE: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr'])"
+   ],
+   "history": [
+    {
+     "at": "2026-10-18T08:44:28+00:00",
+     "from": "planned",
+     "to": "sourced"
     },
-    "bnty_4nQb37p7bvjna-2026-10-18-clipping1": {
-      "bounty_id": "bnty_4nQb37p7bvjna",
-      "clip": {
-        "caption": "Well, my parlay was much braver.\n@ANON_BETTING @AnonPicks",
-        "end": 12.18,
-        "hashtags": [
-          "brick",
-          "parlay",
-          "braver",
-          "shorts",
-          "clips"
-        ],
-        "hook": "Well, my parlay was much braver.",
-        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4",
-        "reason": "Claude skipped: no API credit, and the Claude plan failed too (Claude Code: Credit balance is too low); heuristic score -1000000000.0",
-        "start": 0.0,
-        "text": "brick. 60. Well, my parlay was much braver. I had no Carolina money. I knew that was coming. 65. I had to rub it in some way. 65. Okay.",
-        "title": "Well, my parlay was much braver."
-      },
-      "created": "2026-10-18T14:06:49+00:00",
-      "date": "2026-10-18",
-      "errors": [
-        "approved: youtube:Astro Tobby: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\": resolved path is not inside any\ndirectory in the configured `file_upload_dirs` allowlist.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.; instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\": resolved path is not inside any\ndirectory in the configured `file_upload_dirs` allowlist.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
-        "approved: youtube:Astro Tobby: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\": resolved path is not inside any\ndirectory in the configured `file_upload_dirs` allowlist.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.; instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\": resolved path is not inside any\ndirectory in the configured `file_upload_dirs` allowlist.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
-        "approved: youtube:Astro Tobby: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\": resolved path is not inside any\ndirectory in the configured `file_upload_dirs` allowlist.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.; instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\": resolved path is not inside any\ndirectory in the configured `file_upload_dirs` allowlist.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
-        "approved: youtube:Astro Tobby: no connected youtube account named 'astro tobby' (found: []); instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\": resolved path is not inside any\ndirectory in the configured `file_upload_dirs` allowlist.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
-        "youtube:Astro Tobby: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"quota_unit\": \"1/d/{project}\",\n          \"quota_location\": \"global\",\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\",\n          \"service\": \"youtube.googleapis.com\",\n          \"window_start_time\": \"1792306800\",\n          \"quota_limit_value\": \"966\",\n          \"consumer\": \"projects/1068312718386\",\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n"
-      ],
-      "history": [
-        {
-          "at": "2026-10-18T14:06:54+00:00",
-          "from": "planned",
-          "to": "sourced"
-        },
-        {
-          "at": "2026-10-18T14:07:33+00:00",
-          "from": "sourced",
-          "to": "clipped"
-        },
-        {
-          "at": "2026-10-18T14:07:33+00:00",
-          "from": "clipped",
-          "to": "approved"
-        },
-        {
-          "at": "2026-10-18T18:48:04+00:00",
-          "from": "approved",
-          "to": "published"
-        },
-        {
-          "at": "2026-10-19T09:50:42+00:00",
-          "from": "published",
-          "to": "skipped"
-        }
-      ],
-      "id": "bnty_4nQb37p7bvjna-2026-10-18-clipping1",
-      "kind": "clipping",
-      "posts": {
-        "instagram:astr_osignal": {
-          "at": "2026-10-18T18:48:04.463620+00:00",
-          "target": {
-            "kinds": [
-              "clipping",
-              "ugc"
-            ],
-            "platform": "instagram",
-            "username": "astr_osignal"
-          },
-          "url": "https://www.instagram.com/reel/DepXIs-iAt3/",
-          "views": 169
-        },
-        "youtube:Astro Tobby": {
-          "at": "2026-10-19T07:22:55.768575+00:00",
-          "target": {
-            "channel": "Astro Tobby",
-            "kinds": [
-              "clipping"
-            ],
-            "platform": "youtube"
-          },
-          "url": "https://youtube.com/shorts/cVFv8XkNme4",
-          "views": 0
-        }
-      },
-      "published_at": "2026-10-18T18:48:04.464432+00:00",
-      "reason": "needs livestream proof (livestream campaigns are off)",
-      "score": 50.7,
-      "slot": 1,
-      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/65KCashPayoutSportsbook.mov",
-      "status": "skipped",
-      "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-19T09:50:42+00:00"
+    {
+     "at": "2026-10-18T08:46:33+00:00",
+     "from": "sourced",
+     "to": "clipped"
     },
-    "bnty_4nQb37p7bvjna-2026-10-19-clipping0": {
-      "bad_sources": [
-        "100kCashCasinoSlots.mov",
-        "AnonIGPhoneNBAGame.mov",
-        "AnonMaskAPWatchMoney.mov",
-        "AnonMaskInPorsche.mov"
-      ],
-      "bounty_id": "bnty_4nQb37p7bvjna",
-      "clip": {
-        "caption": "Well, let me break it down for you like this, okay?\n@ANON_BETTING @AnonPicks",
-        "end": 44.29,
-        "hashtags": [
-          "approach",
-          "thousand",
-          "willing",
-          "shorts",
-          "clips"
-        ],
-        "hook": "Well, let me break it down for",
-        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-19-clipping0.mp4",
-        "reason": "Claude skipped: no API credit, and the Claude plan failed too (Claude Code: claude-opus-5-5: Claude Code: Credit balance is too low / sonnet: Claude Code: Credit balance is too low / haiku: Claude Code: Credit balance is too low); heuristic score 24.5",
-        "start": 2.68,
-        "text": "Well, let me break it down for you like this, okay? We've seen tons of cases of John T. Porter, Terry Rosear, Malik Beasley, and other guys who've been indicted on crimes for illegal gambling and essentially throwing their lines to help random people that approach them for a few thousand bucks at a time sometimes. And so you wonder, are sports actually rigged? Well, let me tell you what, if people are willing to take bribes with 50 hundred million dollar contracts in the NBA for a couple thousan",
-        "title": "Well, let me break it down for you like this, okay?"
-      },
-      "created": "2026-10-18T22:25:59+00:00",
-      "date": "2026-10-19",
-      "errors": [
-        "youtube:Astro Tobby: no connected youtube account named 'astro tobby' (found: ['ca_0F8f5MFgMjpu: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr', 'ca_bWtdXryu11HE: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr'])"
-      ],
-      "history": [
-        {
-          "at": "2026-10-18T22:26:13+00:00",
-          "from": "planned",
-          "to": "sourced"
-        },
-        {
-          "at": "2026-10-18T22:26:13+00:00",
-          "from": "sourced",
-          "to": "planned"
-        },
-        {
-          "at": "2026-10-18T22:26:15+00:00",
-          "from": "planned",
-          "to": "sourced"
-        },
-        {
-          "at": "2026-10-18T22:26:18+00:00",
-          "from": "sourced",
-          "to": "planned"
-        },
-        {
-          "at": "2026-10-18T22:26:20+00:00",
-          "from": "planned",
-          "to": "sourced"
-        },
-        {
-          "at": "2026-10-18T22:26:23+00:00",
-          "from": "sourced",
-          "to": "planned"
-        },
-        {
-          "at": "2026-10-18T22:26:25+00:00",
-          "from": "planned",
-          "to": "sourced"
-        },
-        {
-          "at": "2026-10-18T22:26:27+00:00",
-          "from": "sourced",
-          "to": "planned"
-        },
-        {
-          "at": "2026-10-18T22:26:31+00:00",
-          "from": "planned",
-          "to": "sourced"
-        },
-        {
-          "at": "2026-10-18T22:28:24+00:00",
-          "from": "sourced",
-          "to": "clipped"
-        },
-        {
-          "at": "2026-10-18T22:28:24+00:00",
-          "from": "clipped",
-          "to": "approved"
-        },
-        {
-          "at": "2026-10-19T05:21:11+00:00",
-          "from": "approved",
-          "to": "published"
-        },
-        {
-          "at": "2026-10-19T09:50:42+00:00",
-          "from": "published",
-          "to": "skipped"
-        }
-      ],
-      "id": "bnty_4nQb37p7bvjna-2026-10-19-clipping0",
-      "kind": "clipping",
-      "posts": {
-        "instagram:astr_osignal": {
-          "at": "2026-10-19T05:21:11.742001+00:00",
-          "target": {
-            "kinds": [
-              "clipping",
-              "ugc"
-            ],
-            "platform": "instagram",
-            "username": "astr_osignal"
-          },
-          "url": "https://www.instagram.com/reel/Deqfjdhio0y/",
-          "views": 8
-        },
-        "youtube:Astro Tobby": {
-          "at": "2026-10-19T07:23:02.580909+00:00",
-          "target": {
-            "channel": "Astro Tobby",
-            "kinds": [
-              "clipping"
-            ],
-            "platform": "youtube"
-          },
-          "url": "https://youtube.com/shorts/yYJ6SxUci6Y",
-          "views": 0
-        }
-      },
-      "published_at": "2026-10-19T05:21:11.743311+00:00",
-      "reason": "needs livestream proof (livestream campaigns are off)",
-      "score": 50.7,
-      "slot": 0,
-      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/AreSportsRigged.mov",
-      "status": "skipped",
-      "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-19T09:50:42+00:00"
+    {
+     "at": "2026-10-18T08:46:33+00:00",
+     "from": "clipped",
+     "to": "awaiting_approval"
     },
-    "bnty_4nQb37p7bvjna-2026-10-19-clipping1": {
-      "bad_sources": [
-        "100kCashCasinoSlots.mov",
-        "AnonIGPhoneNBAGame.mov",
-        "AnonMaskAPWatchMoney.mov",
-        "AnonMaskInPorsche.mov"
-      ],
-      "bounty_id": "bnty_4nQb37p7bvjna",
-      "clip": {
-        "caption": "Let me break it down for you in the most simple of forms, okay?\n@ANON_BETTING @AnonPicks",
-        "end": 46.3,
-        "hashtags": [
-          "doing",
-          "dollars",
-          "sports",
-          "shorts",
-          "clips"
-        ],
-        "hook": "Let me break it down for you",
-        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-19-clipping1.mp4",
-        "reason": "Claude skipped: no API credit, and the Claude plan failed too (Claude Code: claude-opus-5-5: Claude Code: Credit balance is too low / sonnet: Claude Code: Credit balance is too low / haiku: Claude Code: Credit balance is too low); heuristic score 25.7",
-        "start": 5.03,
-        "text": "Let me break it down for you in the most simple of forms, okay? You've had guys like Terry Rozier, Malik Beasley, John T. Porter and so many others that have been indicted on illegal gambling charges and essentially rigging their lines, right? Now, they were doing this for a few thousand dollars in most cases, okay? And these guys had 50, a hundred million dollar contract. Some of them have earned hundreds of millions of dollars in their professional sports careers. So now ask yourself, when the",
-        "title": "Let me break it down for you in the most simple of forms, okay?"
-      },
-      "created": "2026-10-18T22:26:00+00:00",
-      "date": "2026-10-19",
-      "history": [
-        {
-          "at": "2026-10-18T22:28:24+00:00",
-          "from": "planned",
-          "to": "sourced"
-        },
-        {
-          "at": "2026-10-18T22:28:24+00:00",
-          "from": "sourced",
-          "to": "planned"
-        },
-        {
-          "at": "2026-10-18T22:28:25+00:00",
-          "from": "planned",
-          "to": "sourced"
-        },
-        {
-          "at": "2026-10-18T22:28:25+00:00",
-          "from": "sourced",
-          "to": "planned"
-        },
-        {
-          "at": "2026-10-18T22:28:25+00:00",
-          "from": "planned",
-          "to": "sourced"
-        },
-        {
-          "at": "2026-10-18T22:28:25+00:00",
-          "from": "sourced",
-          "to": "planned"
-        },
-        {
-          "at": "2026-10-18T22:28:26+00:00",
-          "from": "planned",
-          "to": "sourced"
-        },
-        {
-          "at": "2026-10-18T22:28:26+00:00",
-          "from": "sourced",
-          "to": "planned"
-        },
-        {
-          "at": "2026-10-18T22:28:30+00:00",
-          "from": "planned",
-          "to": "sourced"
-        },
-        {
-          "at": "2026-10-18T22:30:20+00:00",
-          "from": "sourced",
-          "to": "clipped"
-        },
-        {
-          "at": "2026-10-18T22:30:20+00:00",
-          "from": "clipped",
-          "to": "approved"
-        },
-        {
-          "at": "2026-10-19T09:50:42+00:00",
-          "from": "approved",
-          "to": "skipped"
-        }
-      ],
-      "id": "bnty_4nQb37p7bvjna-2026-10-19-clipping1",
-      "kind": "clipping",
-      "posts": {},
-      "reason": "needs livestream proof (livestream campaigns are off)",
-      "score": 50.7,
-      "slot": 1,
-      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/AreSportsRigged2.mov",
-      "status": "skipped",
-      "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-19T09:50:42+00:00"
+    {
+     "at": "2026-10-18T14:06:49+00:00",
+     "from": "awaiting_approval",
+     "to": "approved"
     },
-    "bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0": {
-      "bounty_id": "bnty_GLQ2nZ3EtqTUW",
-      "clip": {
-        "caption": "Clippers from any country + US UGC creators \ud83d\udc49 join Clip Influence: https://whop.com/clip-influence\nThey'll train you on clipping for brands sold in places like Target and Walmart. Once you're in, invite at least 1 clipper or UGC creator, then go to the Main Chat and say: \"Hey, I am new can you please help me. Where is the course material so I can start making money with clipping?\" Questions? Ask in the Clip Influence Support Chat.",
-        "end": 29.86,
-        "hashtags": [
-          "clipping",
-          "clipper",
-          "ugccreator",
-          "contentcreator",
-          "sidehustle"
-        ],
-        "hook": "If you've ever wanted to get into",
-        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_GLQ2nZ3EtqTUW/clips/bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0.mp4",
-        "reason": "0 product images; Claude script; ElevenLabs voice",
-        "start": 0.0,
-        "text": "If you've ever wanted to get into clipping, this is your sign. Clip Influence is running clipping campaigns for brands sold in places like Target and Walmart, and they say the budgets are infinite. Clippers from any country can join, and so can UGC creators in the US. Never clipped before? They'll train you and walk you through how to get started. You join, go through the course material, and start posting consistently. Stuck on something? Just ask in the support chat. The link's in my caption i",
-        "title": "Clipping campaigns with infinite budgets? \ud83d\udc40"
-      },
-      "created": "2026-10-25T09:26:54+00:00",
-      "date": "2026-10-25",
-      "errors": [
-        "approved: youtube:DIJITOL NOMAD: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\",\n          \"quota_unit\": \"1/d/{project}\",\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\",\n          \"quota_limit_value\": \"966\",\n          \"quota_location\": \"global\",\n          \"service\": \"youtube.googleapis.com\",\n          \"window_start_time\": \"1792911600\",\n          \"consumer\": \"projects/1068312718386\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n; instagram:astr_osignal: no connected instagram account named 'astr_osignal' (found: ['ca_vS148UVo4Fzr: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_qxFZF17hT9uH: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_xRqF6iz5Pa42: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid'])",
-        "approved: youtube:DIJITOL NOMAD: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"window_start_time\": \"1792911600\",\n          \"service\": \"youtube.googleapis.com\",\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\",\n          \"quota_location\": \"global\",\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\",\n          \"quota_limit_value\": \"966\",\n          \"consumer\": \"projects/1068312718386\",\n          \"quota_unit\": \"1/d/{project}\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n; instagram:astr_osignal: no connected instagram account named 'astr_osignal' (found: ['ca_vS148UVo4Fzr: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_qxFZF17hT9uH: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_xRqF6iz5Pa42: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid'])",
-        "approved: youtube:DIJITOL NOMAD: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"quota_unit\": \"1/d/{project}\",\n          \"quota_limit_value\": \"966\",\n          \"window_start_time\": \"1792911600\",\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\",\n          \"quota_location\": \"global\",\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\",\n          \"service\": \"youtube.googleapis.com\",\n          \"consumer\": \"projects/1068312718386\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n; instagram:astr_osignal: no connected instagram account named 'astr_osignal' (found: ['ca_vS148UVo4Fzr: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_qxFZF17hT9uH: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_xRqF6iz5Pa42: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid'])",
-        "approved: youtube:DIJITOL NOMAD: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"quota_unit\": \"1/d/{project}\",\n          \"quota_limit_value\": \"966\",\n          \"quota_location\": \"global\",\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\",\n          \"consumer\": \"projects/1068312718386\",\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\",\n          \"service\": \"youtube.googleapis.com\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n; instagram:astr_osignal: no connected instagram account named 'astr_osignal' (found: ['ca_vS148UVo4Fzr: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_qxFZF17hT9uH: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_xRqF6iz5Pa42: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid'])",
-        "approved: youtube:DIJITOL NOMAD: no connected youtube account named 'dijitol nomad' (found: ['ca_0F8f5MFgMjpu: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr', 'ca_bWtdXryu11HE: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr']); instagram:astr_osignal: no connected instagram account named 'astr_osignal' (found: ['ca_vS148UVo4Fzr: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_qxFZF17hT9uH: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_xRqF6iz5Pa42: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid'])",
-        "approved: youtube:DIJITOL NOMAD: no connected youtube account named 'dijitol nomad' (found: ['ca_0F8f5MFgMjpu: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr', 'ca_bWtdXryu11HE: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr']); instagram:astr_osignal: no connected instagram account named 'astr_osignal' (found: ['ca_vS148UVo4Fzr: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_qxFZF17hT9uH: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_xRqF6iz5Pa42: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid'])",
-        "approved: youtube:DIJITOL NOMAD: no connected youtube account named 'dijitol nomad' (found: ['ca_0F8f5MFgMjpu: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr', 'ca_bWtdXryu11HE: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr']); instagram:astr_osignal: no connected instagram account named 'astr_osignal' (found: ['ca_vS148UVo4Fzr: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_qxFZF17hT9uH: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_xRqF6iz5Pa42: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid'])"
-      ],
-      "history": [
-        {
-          "at": "2026-10-25T09:26:55+00:00",
-          "from": "planned",
-          "to": "sourced"
-        },
-        {
-          "at": "2026-10-25T09:27:56+00:00",
-          "from": "sourced",
-          "to": "clipped"
-        },
-        {
-          "at": "2026-10-25T09:27:56+00:00",
-          "from": "clipped",
-          "to": "approved"
-        },
-        {
-          "at": "2026-10-26T07:22:05+00:00",
-          "from": "approved",
-          "to": "published"
-        },
-        {
-          "at": "2026-10-26T07:22:08+00:00",
-          "from": "published",
-          "to": "ready_to_submit"
-        },
-        {
-          "at": "2026-10-26T07:22:08+00:00",
-          "from": "ready_to_submit",
-          "to": "awaiting_submission"
-        }
-      ],
-      "id": "bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0",
-      "kind": "ugc",
-      "posts": {
-        "instagram:astr_osignal": {
-          "at": "2026-10-26T07:22:05.222586+00:00",
-          "target": {
-            "kinds": [
-              "clipping",
-              "ugc"
-            ],
-            "platform": "instagram",
-            "username": "astr_osignal"
-          },
-          "url": "https://www.instagram.com/reel/De8u_p1ALG1/",
-          "views": 0
-        },
-        "youtube:DIJITOL NOMAD": {
-          "at": "2026-10-26T07:21:27.477891+00:00",
-          "target": {
-            "channel": "DIJITOL NOMAD",
-            "kinds": [
-              "ugc"
-            ],
-            "platform": "youtube"
-          },
-          "url": "https://youtube.com/shorts/vWFJ7KTYU7w",
-          "views": 0
-        }
-      },
-      "published_at": "2026-10-26T07:22:05.223833+00:00",
-      "score": 67.8,
-      "slot": 0,
-      "source": "",
-      "status": "awaiting_submission",
-      "submission": {
-        "bounty_id": "bnty_GLQ2nZ3EtqTUW",
-        "caption": "Source:  @ 0.0s-29.9s. Posts: https://youtube.com/shorts/vWFJ7KTYU7w, https://www.instagram.com/reel/De8u_p1ALG1/",
-        "urls": [
-          "https://youtube.com/shorts/vWFJ7KTYU7w",
-          "https://www.instagram.com/reel/De8u_p1ALG1/"
-        ]
-      },
-      "title": "JOIN AND GET PAID (CLIPPERS ANY COUNTRY & AMERICAN UGC CREATORS ONLY)",
-      "updated": "2026-10-26T07:22:08+00:00"
+    {
+     "at": "2026-10-18T18:47:06+00:00",
+     "from": "approved",
+     "to": "planned"
+    },
+    {
+     "at": "2026-10-18T18:47:09+00:00",
+     "from": "planned",
+     "to": "sourced"
+    },
+    {
+     "at": "2026-10-18T18:52:31+00:00",
+     "from": "sourced",
+     "to": "planned"
+    },
+    {
+     "at": "2026-10-18T18:52:35+00:00",
+     "from": "planned",
+     "to": "sourced"
+    },
+    {
+     "at": "2026-10-18T18:54:47+00:00",
+     "from": "sourced",
+     "to": "clipped"
+    },
+    {
+     "at": "2026-10-18T18:54:47+00:00",
+     "from": "clipped",
+     "to": "approved"
+    },
+    {
+     "at": "2026-10-18T18:55:55+00:00",
+     "from": "approved",
+     "to": "published"
+    },
+    {
+     "at": "2026-10-19T09:50:42+00:00",
+     "from": "published",
+     "to": "skipped"
     }
+   ],
+   "id": "bnty_4nQb37p7bvjna-0",
+   "kind": "clipping",
+   "posts": {
+    "instagram:astr_osignal": {
+     "at": "2026-10-18T18:55:55.882927+00:00",
+     "target": {
+      "kinds": [
+       "clipping",
+       "ugc"
+      ],
+      "platform": "instagram",
+      "username": "astr_osignal"
+     },
+     "url": "https://www.instagram.com/reel/DepX_2ZAnkx/",
+     "views": 129
+    },
+    "youtube:Astro Tobby": {
+     "at": "2026-10-19T07:22:48.526855+00:00",
+     "target": {
+      "channel": "Astro Tobby",
+      "kinds": [
+       "clipping"
+      ],
+      "platform": "youtube"
+     },
+     "url": "https://youtube.com/shorts/IYjWIDGfwzI",
+     "views": 3
+    }
+   },
+   "published_at": "2026-10-18T18:55:55.884054+00:00",
+   "reason": "needs livestream proof (livestream campaigns are off)",
+   "score": 50.7,
+   "slot": 0,
+   "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/3SignsOfDegenerateGamblers.MOV",
+   "status": "skipped",
+   "title": "Clip Content into Short Video (1k view minimum)",
+   "updated": "2026-10-19T09:50:42+00:00"
   },
-  "seen": {
-    "summary:2026-10-18": "2026-10-18T14:07:41+00:00",
-    "summary:2026-10-19": "2026-10-19T15:36:02+00:00",
-    "summary:2026-10-20": "2026-10-20T13:34:16+00:00",
-    "summary:2026-10-21": "2026-10-21T13:46:50+00:00",
-    "summary:2026-10-22": "2026-10-22T13:47:34+00:00",
-    "summary:2026-10-23": "2026-10-23T13:25:14+00:00",
-    "summary:2026-10-24": "2026-10-24T12:41:01+00:00",
-    "summary:2026-10-25": "2026-10-25T13:11:41+00:00"
+  "bnty_4nQb37p7bvjna-2026-10-18-clipping1": {
+   "bounty_id": "bnty_4nQb37p7bvjna",
+   "clip": {
+    "caption": "Well, my parlay was much braver.\n@ANON_BETTING @AnonPicks",
+    "end": 12.18,
+    "hashtags": [
+     "brick",
+     "parlay",
+     "braver",
+     "shorts",
+     "clips"
+    ],
+    "hook": "Well, my parlay was much braver.",
+    "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4",
+    "reason": "Claude skipped: no API credit, and the Claude plan failed too (Claude Code: Credit balance is too low); heuristic score -1000000000.0",
+    "start": 0.0,
+    "text": "brick. 60. Well, my parlay was much braver. I had no Carolina money. I knew that was coming. 65. I had to rub it in some way. 65. Okay.",
+    "title": "Well, my parlay was much braver."
+   },
+   "created": "2026-10-18T14:06:49+00:00",
+   "date": "2026-10-18",
+   "errors": [
+    "approved: youtube:Astro Tobby: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\": resolved path is not inside any\ndirectory in the configured `file_upload_dirs` allowlist.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.; instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\": resolved path is not inside any\ndirectory in the configured `file_upload_dirs` allowlist.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
+    "approved: youtube:Astro Tobby: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\": resolved path is not inside any\ndirectory in the configured `file_upload_dirs` allowlist.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.; instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\": resolved path is not inside any\ndirectory in the configured `file_upload_dirs` allowlist.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
+    "approved: youtube:Astro Tobby: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\": resolved path is not inside any\ndirectory in the configured `file_upload_dirs` allowlist.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.; instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\": resolved path is not inside any\ndirectory in the configured `file_upload_dirs` allowlist.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
+    "approved: youtube:Astro Tobby: no connected youtube account named 'astro tobby' (found: []); instagram:astr_osignal: Refusing to auto-upload \"/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\": resolved path is not inside any\ndirectory in the configured `file_upload_dirs` allowlist.\n\nPath attempted:   /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\nResolved to:      /home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-18-clipping1.mp4\n\nAllowed upload directories (file_upload_dirs):\n  - /home/runner/.composio/temp\n\nFix one of the following:\n\n  1. Recommended \u2014 move the file under an allowed directory, or add your\n     directory to the allowlist:\n       Composio(\n         file_upload_dirs=['/abs/path/to/uploads', '~/.composio/temp'],\n       )\n     Note: user-provided `file_upload_dirs` REPLACES the default\n     `~/.composio/temp`. Include it explicitly if you want staged uploads\n     to keep working.\n\n  2. Pass the file by URL (http://... / https://...) instead of a\n     filesystem path. URLs are never path-checked.\n\n  3. (Dangerous) Bypass the allowlist entirely by opting into automatic\n     file upload/download from any readable path:\n       Composio(dangerously_allow_auto_upload_download_files=True, ...)\n     WARNING: This lets a prompt-injected or misbehaving tool read ANY\n     file the process can access. Only enable it in trusted, sandboxed\n     environments. The built-in sensitive-path denylist (.ssh, .aws,\n     .env, private SSH keys, etc.) still applies unless you also set\n     `sensitive_file_upload_protection=False`.",
+    "youtube:Astro Tobby: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"quota_unit\": \"1/d/{project}\",\n          \"quota_location\": \"global\",\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\",\n          \"service\": \"youtube.googleapis.com\",\n          \"window_start_time\": \"1792306800\",\n          \"quota_limit_value\": \"966\",\n          \"consumer\": \"projects/1068312718386\",\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+   ],
+   "history": [
+    {
+     "at": "2026-10-18T14:06:54+00:00",
+     "from": "planned",
+     "to": "sourced"
+    },
+    {
+     "at": "2026-10-18T14:07:33+00:00",
+     "from": "sourced",
+     "to": "clipped"
+    },
+    {
+     "at": "2026-10-18T14:07:33+00:00",
+     "from": "clipped",
+     "to": "approved"
+    },
+    {
+     "at": "2026-10-18T18:48:04+00:00",
+     "from": "approved",
+     "to": "published"
+    },
+    {
+     "at": "2026-10-19T09:50:42+00:00",
+     "from": "published",
+     "to": "skipped"
+    }
+   ],
+   "id": "bnty_4nQb37p7bvjna-2026-10-18-clipping1",
+   "kind": "clipping",
+   "posts": {
+    "instagram:astr_osignal": {
+     "at": "2026-10-18T18:48:04.463620+00:00",
+     "target": {
+      "kinds": [
+       "clipping",
+       "ugc"
+      ],
+      "platform": "instagram",
+      "username": "astr_osignal"
+     },
+     "url": "https://www.instagram.com/reel/DepXIs-iAt3/",
+     "views": 169
+    },
+    "youtube:Astro Tobby": {
+     "at": "2026-10-19T07:22:55.768575+00:00",
+     "target": {
+      "channel": "Astro Tobby",
+      "kinds": [
+       "clipping"
+      ],
+      "platform": "youtube"
+     },
+     "url": "https://youtube.com/shorts/cVFv8XkNme4",
+     "views": 0
+    }
+   },
+   "published_at": "2026-10-18T18:48:04.464432+00:00",
+   "reason": "needs livestream proof (livestream campaigns are off)",
+   "score": 50.7,
+   "slot": 1,
+   "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/65KCashPayoutSportsbook.mov",
+   "status": "skipped",
+   "title": "Clip Content into Short Video (1k view minimum)",
+   "updated": "2026-10-19T09:50:42+00:00"
+  },
+  "bnty_4nQb37p7bvjna-2026-10-19-clipping0": {
+   "bad_sources": [
+    "100kCashCasinoSlots.mov",
+    "AnonIGPhoneNBAGame.mov",
+    "AnonMaskAPWatchMoney.mov",
+    "AnonMaskInPorsche.mov"
+   ],
+   "bounty_id": "bnty_4nQb37p7bvjna",
+   "clip": {
+    "caption": "Well, let me break it down for you like this, okay?\n@ANON_BETTING @AnonPicks",
+    "end": 44.29,
+    "hashtags": [
+     "approach",
+     "thousand",
+     "willing",
+     "shorts",
+     "clips"
+    ],
+    "hook": "Well, let me break it down for",
+    "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-19-clipping0.mp4",
+    "reason": "Claude skipped: no API credit, and the Claude plan failed too (Claude Code: claude-opus-5-5: Claude Code: Credit balance is too low / sonnet: Claude Code: Credit balance is too low / haiku: Claude Code: Credit balance is too low); heuristic score 24.5",
+    "start": 2.68,
+    "text": "Well, let me break it down for you like this, okay? We've seen tons of cases of John T. Porter, Terry Rosear, Malik Beasley, and other guys who've been indicted on crimes for illegal gambling and essentially throwing their lines to help random people that approach them for a few thousand bucks at a time sometimes. And so you wonder, are sports actually rigged? Well, let me tell you what, if people are willing to take bribes with 50 hundred million dollar contracts in the NBA for a couple thousan",
+    "title": "Well, let me break it down for you like this, okay?"
+   },
+   "created": "2026-10-18T22:25:59+00:00",
+   "date": "2026-10-19",
+   "errors": [
+    "youtube:Astro Tobby: no connected youtube account named 'astro tobby' (found: ['ca_0F8f5MFgMjpu: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr', 'ca_bWtdXryu11HE: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr'])"
+   ],
+   "history": [
+    {
+     "at": "2026-10-18T22:26:13+00:00",
+     "from": "planned",
+     "to": "sourced"
+    },
+    {
+     "at": "2026-10-18T22:26:13+00:00",
+     "from": "sourced",
+     "to": "planned"
+    },
+    {
+     "at": "2026-10-18T22:26:15+00:00",
+     "from": "planned",
+     "to": "sourced"
+    },
+    {
+     "at": "2026-10-18T22:26:18+00:00",
+     "from": "sourced",
+     "to": "planned"
+    },
+    {
+     "at": "2026-10-18T22:26:20+00:00",
+     "from": "planned",
+     "to": "sourced"
+    },
+    {
+     "at": "2026-10-18T22:26:23+00:00",
+     "from": "sourced",
+     "to": "planned"
+    },
+    {
+     "at": "2026-10-18T22:26:25+00:00",
+     "from": "planned",
+     "to": "sourced"
+    },
+    {
+     "at": "2026-10-18T22:26:27+00:00",
+     "from": "sourced",
+     "to": "planned"
+    },
+    {
+     "at": "2026-10-18T22:26:31+00:00",
+     "from": "planned",
+     "to": "sourced"
+    },
+    {
+     "at": "2026-10-18T22:28:24+00:00",
+     "from": "sourced",
+     "to": "clipped"
+    },
+    {
+     "at": "2026-10-18T22:28:24+00:00",
+     "from": "clipped",
+     "to": "approved"
+    },
+    {
+     "at": "2026-10-19T05:21:11+00:00",
+     "from": "approved",
+     "to": "published"
+    },
+    {
+     "at": "2026-10-19T09:50:42+00:00",
+     "from": "published",
+     "to": "skipped"
+    }
+   ],
+   "id": "bnty_4nQb37p7bvjna-2026-10-19-clipping0",
+   "kind": "clipping",
+   "posts": {
+    "instagram:astr_osignal": {
+     "at": "2026-10-19T05:21:11.742001+00:00",
+     "target": {
+      "kinds": [
+       "clipping",
+       "ugc"
+      ],
+      "platform": "instagram",
+      "username": "astr_osignal"
+     },
+     "url": "https://www.instagram.com/reel/Deqfjdhio0y/",
+     "views": 8
+    },
+    "youtube:Astro Tobby": {
+     "at": "2026-10-19T07:23:02.580909+00:00",
+     "target": {
+      "channel": "Astro Tobby",
+      "kinds": [
+       "clipping"
+      ],
+      "platform": "youtube"
+     },
+     "url": "https://youtube.com/shorts/yYJ6SxUci6Y",
+     "views": 0
+    }
+   },
+   "published_at": "2026-10-19T05:21:11.743311+00:00",
+   "reason": "needs livestream proof (livestream campaigns are off)",
+   "score": 50.7,
+   "slot": 0,
+   "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/AreSportsRigged.mov",
+   "status": "skipped",
+   "title": "Clip Content into Short Video (1k view minimum)",
+   "updated": "2026-10-19T09:50:42+00:00"
+  },
+  "bnty_4nQb37p7bvjna-2026-10-19-clipping1": {
+   "bad_sources": [
+    "100kCashCasinoSlots.mov",
+    "AnonIGPhoneNBAGame.mov",
+    "AnonMaskAPWatchMoney.mov",
+    "AnonMaskInPorsche.mov"
+   ],
+   "bounty_id": "bnty_4nQb37p7bvjna",
+   "clip": {
+    "caption": "Let me break it down for you in the most simple of forms, okay?\n@ANON_BETTING @AnonPicks",
+    "end": 46.3,
+    "hashtags": [
+     "doing",
+     "dollars",
+     "sports",
+     "shorts",
+     "clips"
+    ],
+    "hook": "Let me break it down for you",
+    "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-10-19-clipping1.mp4",
+    "reason": "Claude skipped: no API credit, and the Claude plan failed too (Claude Code: claude-opus-5-5: Claude Code: Credit balance is too low / sonnet: Claude Code: Credit balance is too low / haiku: Claude Code: Credit balance is too low); heuristic score 25.7",
+    "start": 5.03,
+    "text": "Let me break it down for you in the most simple of forms, okay? You've had guys like Terry Rozier, Malik Beasley, John T. Porter and so many others that have been indicted on illegal gambling charges and essentially rigging their lines, right? Now, they were doing this for a few thousand dollars in most cases, okay? And these guys had 50, a hundred million dollar contract. Some of them have earned hundreds of millions of dollars in their professional sports careers. So now ask yourself, when the",
+    "title": "Let me break it down for you in the most simple of forms, okay?"
+   },
+   "created": "2026-10-18T22:26:00+00:00",
+   "date": "2026-10-19",
+   "history": [
+    {
+     "at": "2026-10-18T22:28:24+00:00",
+     "from": "planned",
+     "to": "sourced"
+    },
+    {
+     "at": "2026-10-18T22:28:24+00:00",
+     "from": "sourced",
+     "to": "planned"
+    },
+    {
+     "at": "2026-10-18T22:28:25+00:00",
+     "from": "planned",
+     "to": "sourced"
+    },
+    {
+     "at": "2026-10-18T22:28:25+00:00",
+     "from": "sourced",
+     "to": "planned"
+    },
+    {
+     "at": "2026-10-18T22:28:25+00:00",
+     "from": "planned",
+     "to": "sourced"
+    },
+    {
+     "at": "2026-10-18T22:28:25+00:00",
+     "from": "sourced",
+     "to": "planned"
+    },
+    {
+     "at": "2026-10-18T22:28:26+00:00",
+     "from": "planned",
+     "to": "sourced"
+    },
+    {
+     "at": "2026-10-18T22:28:26+00:00",
+     "from": "sourced",
+     "to": "planned"
+    },
+    {
+     "at": "2026-10-18T22:28:30+00:00",
+     "from": "planned",
+     "to": "sourced"
+    },
+    {
+     "at": "2026-10-18T22:30:20+00:00",
+     "from": "sourced",
+     "to": "clipped"
+    },
+    {
+     "at": "2026-10-18T22:30:20+00:00",
+     "from": "clipped",
+     "to": "approved"
+    },
+    {
+     "at": "2026-10-19T09:50:42+00:00",
+     "from": "approved",
+     "to": "skipped"
+    }
+   ],
+   "id": "bnty_4nQb37p7bvjna-2026-10-19-clipping1",
+   "kind": "clipping",
+   "posts": {},
+   "reason": "needs livestream proof (livestream campaigns are off)",
+   "score": 50.7,
+   "slot": 1,
+   "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/AreSportsRigged2.mov",
+   "status": "skipped",
+   "title": "Clip Content into Short Video (1k view minimum)",
+   "updated": "2026-10-19T09:50:42+00:00"
+  },
+  "bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0": {
+   "bounty_id": "bnty_GLQ2nZ3EtqTUW",
+   "clip": {
+    "caption": "Clippers from any country + US UGC creators \ud83d\udc49 join Clip Influence: https://whop.com/clip-influence\nThey'll train you on clipping for brands sold in places like Target and Walmart. Once you're in, invite at least 1 clipper or UGC creator, then go to the Main Chat and say: \"Hey, I am new can you please help me. Where is the course material so I can start making money with clipping?\" Questions? Ask in the Clip Influence Support Chat.",
+    "end": 29.86,
+    "hashtags": [
+     "clipping",
+     "clipper",
+     "ugccreator",
+     "contentcreator",
+     "sidehustle"
+    ],
+    "hook": "If you've ever wanted to get into",
+    "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_GLQ2nZ3EtqTUW/clips/bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0.mp4",
+    "reason": "0 product images; Claude script; ElevenLabs voice",
+    "start": 0.0,
+    "text": "If you've ever wanted to get into clipping, this is your sign. Clip Influence is running clipping campaigns for brands sold in places like Target and Walmart, and they say the budgets are infinite. Clippers from any country can join, and so can UGC creators in the US. Never clipped before? They'll train you and walk you through how to get started. You join, go through the course material, and start posting consistently. Stuck on something? Just ask in the support chat. The link's in my caption i",
+    "title": "Clipping campaigns with infinite budgets? \ud83d\udc40"
+   },
+   "created": "2026-10-25T09:26:54+00:00",
+   "date": "2026-10-25",
+   "errors": [
+    "approved: youtube:DIJITOL NOMAD: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\",\n          \"quota_unit\": \"1/d/{project}\",\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\",\n          \"quota_limit_value\": \"966\",\n          \"quota_location\": \"global\",\n          \"service\": \"youtube.googleapis.com\",\n          \"window_start_time\": \"1792911600\",\n          \"consumer\": \"projects/1068312718386\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n; instagram:astr_osignal: no connected instagram account named 'astr_osignal' (found: ['ca_vS148UVo4Fzr: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_qxFZF17hT9uH: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_xRqF6iz5Pa42: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid'])",
+    "approved: youtube:DIJITOL NOMAD: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"window_start_time\": \"1792911600\",\n          \"service\": \"youtube.googleapis.com\",\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\",\n          \"quota_location\": \"global\",\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\",\n          \"quota_limit_value\": \"966\",\n          \"consumer\": \"projects/1068312718386\",\n          \"quota_unit\": \"1/d/{project}\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n; instagram:astr_osignal: no connected instagram account named 'astr_osignal' (found: ['ca_vS148UVo4Fzr: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_qxFZF17hT9uH: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_xRqF6iz5Pa42: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid'])",
+    "approved: youtube:DIJITOL NOMAD: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"quota_unit\": \"1/d/{project}\",\n          \"quota_limit_value\": \"966\",\n          \"window_start_time\": \"1792911600\",\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\",\n          \"quota_location\": \"global\",\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\",\n          \"service\": \"youtube.googleapis.com\",\n          \"consumer\": \"projects/1068312718386\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n; instagram:astr_osignal: no connected instagram account named 'astr_osignal' (found: ['ca_vS148UVo4Fzr: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_qxFZF17hT9uH: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_xRqF6iz5Pa42: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid'])",
+    "approved: youtube:DIJITOL NOMAD: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"quota_unit\": \"1/d/{project}\",\n          \"quota_limit_value\": \"966\",\n          \"quota_location\": \"global\",\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\",\n          \"consumer\": \"projects/1068312718386\",\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\",\n          \"service\": \"youtube.googleapis.com\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n; instagram:astr_osignal: no connected instagram account named 'astr_osignal' (found: ['ca_vS148UVo4Fzr: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_qxFZF17hT9uH: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_xRqF6iz5Pa42: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid'])",
+    "approved: youtube:DIJITOL NOMAD: no connected youtube account named 'dijitol nomad' (found: ['ca_0F8f5MFgMjpu: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr', 'ca_bWtdXryu11HE: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr']); instagram:astr_osignal: no connected instagram account named 'astr_osignal' (found: ['ca_vS148UVo4Fzr: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_qxFZF17hT9uH: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_xRqF6iz5Pa42: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid'])",
+    "approved: youtube:DIJITOL NOMAD: no connected youtube account named 'dijitol nomad' (found: ['ca_0F8f5MFgMjpu: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr', 'ca_bWtdXryu11HE: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr']); instagram:astr_osignal: no connected instagram account named 'astr_osignal' (found: ['ca_vS148UVo4Fzr: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_qxFZF17hT9uH: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_xRqF6iz5Pa42: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid'])",
+    "approved: youtube:DIJITOL NOMAD: no connected youtube account named 'dijitol nomad' (found: ['ca_0F8f5MFgMjpu: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr', 'ca_bWtdXryu11HE: YOUTUBE_GET_CHANNEL_STATISTICS failed: {\\n  \"error\": {\\n    \"code\": 403,\\n    \"message\": \"The request cannot be completed because you have exceeded your \\\\u003ca hr']); instagram:astr_osignal: no connected instagram account named 'astr_osignal' (found: ['ca_vS148UVo4Fzr: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_qxFZF17hT9uH: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid', 'ca_xRqF6iz5Pa42: INSTAGRAM_GET_USER_INFO failed: Failed to get user info (status 401). Response: {\"error\":{\"message\":\"Error validating access token: The session has been invalid'])"
+   ],
+   "history": [
+    {
+     "at": "2026-10-25T09:26:55+00:00",
+     "from": "planned",
+     "to": "sourced"
+    },
+    {
+     "at": "2026-10-25T09:27:56+00:00",
+     "from": "sourced",
+     "to": "clipped"
+    },
+    {
+     "at": "2026-10-25T09:27:56+00:00",
+     "from": "clipped",
+     "to": "approved"
+    },
+    {
+     "at": "2026-10-26T07:22:05+00:00",
+     "from": "approved",
+     "to": "published"
+    },
+    {
+     "at": "2026-10-26T07:22:08+00:00",
+     "from": "published",
+     "to": "ready_to_submit"
+    },
+    {
+     "at": "2026-10-26T07:22:08+00:00",
+     "from": "ready_to_submit",
+     "to": "awaiting_submission"
+    },
+    {
+     "at": "2026-10-26T07:34:24+00:00",
+     "from": "awaiting_submission",
+     "to": "skipped"
+    }
+   ],
+   "id": "bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0",
+   "kind": "ugc",
+   "posts": {
+    "instagram:astr_osignal": {
+     "at": "2026-10-26T07:22:05.222586+00:00",
+     "target": {
+      "kinds": [
+       "clipping",
+       "ugc"
+      ],
+      "platform": "instagram",
+      "username": "astr_osignal"
+     },
+     "url": "https://www.instagram.com/reel/De8u_p1ALG1/",
+     "views": 0
+    },
+    "youtube:DIJITOL NOMAD": {
+     "at": "2026-10-26T07:21:27.477891+00:00",
+     "target": {
+      "channel": "DIJITOL NOMAD",
+      "kinds": [
+       "ugc"
+      ],
+      "platform": "youtube"
+     },
+     "url": "https://youtube.com/shorts/vWFJ7KTYU7w",
+     "views": 0
+    }
+   },
+   "published_at": "2026-10-26T07:22:05.223833+00:00",
+   "score": 67.8,
+   "slot": 0,
+   "source": "",
+   "status": "skipped",
+   "submission": {
+    "bounty_id": "bnty_GLQ2nZ3EtqTUW",
+    "caption": "Source:  @ 0.0s-29.9s. Posts: https://youtube.com/shorts/vWFJ7KTYU7w, https://www.instagram.com/reel/De8u_p1ALG1/",
+    "urls": [
+     "https://youtube.com/shorts/vWFJ7KTYU7w",
+     "https://www.instagram.com/reel/De8u_p1ALG1/"
+    ]
+   },
+   "title": "JOIN AND GET PAID (CLIPPERS ANY COUNTRY & AMERICAN UGC CREATORS ONLY)",
+   "updated": "2026-10-26T07:34:24+00:00",
+   "reason": "not a video bounty: asks for join + invite + chat screenshots, a post link would be denied"
   }
+ },
+ "seen": {
+  "summary:2026-10-18": "2026-10-18T14:07:41+00:00",
+  "summary:2026-10-19": "2026-10-19T15:36:02+00:00",
+  "summary:2026-10-20": "2026-10-20T13:34:16+00:00",
+  "summary:2026-10-21": "2026-10-21T13:46:50+00:00",
+  "summary:2026-10-22": "2026-10-22T13:47:34+00:00",
+  "summary:2026-10-23": "2026-10-23T13:25:14+00:00",
+  "summary:2026-10-24": "2026-10-24T12:41:01+00:00",
+  "summary:2026-10-25": "2026-10-25T13:11:41+00:00"
+ }
 }
