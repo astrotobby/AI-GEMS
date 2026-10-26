@@ -504,17 +504,67 @@
           "at": "2026-10-25T09:27:56+00:00",
           "from": "clipped",
           "to": "approved"
+        },
+        {
+          "at": "2026-10-26T07:22:05+00:00",
+          "from": "approved",
+          "to": "published"
+        },
+        {
+          "at": "2026-10-26T07:22:08+00:00",
+          "from": "published",
+          "to": "ready_to_submit"
+        },
+        {
+          "at": "2026-10-26T07:22:08+00:00",
+          "from": "ready_to_submit",
+          "to": "awaiting_submission"
         }
       ],
       "id": "bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0",
       "kind": "ugc",
-      "posts": {},
+      "posts": {
+        "instagram:astr_osignal": {
+          "at": "2026-10-26T07:22:05.222586+00:00",
+          "target": {
+            "kinds": [
+              "clipping",
+              "ugc"
+            ],
+            "platform": "instagram",
+            "username": "astr_osignal"
+          },
+          "url": "https://www.instagram.com/reel/De8u_p1ALG1/",
+          "views": 0
+        },
+        "youtube:DIJITOL NOMAD": {
+          "at": "2026-10-26T07:21:27.477891+00:00",
+          "target": {
+            "channel": "DIJITOL NOMAD",
+            "kinds": [
+              "ugc"
+            ],
+            "platform": "youtube"
+          },
+          "url": "https://youtube.com/shorts/vWFJ7KTYU7w",
+          "views": 0
+        }
+      },
+      "published_at": "2026-10-26T07:22:05.223833+00:00",
       "score": 67.8,
       "slot": 0,
       "source": "",
-      "status": "approved",
+      "status": "awaiting_submission",
+      "submission": {
+        "bounty_id": "bnty_GLQ2nZ3EtqTUW",
+        "caption": "Source:  @ 0.0s-29.9s. Posts: https://youtube.com/shorts/vWFJ7KTYU7w, https://www.instagram.com/reel/De8u_p1ALG1/",
+        "urls": [
+          "https://youtube.com/shorts/vWFJ7KTYU7w",
+          "https://www.instagram.com/reel/De8u_p1ALG1/"
+        ]
+      },
       "title": "JOIN AND GET PAID (CLIPPERS ANY COUNTRY & AMERICAN UGC CREATORS ONLY)",
-      "updated": "2026-10-25T09:27:56+00:00"
+      "updated": "2026-10-26T07:22:08+00:00"
     }
   },
   "seen": {
