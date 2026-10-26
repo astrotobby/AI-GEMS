@@ -38,21 +38,34 @@ class Composio:
         dirs = [str(Path(d).resolve()) for d in upload_dirs or []] + [str(Path("~/.composio/temp").expanduser())]
         self.sdk = SDK(api_key=api_key, dangerously_allow_auto_upload_download_files=True, file_upload_dirs=dirs)
         self.user_id = user_id
+        self._owner: dict[str, str] = {}  # connected account id -> the Composio user it belongs to
 
-    def account_for(self, toolkit: str) -> str | None:
-        """An ACTIVE connected account for a toolkit: this user's first, else any in the project
-        (connections made from a different Composio user/session still work)."""
+    def accounts(self, toolkit: str) -> list:
+        """ACTIVE connected accounts for a toolkit: this user's first, then any other user's in the
+        project (a reconnect made from a dashboard or MCP session lands under a different user)."""
+        out, ids = [], set()
         for users in ([self.user_id] if self.user_id else [], None):
             accts = self.sdk.connected_accounts.list(user_ids=users or None, toolkit_slugs=[toolkit],
                                                      statuses=["ACTIVE"], account_type="ALL")
-            items = getattr(accts, "items", []) or []
-            if items:
-                return items[0].id
-        return None
+            for a in getattr(accts, "items", []) or []:
+                if a.id in ids:
+                    continue
+                ids.add(a.id)
+                owner = getattr(a, "user_id", None)
+                if owner:
+                    self._owner[a.id] = owner
+                out.append(a)
+        return out
+
+    def account_for(self, toolkit: str) -> str | None:
+        accts = self.accounts(toolkit)
+        return accts[0].id if accts else None
 
     def run(self, slug: str, args: dict, account_id: str | None = None) -> dict:
-        # no account_id -> Composio uses the default connected account for that toolkit
-        res = self.sdk.tools.execute(slug, args, user_id=self.user_id or None,
+        # no account_id -> Composio uses the default connected account for that toolkit;
+        # an account made under another Composio user must be called as that user
+        user = self._owner.get(account_id or "", self.user_id)
+        res = self.sdk.tools.execute(slug, args, user_id=user or None,
                                      connected_account_id=account_id or None,
                                      dangerously_skip_version_check=True)
         res = dict(res) if not isinstance(res, dict) else res
@@ -79,11 +92,8 @@ def resolve(c: Composio, target: dict) -> dict:
         return target  # Composio's default account for the toolkit
     key = f"{target['platform']}:{want}"
     if key not in _RESOLVED:
-        accts = c.sdk.connected_accounts.list(
-            user_ids=[c.user_id] if c.user_id else None,
-            toolkit_slugs=[target["platform"]], statuses=["ACTIVE"])
         seen = []
-        for a in getattr(accts, "items", []) or []:
+        for a in c.accounts(target["platform"]):
             try:
                 if target["platform"] == "youtube":
                     data = c.run("YOUTUBE_GET_CHANNEL_STATISTICS", {"mine": True, "part": "snippet"}, a.id)
