@@ -1,4 +1,4 @@
-"""CLI: python -m clipper {check,scan,run,status,approve,skip,done,clip}"""
+"""CLI: python -m clipper {check,connect,scan,run,status,approve,skip,done,clip}"""
 from __future__ import annotations
 
 import argparse
@@ -18,6 +18,10 @@ def main(argv: list[str] | None = None) -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     sub.add_parser("check", help="test every credential (read-only + one Telegram message)")
+
+    cn = sub.add_parser("connect", help="send a Composio login link for a platform to your Telegram")
+    cn.add_argument("toolkit", choices=["instagram", "youtube"])
+    cn.add_argument("auth_config", nargs="?", default="", help="auth config id (ac_...), e.g. your own Google app")
 
     sc = sub.add_parser("scan", help="rank open Whop campaigns (no side effects)")
     sc.add_argument("--from-file", type=Path, help="score a saved bounties JSON instead of calling Whop")
@@ -52,6 +56,16 @@ def main(argv: list[str] | None = None) -> int:
     if a.cmd == "check":
         from . import check
         return 0 if check.run(cfg) else 1
+
+    if a.cmd == "connect":
+        from .notify import Telegram
+        from .publish import Composio
+        url = Composio(cfg.composio_api_key, cfg.composio_user_id).link(a.toolkit, a.auth_config)
+        tg = Telegram(cfg.telegram_bot_token, cfg.telegram_chat_id)
+        sent = tg.send(f"🔗 Connect {a.toolkit} to the clipper (link expires soon, open it on your phone or PC):\n{url}",
+                       private=True)
+        print("connect link sent to Telegram" if sent else f"could not send to Telegram: {tg.last_error}")
+        return 0 if sent else 1
 
     if a.cmd == "scan":
         data = json.loads(a.from_file.read_text())["data"] if a.from_file else None
