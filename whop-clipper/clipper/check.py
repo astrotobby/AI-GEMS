@@ -72,6 +72,11 @@ def composio(cfg: Settings) -> list[str]:
                 who = publish.find(data, "title")
             elif t["platform"] == "tiktok":
                 who = "@" + publish.tiktok_username(c, r.get("account_id"))
+                opts = publish.find(c.run("TIKTOK_QUERY_CREATOR_INFO", {}, r.get("account_id")),
+                                    "privacy_level_options") or []
+                if "PUBLIC_TO_EVERYONE" not in opts:
+                    raise publish.PublishError(f"{who} connected, but TikTok only allows {opts or 'no'} posts - "
+                                               "public posting needs the app's Content Posting API audit")
             else:
                 data = c.run("INSTAGRAM_GET_USER_INFO", {"ig_user_id": "me", "fields": "id,username"},
                              r.get("account_id"))
