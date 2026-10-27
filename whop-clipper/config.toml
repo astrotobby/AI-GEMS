@@ -45,7 +45,12 @@ platform = "instagram"
 username = "astr_osignal"    # all videos
 kinds = ["clipping", "ugc"]
 
-# your connected TikTok (add username = "yourhandle" to pin one if you connect several)
 [[targets]]
 platform = "tiktok"
-kinds = ["clipping", "ugc"]
+username = "astrosignal1"    # clipping videos
+kinds = ["clipping"]
+
+[[targets]]
+platform = "tiktok"
+username = "kijanadigital"   # UGC videos
+kinds = ["ugc"]

@@ -11,6 +11,9 @@ from . import config
 from .pipeline import Pipeline
 
 
+TIKTOK_SCOPES = "user.info.basic,user.info.profile,user.info.stats,video.list,video.upload,video.publish"
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="clipper", description="Whop clipping automation")
     ap.add_argument("--config", type=Path)
@@ -22,6 +25,7 @@ def main(argv: list[str] | None = None) -> int:
     cn = sub.add_parser("connect", help="send a Composio login link for a platform to your Telegram")
     cn.add_argument("toolkit", choices=["instagram", "youtube", "tiktok"])
     cn.add_argument("auth_config", nargs="?", default="", help="auth config id (ac_...), e.g. your own Google app")
+    cn.add_argument("--account", default="", help="which account to log in with, shown in the message")
 
     sc = sub.add_parser("scan", help="rank open Whop campaigns (no side effects)")
     sc.add_argument("--from-file", type=Path, help="score a saved bounties JSON instead of calling Whop")
@@ -60,10 +64,14 @@ def main(argv: list[str] | None = None) -> int:
     if a.cmd == "connect":
         from .notify import Telegram
         from .publish import Composio
-        url = Composio(cfg.composio_api_key, cfg.composio_user_id).link(a.toolkit, a.auth_config)
+        own_app = ()
+        if a.toolkit == "tiktok" and cfg.tiktok_client_key and cfg.tiktok_client_secret:
+            own_app = (cfg.tiktok_client_key, cfg.tiktok_client_secret, TIKTOK_SCOPES)
+        url = Composio(cfg.composio_api_key, cfg.composio_user_id).link(a.toolkit, a.auth_config, own_app)
         tg = Telegram(cfg.telegram_bot_token, cfg.telegram_chat_id)
-        sent = tg.send(f"🔗 Connect {a.toolkit} to the clipper (link expires soon, open it on your phone or PC):\n{url}",
-                       private=True)
+        who = f" - log in as {a.account}" if a.account else ""
+        sent = tg.send(f"🔗 Connect {a.toolkit} to the clipper{who} (link expires soon, open it on your phone or PC):"
+                       f"\n{url}", private=True)
         print("connect link sent to Telegram" if sent else f"could not send to Telegram: {tg.last_error}")
         return 0 if sent else 1
 

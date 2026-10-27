@@ -599,3 +599,27 @@ def test_join_and_screenshot_bounties_are_not_video_jobs():
          "gross_reward_amount": 0.4, "net_reward_amount": 0.28, "business_goal_type": None}
     s = scoring.score(b, country="KE", goal_types=["clipping", "ugc_content"])
     assert not s.eligible and any("screenshots" in x for x in s.blockers)
+
+
+def test_connect_registers_your_own_app_when_the_project_has_none():
+    from types import SimpleNamespace as NS
+    from clipper import publish
+
+    made = {}
+
+    def create(toolkit, auth_config):
+        made.update(toolkit=toolkit, cfg=auth_config)
+        return NS(auth_config=NS(id="ac_tiktok"))
+
+    def link(user_id, auth_config_id, **kw):
+        made["linked"] = auth_config_id
+        return NS(redirect_url="https://connect.composio.dev/link/lk_t")
+
+    c = publish.Composio.__new__(publish.Composio)
+    c.user_id = "pipeline"
+    c.sdk = NS(client=NS(auth_configs=NS(list=lambda toolkit_slug: NS(items=[]), create=create)),
+               connected_accounts=NS(link=link))
+    assert c.link("tiktok", own_app=("key", "secret", "video.publish")) == "https://connect.composio.dev/link/lk_t"
+    assert made["toolkit"] == {"slug": "tiktok"} and made["linked"] == "ac_tiktok"
+    assert made["cfg"]["type"] == "use_custom_auth"
+    assert made["cfg"]["credentials"] == {"client_id": "key", "client_secret": "secret", "scopes": "video.publish"}

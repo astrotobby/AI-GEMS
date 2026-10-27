@@ -62,14 +62,29 @@ class Composio:
         accts = self.accounts(toolkit)
         return accts[0].id if accts else None
 
-    def link(self, toolkit: str, auth_config_id: str = "") -> str:
+    def create_own_app_config(self, toolkit: str, client_id: str, client_secret: str,
+                              scopes: str = "") -> str:
+        """Register your own OAuth app (e.g. your approved TikTok app) as this project's auth config."""
+        creds = {"client_id": client_id, "client_secret": client_secret}
+        if scopes:
+            creds["scopes"] = scopes
+        res = self.sdk.client.auth_configs.create(toolkit={"slug": toolkit}, auth_config={
+            "type": "use_custom_auth", "auth_scheme": "OAUTH2", "name": f"clipper-{toolkit}",
+            "credentials": creds})
+        return res.auth_config.id
+
+    def link(self, toolkit: str, auth_config_id: str = "", own_app: tuple[str, ...] = ()) -> str:
         """A Composio Connect link that adds a login for `toolkit` to this project and user. Uses the
-        given auth config (e.g. your own Google OAuth app) or the newest one for the toolkit."""
+        given auth config (e.g. your own Google OAuth app), the newest one for the toolkit, or -
+        when there is none and own_app=(client_id, client_secret, scopes) - registers that app."""
         if not auth_config_id:
             configs = getattr(self.sdk.client.auth_configs.list(toolkit_slug=toolkit), "items", []) or []
-            if not configs:
+            if configs:
+                auth_config_id = max(configs, key=lambda x: str(getattr(x, "created_at", ""))).id
+            elif own_app:
+                auth_config_id = self.create_own_app_config(toolkit, *own_app)
+            else:
                 raise PublishError(f"no {toolkit} auth config in this Composio project - create one first")
-            auth_config_id = max(configs, key=lambda x: str(getattr(x, "created_at", ""))).id
         req = self.sdk.connected_accounts.link(user_id=self.user_id or "default",
                                                auth_config_id=auth_config_id, allow_multiple=True)
         return str(req.redirect_url)

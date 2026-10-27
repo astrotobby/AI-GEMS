@@ -63,12 +63,15 @@ class Settings:
     telegram_bot_token: str = ""
     telegram_chat_id: str = ""
     pexels_api_key: str = ""
+    tiktok_client_key: str = ""     # your approved TikTok developer app (for connect tiktok)
+    tiktok_client_secret: str = ""
     elevenlabs_api_key: str = ""
 
 
 SECRET_FIELDS = {
     "whop_token", "composio_api_key", "composio_user_id",
     "anthropic_api_key", "claude_oauth_token", "telegram_bot_token", "telegram_chat_id", "pexels_api_key", "elevenlabs_api_key",
+    "tiktok_client_key", "tiktok_client_secret",
 }
 
 
@@ -105,6 +108,8 @@ def load(path: Path | None = None) -> Settings:
     s.telegram_bot_token = secret("TELEGRAM_BOT_TOKEN")
     s.telegram_chat_id = secret("TELEGRAM_CHAT_ID")
     s.pexels_api_key = secret("PEXELS_API_KEY")
+    s.tiktok_client_key = secret("TIKTOK_CLIENT_KEY")
+    s.tiktok_client_secret = secret("TIKTOK_CLIENT_SECRET")
     s.elevenlabs_api_key = secret("ELEVENLABS_API_KEY")
     if s.telegram_chat:  # an explicit chat id in config.toml wins over the secret
         s.telegram_chat_id = str(s.telegram_chat)
