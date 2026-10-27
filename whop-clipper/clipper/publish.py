@@ -1,6 +1,7 @@
 """Post clips and read their view counts through Composio (YouTube Shorts, Instagram Reels)."""
 from __future__ import annotations
 
+import time
 from pathlib import Path
 from typing import Any
 
@@ -95,8 +96,8 @@ def target_key(target: dict) -> str:
 
 
 def resolve(c: Composio, target: dict) -> dict:
-    """Find the Composio connected account behind a target by YouTube channel title or Instagram
-    username, so config.toml can say "Astro Tobby" instead of an opaque ca_... id."""
+    """Find the Composio connected account behind a target by YouTube channel title or Instagram /
+    TikTok username, so config.toml can say "Astro Tobby" instead of an opaque ca_... id."""
     if target.get("account_id"):
         return target
     want = (target.get("channel") or target.get("username") or "").strip().lower()
@@ -110,6 +111,8 @@ def resolve(c: Composio, target: dict) -> dict:
                 if target["platform"] == "youtube":
                     data = c.run("YOUTUBE_GET_CHANNEL_STATISTICS", {"mine": True, "part": "snippet"}, a.id)
                     name = str(find(data, "title") or "")
+                elif target["platform"] == "tiktok":
+                    name = tiktok_username(c, a.id)
                 else:
                     data = c.run("INSTAGRAM_GET_USER_INFO", {"ig_user_id": "me", "fields": "id,username"}, a.id)
                     name = str(find(data, "username") or "")
@@ -184,14 +187,58 @@ def instagram(c: Composio, target: dict, video: Path, caption: str, tags: list[s
     return link
 
 
+def tiktok_username(c: Composio, account_id: str | None) -> str:
+    data = c.run("TIKTOK_GET_USER_STATS", {"fields": ["username", "display_name"]}, account_id)
+    return str(find(data, "username") or "")
+
+
+TIKTOK_POLL_SECONDS = (5, 10, 20, 30, 30, 30, 30, 30, 30, 30, 30, 30)  # ~5 min, under the 30/min limit
+
+
+def tiktok(c: Composio, target: dict, video: Path, caption: str, tags: list[str], aigc: bool) -> str:
+    acct = target.get("account_id")
+    # direct posts must use a privacy level the account offers; a private post is useless for Whop
+    info = c.run("TIKTOK_QUERY_CREATOR_INFO", {}, acct)
+    options = find(info, "privacy_level_options") or []
+    if "PUBLIC_TO_EVERYONE" not in options:
+        raise PublishError(f"TikTok only allows {options or 'no'} privacy for this app - public posting needs "
+                           "the app's Content Posting API audit in the TikTok developer portal")
+    up = c.run("TIKTOK_UPLOAD_VIDEO", {
+        "file_to_upload": str(video),
+        "caption": f"{caption}\n\n{hashtags(tags)}"[:2200],
+        "publish": True,
+        "privacy_level": "PUBLIC_TO_EVERYONE",
+        "is_aigc": aigc,
+    }, acct)
+    publish_id = find(up, "publish_id")
+    if not publish_id:
+        raise PublishError(f"TikTok upload returned no publish_id: {str(up)[:300]}")
+    for wait in TIKTOK_POLL_SECONDS:
+        time.sleep(wait)
+        st = c.run("TIKTOK_FETCH_PUBLISH_STATUS", {"publish_id": str(publish_id)}, acct)
+        status = str(find(st, "status") or "")
+        if status == "FAILED":
+            raise PublishError(f"TikTok rejected the post: {find(st, 'fail_reason') or str(st)[:300]}")
+        if status == "PUBLISH_COMPLETE":
+            ids = find(st, "publicaly_available_post_id", "publicly_available_post_id") or []
+            post_id = ids[0] if isinstance(ids, list) and ids else ids
+            if not post_id:
+                break  # still in moderation; TikTok assigns the public id later
+            user = target.get("username") or tiktok_username(c, acct)
+            return f"https://www.tiktok.com/@{user}/video/{post_id}"
+    raise PublishError(f"TikTok post {publish_id} not public yet (still processing or in moderation)")
+
+
 def post(c: Composio, target: dict, video: Path, title: str, caption: str, tags: list[str],
-         privacy: str = "public", category: str = "24") -> str:
+         privacy: str = "public", category: str = "24", aigc: bool = False) -> str:
     target = resolve(c, dict(target))
     platform = target["platform"]
     if platform == "youtube":
         return youtube(c, target, video, title, caption, tags, privacy, category)
     if platform == "instagram":
         return instagram(c, target, video, caption, tags)
+    if platform == "tiktok":
+        return tiktok(c, target, video, caption, tags, aigc)
     raise PublishError(f"unsupported platform {platform}")
 
 
@@ -214,4 +261,10 @@ def views(c: Composio, target: dict, url: str) -> int:
         data = c.run("INSTAGRAM_GET_IG_MEDIA_INSIGHTS", {"ig_media_id": media_id, "metric": ["views"]},
                      target.get("account_id"))
         return int(find(data, "value") or 0)
+    if target["platform"] == "tiktok":
+        vid = url.rstrip("/").split("/")[-1]
+        listing = c.run("TIKTOK_LIST_VIDEOS", {"max_count": 20}, target.get("account_id"))
+        items = find(listing, "videos") or []
+        hit = next((v for v in items if isinstance(v, dict) and str(v.get("id")) == vid), None)
+        return int((hit or {}).get("view_count") or 0)
     return 0

@@ -35,6 +35,7 @@ class Brief:
     repeatable: bool = False       # campaign accepts several posts from the same person
     needs_real_person: bool = False  # face/voice of a real person, or AI content forbidden
     product_links: list[str] = field(default_factory=list)  # links the post must carry (UGC)
+    screenshot_proof: bool = False  # proof is screenshots of joining/inviting, not a posted video
 
 
 def _num(text: str, k: str | None) -> int:
@@ -69,6 +70,9 @@ def parse(description: str, title: str = "") -> Brief:
             break
     if MINUTES_RE.search(text) or "long-form" in low or "long form" in low:
         b.long_form = True
+
+    # e.g. "submit a screenshot of you inside the main chat" / "invite at least 1 other clipper"
+    b.screenshot_proof = bool(re.search(r"screenshot of (you|the friend|your)|invite at least \d", low))
 
     b.livestream_required = "livestream" in low or "live stream" in low or "go live" in low
     b.needs_physical_presence = any(w in low for w in (

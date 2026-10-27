@@ -20,7 +20,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("check", help="test every credential (read-only + one Telegram message)")
 
     cn = sub.add_parser("connect", help="send a Composio login link for a platform to your Telegram")
-    cn.add_argument("toolkit", choices=["instagram", "youtube"])
+    cn.add_argument("toolkit", choices=["instagram", "youtube", "tiktok"])
     cn.add_argument("auth_config", nargs="?", default="", help="auth config id (ac_...), e.g. your own Google app")
 
     sc = sub.add_parser("scan", help="rank open Whop campaigns (no side effects)")

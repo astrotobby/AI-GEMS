@@ -41,7 +41,7 @@ class Settings:
     claude_model: str = "claude-opus-5-5"
     ugc_voice_id: str = "EXAVITQu4vr4xnSDxMaL"  # ElevenLabs "Sarah" - natural, conversational
 
-    # publishing targets: {"platform": "youtube"|"instagram", "kinds": [...], and one of
+    # publishing targets: {"platform": "youtube"|"instagram"|"tiktok", "kinds": [...], and one of
     # "channel" (YouTube channel title), "username" (Instagram) or "account_id" (Composio ca_...)}
     targets: list[dict] = field(default_factory=list)
     youtube_privacy: str = "public"

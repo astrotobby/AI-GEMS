@@ -70,6 +70,8 @@ def composio(cfg: Settings) -> list[str]:
             if t["platform"] == "youtube":
                 data = c.run("YOUTUBE_GET_CHANNEL_STATISTICS", {"mine": True, "part": "snippet"}, r.get("account_id"))
                 who = publish.find(data, "title")
+            elif t["platform"] == "tiktok":
+                who = "@" + publish.tiktok_username(c, r.get("account_id"))
             else:
                 data = c.run("INSTAGRAM_GET_USER_INFO", {"ig_user_id": "me", "fields": "id,username"},
                              r.get("account_id"))
