@@ -84,8 +84,9 @@ class Pipeline:
     # ---- 1. discover --------------------------------------------------------
     def scan(self, bounties: list[dict] | None = None) -> list[scoring.Scored]:
         bounties = bounties if bounties is not None else self.campaigns()
+        platforms = {t["platform"] for t in self.cfg.targets} or scoring.OUR_PLATFORMS
         return scoring.rank(bounties, country=self.cfg.country, goal_types=self.cfg.goal_types,
-                            min_clip=self.cfg.min_clip_seconds)
+                            min_clip=self.cfg.min_clip_seconds, platforms=platforms)
 
     # ---- schedule helpers ------------------------------------------------------
     @property
@@ -308,7 +309,8 @@ class Pipeline:
                 continue  # already live - never double-post
             try:
                 url = publish.post(self.composio, t, Path(c["path"]), c["title"], c["caption"],
-                                   c["hashtags"], self.cfg.youtube_privacy, self.cfg.youtube_category_id)
+                                   c["hashtags"], self.cfg.youtube_privacy, self.cfg.youtube_category_id,
+                                   aigc=job.get("kind") == "ugc")
                 job["posts"][key] = {"url": url, "at": datetime.now(timezone.utc).isoformat(), "views": 0,
                                      "target": t}
                 self.ledger.save()

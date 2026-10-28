@@ -148,7 +148,7 @@ def pipe(tmp_path, monkeypatch):
         p._composio = object()
         posted = []
 
-        def fake_post(c, target, video, title, caption, tags, privacy, category):
+        def fake_post(c, target, video, title, caption, tags, privacy, category, aigc=False):
             posted.append(target.get("channel") or target["platform"])
             return f"https://{target['platform']}.example/{len(posted)}"
 
@@ -433,10 +433,10 @@ def test_platform_that_failed_is_retried_on_a_later_run(pipe, monkeypatch):
     real_post = __import__("clipper.publish", fromlist=["post"]).post
     quota = {"on": True}
 
-    def flaky(c, target, *a):
+    def flaky(c, target, *a, **kw):
         if target["platform"] == "youtube" and quota["on"]:
             raise RuntimeError("403 quota exceeded")
-        return real_post(c, target, *a)
+        return real_post(c, target, *a, **kw)
     monkeypatch.setattr("clipper.publish.post", flaky)
     p.advance(job)
     assert job["status"] == "published" and list(job["posts"]) == ["instagram:astr_osignal"]
@@ -539,3 +539,87 @@ def test_connect_link_uses_newest_auth_config_for_this_user():
     assert made == {"user": "pipeline", "ac": "ac_new"}
     c.link("youtube", "ac_mine")
     assert made["ac"] == "ac_mine"
+
+
+def test_tiktok_posts_public_and_returns_the_video_url(monkeypatch):
+    from clipper import publish
+    monkeypatch.setattr(publish, "TIKTOK_POLL_SECONDS", (0, 0))
+
+    class C:
+        calls = []
+
+        def run(self, slug, args, account_id=None):
+            self.calls.append((slug, args))
+            return {
+                "TIKTOK_QUERY_CREATOR_INFO": {"data": {"privacy_level_options": ["PUBLIC_TO_EVERYONE", "SELF_ONLY"]}},
+                "TIKTOK_UPLOAD_VIDEO": {"data": {"publish_id": "v_pub_1"}},
+                "TIKTOK_FETCH_PUBLISH_STATUS": {"data": {"status": "PUBLISH_COMPLETE",
+                                                         "publicaly_available_post_id": [7312345]}},
+                "TIKTOK_GET_USER_STATS": {"data": {"username": "astrotobby"}},
+            }[slug]
+
+    c = C()
+    url = publish.post(c, {"platform": "tiktok"}, Path("clip.mp4"), "t", "cap", ["clipping"], aigc=True)
+    assert url == "https://www.tiktok.com/@astrotobby/video/7312345"
+    upload = dict(c.calls)["TIKTOK_UPLOAD_VIDEO"]
+    assert upload["privacy_level"] == "PUBLIC_TO_EVERYONE" and upload["is_aigc"] is True
+    assert upload["publish"] is True and upload["file_to_upload"] == "clip.mp4"
+
+
+def test_tiktok_refuses_private_only_apps():
+    import pytest
+    from clipper import publish
+
+    class C:
+        def run(self, slug, args, account_id=None):
+            assert slug == "TIKTOK_QUERY_CREATOR_INFO", "must not upload when it can't go public"
+            return {"data": {"privacy_level_options": ["SELF_ONLY"]}}
+
+    with pytest.raises(publish.PublishError, match="audit"):
+        publish.post(C(), {"platform": "tiktok"}, Path("clip.mp4"), "t", "cap", [])
+
+
+def test_tiktok_only_campaigns_are_eligible_once_a_tiktok_target_exists():
+    from clipper import scoring
+    b = {"id": "b1", "title": "Clip our podcast", "description": "Post clips on TikTok only.",
+         "status": "open", "spots_remaining": 5, "budget_amount": 100, "gross_paid_out_amount": 0,
+         "gross_reward_amount": 1, "net_reward_amount": 1, "business_goal_type": "clipping"}
+    blocked = scoring.score(b, country="KE", goal_types=["clipping"])
+    assert any("only accepts tiktok" in x for x in blocked.blockers)
+    ok = scoring.score(b, country="KE", goal_types=["clipping"], platforms={"youtube", "instagram", "tiktok"})
+    assert not any("only accepts" in x for x in ok.blockers)
+
+
+def test_join_and_screenshot_bounties_are_not_video_jobs():
+    from clipper import scoring
+    b = {"id": "b2", "title": "JOIN AND GET PAID (CLIPPERS ANY COUNTRY & AMERICAN UGC CREATORS ONLY)",
+         "description": "You must invite at least 1 other clipper.\nWhat to submit:\n"
+                        "-A screenshot of you inside of the Main Chat",
+         "status": "open", "spots_remaining": 5, "budget_amount": 30, "gross_paid_out_amount": 0,
+         "gross_reward_amount": 0.4, "net_reward_amount": 0.28, "business_goal_type": None}
+    s = scoring.score(b, country="KE", goal_types=["clipping", "ugc_content"])
+    assert not s.eligible and any("screenshots" in x for x in s.blockers)
+
+
+def test_connect_registers_your_own_app_when_the_project_has_none():
+    from types import SimpleNamespace as NS
+    from clipper import publish
+
+    made = {}
+
+    def create(toolkit, auth_config):
+        made.update(toolkit=toolkit, cfg=auth_config)
+        return NS(auth_config=NS(id="ac_tiktok"))
+
+    def link(user_id, auth_config_id, **kw):
+        made["linked"] = auth_config_id
+        return NS(redirect_url="https://connect.composio.dev/link/lk_t")
+
+    c = publish.Composio.__new__(publish.Composio)
+    c.user_id = "pipeline"
+    c.sdk = NS(client=NS(auth_configs=NS(list=lambda toolkit_slug: NS(items=[]), create=create)),
+               connected_accounts=NS(link=link))
+    assert c.link("tiktok", own_app=("key", "secret", "video.publish")) == "https://connect.composio.dev/link/lk_t"
+    assert made["toolkit"] == {"slug": "tiktok"} and made["linked"] == "ac_tiktok"
+    assert made["cfg"]["type"] == "use_custom_auth"
+    assert made["cfg"]["credentials"] == {"client_id": "key", "client_secret": "secret", "scopes": "video.publish"}

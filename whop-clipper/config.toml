@@ -29,7 +29,7 @@ youtube_privacy = "public"
 youtube_category_id = "24"   # Entertainment
 
 # Where videos get posted. Accounts are matched by channel title / Instagram username among
-# your Composio connections, so no ids are needed. Only platforms a campaign allows are used.
+# your Composio connections, so no ids are needed (connect them with the "connect" command). Only platforms a campaign allows are used.
 [[targets]]
 platform = "youtube"
 channel = "Astro Tobby"      # @astrotobyc - clipping videos
@@ -44,3 +44,13 @@ kinds = ["ugc"]
 platform = "instagram"
 username = "astr_osignal"    # all videos
 kinds = ["clipping", "ugc"]
+
+[[targets]]
+platform = "tiktok"
+username = "astrosignal1"    # clipping videos
+kinds = ["clipping"]
+
+[[targets]]
+platform = "tiktok"
+username = "kijanadigital"   # UGC videos
+kinds = ["ugc"]

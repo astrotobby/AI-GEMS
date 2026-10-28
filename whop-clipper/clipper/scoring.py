@@ -48,7 +48,8 @@ def budget_left(b: dict) -> float:
     return float(b.get("budget_amount") or 0) - float(b.get("gross_paid_out_amount") or 0)
 
 
-def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20) -> Scored:
+def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20,
+          platforms: set[str] | frozenset[str] = OUR_PLATFORMS) -> Scored:
     br = brief_mod.parse(b.get("description") or "", b.get("title") or "")
     s = Scored(bounty=b, brief=br, kind=kind_of(b))
     net = float(b.get("net_reward_amount") or 0)
@@ -70,8 +71,10 @@ def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20) -
     goal = b.get("business_goal_type")
     if s.kind is None or (goal is not None and goal not in goal_types):
         s.blockers.append(f"not a clipping/UGC campaign (goal: {goal})")
-    if br.platforms and not set(br.platforms) & OUR_PLATFORMS:
-        s.blockers.append(f"only accepts {', '.join(br.platforms)} (we post to YouTube + Instagram)")
+    if br.platforms and not set(br.platforms) & set(platforms):
+        s.blockers.append(f"only accepts {', '.join(br.platforms)} (we post to {', '.join(sorted(platforms))})")
+    if br.screenshot_proof:
+        s.blockers.append("wants screenshots of joining/inviting, not a posted video")
     if br.needs_physical_presence:
         s.blockers.append("needs you physically on camera/location")
     s.eligible = not s.blockers
@@ -138,6 +141,8 @@ def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20) -
     return s
 
 
-def rank(bounties: list[dict], *, country: str, goal_types: list[str], min_clip: int = 20) -> list[Scored]:
-    scored = [score(b, country=country, goal_types=goal_types, min_clip=min_clip) for b in bounties]
+def rank(bounties: list[dict], *, country: str, goal_types: list[str], min_clip: int = 20,
+         platforms: set[str] | frozenset[str] = OUR_PLATFORMS) -> list[Scored]:
+    scored = [score(b, country=country, goal_types=goal_types, min_clip=min_clip, platforms=platforms)
+              for b in bounties]
     return sorted(scored, key=lambda x: (x.eligible, x.automatable, x.score), reverse=True)
