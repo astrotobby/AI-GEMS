@@ -27,10 +27,17 @@ Routing: **clipping → YouTube Astro Tobby (@astrotobyc)**, **UGC → YouTube D
 → **Instagram @astr_osignal** (only on platforms each campaign accepts). Accounts are matched by
 name among your Composio connections, see `[[targets]]` in `config.toml`.
 
-If a day comes up short, the only expected reason is **no eligible campaign**: none open to Kenya,
+If a day comes up short, the summary says why in numbers (e.g. "67 campaigns open: 61 not a
+clipping/UGC campaign, 2 budget exhausted, 1 livestream proof required"). The only expected reason
+is **no eligible campaign**: none open to Kenya,
 none accepting YouTube/Instagram, or every one needs a real person on camera, long-form editing or
-footage that isn't provided. Temporary errors (YouTube quota, a slow Instagram upload) are retried on
-the next runs; posting gets 8 attempts before it gives up.
+footage that isn't provided. Temporary errors (a slow Instagram upload) are retried on
+the next runs; posting gets 8 attempts before it gives up. Running out of a platform's **daily upload
+quota** doesn't use up attempts: that platform is skipped for the rest of the run and the job waits for
+the reset (up to 2 days). Account lookups are remembered in the ledger, so they no longer spend
+YouTube quota on every run. If YouTube quota keeps running out, the Composio YouTube login is sharing
+Google's quota with other Composio users: create your own Google Cloud OAuth client, add it as a
+YouTube auth config in Composio and reconnect, which gives you your own daily quota.
 
 **UGC videos** are made from the brief: a script (Claude when `ANTHROPIC_API_KEY` has credit or `CLAUDE_CODE_OAUTH_TOKEN` is set, a plain
 template otherwise), a free Piper voiceover, and a 9:16 slideshow with big captions; the product
@@ -59,7 +66,7 @@ views), then stops at `needs_livestream` and sends you a Telegram checklist (lin
 counts, clip file, timestamps). You go live on Whop, submit, then mark it `done <job>`.
 Campaigns without that rule go all the way through by themselves.
 
-Campaigns that are skipped on purpose: engagement farming (likes/follows/DMs), anything needing
+Campaigns that are skipped on purpose: engagement farming (likes/follows/DMs), "join + invite + send screenshots" bounties (a video link would be denied), anything needing
 you physically somewhere, long-form edits with scripts/charts, and campaigns asking for many
 clips in a single submission.
 
@@ -80,8 +87,11 @@ clips in a single submission.
 2. **Targets**: in `config.toml`, fill `account_id` for each `[[targets]]` with the Composio
    connected-account id (`ca_...`, Composio dashboard → Connected accounts). Connected now:
    YouTube *Astro Tobby* and *DIJITOL NOMAD*, Instagram *@astr_osignal* and *@astro_tobby*.
-   TikTok and Facebook aren't connected in Composio yet; connect them there and add a target if
-   you want them (the publisher currently supports YouTube and Instagram).
+   TikTok and Facebook aren't connected in Composio yet. The publisher supports YouTube, Instagram
+   and TikTok: connect TikTok in Composio and uncomment the TikTok `[[targets]]` block in
+   `config.toml`. TikTok only allows public posts from audited apps; `check` tells you if your
+   connection can only post privately, and the clipper then skips TikTok rather than post a
+   0-view private video. Several campaigns accept **only** TikTok, so this widens the pool.
 
 3. **Check it**: every push to the feature branch runs `python -m clipper check`, which tests each
    connection without posting (and sends the report to Telegram). Run it any time locally too.

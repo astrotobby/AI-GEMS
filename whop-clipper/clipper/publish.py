@@ -1,12 +1,40 @@
-"""Post clips and read their view counts through Composio (YouTube Shorts, Instagram Reels)."""
+"""Post clips and read their view counts through Composio (YouTube Shorts, Instagram Reels,
+TikTok)."""
 from __future__ import annotations
 
+import re
+import shutil
+import time
 from pathlib import Path
 from typing import Any
+
+STAGING = Path("~/.composio/temp").expanduser()
+QUOTA_RE = re.compile(r"quota|rate.?limit|\b429\b|too many requests|exceeded your", re.I)
 
 
 class PublishError(RuntimeError):
     pass
+
+
+class QuotaError(PublishError):
+    """The platform's daily limit is used up; retrying before it resets only wastes attempts."""
+
+
+def is_quota(err: BaseException | str) -> bool:
+    return isinstance(err, QuotaError) or bool(QUOTA_RE.search(str(err)))
+
+
+def stage(video: Path) -> Path:
+    """Copy a clip into Composio's own temp folder. Newer SDKs refuse uploads from anywhere
+    outside their allowlist, and the SDK's temp dir is always on it."""
+    video = Path(video)
+    if not video.exists():
+        raise PublishError(f"clip file missing: {video}")
+    STAGING.mkdir(parents=True, exist_ok=True)
+    dst = STAGING / video.name
+    if not dst.exists() or dst.stat().st_size != video.stat().st_size:
+        shutil.copyfile(video, dst)
+    return dst
 
 
 def find(obj: Any, *keys: str) -> Any:
@@ -35,7 +63,7 @@ class Composio:
 
         # Local file paths are uploaded for file fields (videoFile / video_file). Newer SDKs only
         # upload from an allowlist of directories, so allow our clips folder (plus the SDK's own temp).
-        dirs = [str(Path(d).resolve()) for d in upload_dirs or []] + [str(Path("~/.composio/temp").expanduser())]
+        dirs = [str(Path(d).resolve()) for d in upload_dirs or []] + [str(STAGING)]
         self.sdk = SDK(api_key=api_key, dangerously_allow_auto_upload_download_files=True, file_upload_dirs=dirs)
         self.user_id = user_id
         self._owner: dict[str, str] = {}  # connected account id -> the Composio user it belongs to
@@ -82,11 +110,25 @@ class Composio:
                                      dangerously_skip_version_check=True)
         res = dict(res) if not isinstance(res, dict) else res
         if not res.get("successful", True):
-            raise PublishError(f"{slug} failed: {res.get('error')}")
+            msg = f"{slug} failed: {res.get('error')}"
+            raise (QuotaError if is_quota(msg) else PublishError)(msg)
         return res.get("data") or {}
 
 
+# "platform:name" -> connected account id. Pipeline points this at the ledger so lookups survive
+# between runs: each YouTube lookup costs API quota, and failed lookups hid quota errors before.
 _RESOLVED: dict[str, str] = {}
+
+
+def use_cache(store: dict[str, str]) -> None:
+    global _RESOLVED
+    _RESOLVED = store
+
+
+def forget(target: dict) -> None:
+    """Drop a cached account (e.g. after a reconnect the old id stops working)."""
+    want = (target.get("channel") or target.get("username") or "").strip().lower()
+    _RESOLVED.pop(f"{target['platform']}:{want}", None)
 
 
 def target_key(target: dict) -> str:
@@ -110,6 +152,9 @@ def resolve(c: Composio, target: dict) -> dict:
                 if target["platform"] == "youtube":
                     data = c.run("YOUTUBE_GET_CHANNEL_STATISTICS", {"mine": True, "part": "snippet"}, a.id)
                     name = str(find(data, "title") or "")
+                elif target["platform"] == "tiktok":
+                    data = c.run("TIKTOK_QUERY_CREATOR_INFO", {}, a.id)
+                    name = str(find(data, "creator_username", "creator_nickname") or "")
                 else:
                     data = c.run("INSTAGRAM_GET_USER_INFO", {"ig_user_id": "me", "fields": "id,username"}, a.id)
                     name = str(find(data, "username") or "")
@@ -121,7 +166,11 @@ def resolve(c: Composio, target: dict) -> dict:
                 _RESOLVED[key] = a.id
                 break
         else:
-            raise PublishError(f"no connected {target['platform']} account named {want!r} (found: {seen})")
+            msg = f"no connected {target['platform']} account named {want!r} (found: {seen})"
+            if seen and all(is_quota(x) for x in seen):
+                raise QuotaError(f"{target['platform']} daily API quota used up - could not look up "
+                                 f"{want!r}; retrying after the reset. {seen[0][:200]}")
+            raise PublishError(msg)
     target["account_id"] = _RESOLVED[key]
     return target
 
@@ -139,7 +188,7 @@ def youtube(c: Composio, target: dict, video: Path, title: str, caption: str, ta
         "tags": tags,
         "categoryId": category,
         "privacyStatus": privacy,
-        "videoFile": str(video),
+        "videoFile": str(stage(video)),
     }, target.get("account_id"))
     vid = find(data, "id", "videoId", "video_id")
     if not isinstance(vid, str):
@@ -164,7 +213,7 @@ def instagram(c: Composio, target: dict, video: Path, caption: str, tags: list[s
     ig = ig_user_id(c, target)
     container = c.run("INSTAGRAM_POST_IG_USER_MEDIA", {
         "ig_user_id": ig,
-        "video_file": str(video),
+        "video_file": str(stage(video)),
         "media_type": "REELS",
         "share_to_feed": True,
         "caption": f"{caption}\n\n{hashtags(tags)}",
@@ -184,14 +233,56 @@ def instagram(c: Composio, target: dict, video: Path, caption: str, tags: list[s
     return link
 
 
+def tiktok(c: Composio, target: dict, video: Path, caption: str, tags: list[str], ai: bool = False) -> str:
+    """Direct-post a video. TikTok only lets audited apps post publicly; a private post earns no
+    views, so refuse instead of silently posting SELF_ONLY."""
+    acct = target.get("account_id")
+    info = c.run("TIKTOK_QUERY_CREATOR_INFO", {}, acct)
+    options = find(info, "privacy_level_options") or []
+    if "PUBLIC_TO_EVERYONE" not in options:
+        raise PublishError(f"TikTok only allows {options or 'private'} posts for this connection (the "
+                           "Composio TikTok app is not audited for public posting) - post manually or use "
+                           "your own audited TikTok app in Composio")
+    user = str(find(info, "creator_username") or target.get("username") or "")
+    up = c.run("TIKTOK_UPLOAD_VIDEO", {
+        "file_to_upload": str(stage(video)),
+        "caption": f"{caption}\n\n{hashtags(tags)}"[:2200],
+        "publish": True,
+        "privacy_level": "PUBLIC_TO_EVERYONE",
+        "is_aigc": ai,
+    }, acct)
+    publish_id = find(up, "publish_id")
+    if not publish_id:
+        raise PublishError(f"TikTok upload returned no publish_id: {str(up)[:300]}")
+    delay = 5
+    for _ in range(12):  # TikTok processes asynchronously; about 4 minutes in total
+        time.sleep(delay)
+        st = c.run("TIKTOK_FETCH_PUBLISH_STATUS", {"publish_id": str(publish_id)}, acct)
+        ids = find(st, "publicaly_available_post_id") or []
+        status = str(find(st, "status") or "")
+        if ids:
+            return f"https://www.tiktok.com/@{user}/video/{ids[0]}"
+        if "FAIL" in status.upper():
+            raise PublishError(f"TikTok publish failed: {find(st, 'fail_reason') or status}")
+        delay = min(delay * 2, 30)
+    raise PublishError(f"TikTok still processing publish {publish_id}; check the app")
+
+
 def post(c: Composio, target: dict, video: Path, title: str, caption: str, tags: list[str],
-         privacy: str = "public", category: str = "24") -> str:
+         privacy: str = "public", category: str = "24", ai: bool = False) -> str:
     target = resolve(c, dict(target))
     platform = target["platform"]
-    if platform == "youtube":
-        return youtube(c, target, video, title, caption, tags, privacy, category)
-    if platform == "instagram":
-        return instagram(c, target, video, caption, tags)
+    try:
+        if platform == "youtube":
+            return youtube(c, target, video, title, caption, tags, privacy, category)
+        if platform == "instagram":
+            return instagram(c, target, video, caption, tags)
+        if platform == "tiktok":
+            return tiktok(c, target, video, caption, tags, ai)
+    except PublishError as e:
+        if not is_quota(e) and not str(e).startswith("clip file missing"):
+            forget(target)  # maybe a stale cached account; look it up afresh next time
+        raise
     raise PublishError(f"unsupported platform {platform}")
 
 
@@ -214,4 +305,17 @@ def views(c: Composio, target: dict, url: str) -> int:
         data = c.run("INSTAGRAM_GET_IG_MEDIA_INSIGHTS", {"ig_media_id": media_id, "metric": ["views"]},
                      target.get("account_id"))
         return int(find(data, "value") or 0)
+    if target["platform"] == "tiktok":
+        vid = url.rstrip("/").split("/")[-1]
+        cursor = None
+        for _ in range(5):  # newest first, 20 per page; clips are tracked for 14 days at most
+            args = {"max_count": 20} | ({"cursor": cursor} if cursor else {})
+            data = c.run("TIKTOK_LIST_VIDEOS", args, target.get("account_id"))
+            for v in find(data, "videos") or []:
+                if isinstance(v, dict) and str(v.get("id")) == vid:
+                    return int(v.get("view_count") or 0)
+            cursor = find(data, "cursor")
+            if not find(data, "has_more") or not cursor:
+                break
+        return 0
     return 0

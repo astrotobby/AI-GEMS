@@ -44,3 +44,11 @@ kinds = ["ugc"]
 platform = "instagram"
 username = "astr_osignal"    # all videos
 kinds = ["clipping", "ugc"]
+
+# TikTok: connect TikTok in Composio, then uncomment. Note TikTok only allows PUBLIC posts from
+# audited apps; if `python -m clipper check` says "only allows SELF_ONLY", the post would be private
+# (0 views), so the clipper refuses and you post those manually instead.
+# [[targets]]
+# platform = "tiktok"
+# username = "your_tiktok_username"
+# kinds = ["clipping", "ugc"]

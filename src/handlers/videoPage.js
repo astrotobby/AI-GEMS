@@ -4,7 +4,7 @@
 //   { youtubeId, title, summary, productIds:["p1","p3"], tiktok, instagram, facebook }
 // Your make.com content pipeline writes these records (see README "Seeding videos").
 import { CONFIG, PRODUCTS } from "../../config.js";
-import { renderProductCard, escapeHtml } from "./products.js";
+import { renderProductCard, escapeHtml, liveProducts } from "./products.js";
 import { bump, bumpDim } from "../lib/kv.js";
 
 export async function handleVideoPage(request, env, ctx, videoId) {
@@ -21,7 +21,7 @@ export async function handleVideoPage(request, env, ctx, videoId) {
   // Track the view without blocking the response.
   ctx.waitUntil(Promise.all([bump(env, "video_view"), bumpDim(env, "video", videoId)]));
 
-  const products = PRODUCTS.filter((p) => (meta.productIds || []).includes(p.id)).slice(0, 3);
+  const products = liveProducts().filter((p) => (meta.productIds || []).includes(p.id)).slice(0, 3);
   const pageUrl = `https://${CONFIG.SITE_DOMAIN}/video/${videoId}`;
   const title = escapeHtml(meta.title || "Video");
   const desc = escapeHtml((meta.summary || "").slice(0, 155));

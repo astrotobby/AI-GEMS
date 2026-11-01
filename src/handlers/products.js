@@ -1,9 +1,16 @@
 // TASK 1 — Dynamic Shopify product rotation (geo-aware, session-sticky).
-import { CONFIG, PRODUCTS } from "../../config.js";
+import { CONFIG, PRODUCTS, isPlaceholder } from "../../config.js";
+
+// Products that can really be sold: the store is set and the card has a real image.
+export function liveProducts() {
+  if (isPlaceholder(CONFIG.SHOPIFY_STORE)) return [];
+  return PRODUCTS.filter((p) => !isPlaceholder(p.image) && !isPlaceholder(p.handle));
+}
 
 function eligible(region) {
-  const list = PRODUCTS.filter((p) => p.regions.includes("*") || p.regions.includes(region));
-  return list.length ? list : PRODUCTS; // never return empty
+  const live = liveProducts();
+  const list = live.filter((p) => p.regions.includes("*") || p.regions.includes(region));
+  return list.length ? list : live; // regional first, else anything sellable (may be empty)
 }
 
 // Deterministic-ish random pick of one product, sticky per visitor for 24h.
@@ -12,7 +19,7 @@ export async function pickProduct(env, region, visitorId) {
   try {
     const cached = await env.MZ_SESSIONS.get(key);
     if (cached) {
-      const found = PRODUCTS.find((p) => p.id === cached);
+      const found = liveProducts().find((p) => p.id === cached);
       if (found) return found;
     }
   } catch (err) {
@@ -20,6 +27,7 @@ export async function pickProduct(env, region, visitorId) {
   }
 
   const pool = eligible(region);
+  if (pool.length === 0) return null; // nothing configured yet: no card rather than a broken one
   // randomly select from 3-5 candidates to avoid banner fatigue
   const candidates = pool.slice().sort(() => Math.random() - 0.5).slice(0, Math.min(5, pool.length));
   const chosen = candidates[Math.floor(Math.random() * candidates.length)];
@@ -35,6 +43,7 @@ export async function pickProduct(env, region, visitorId) {
 // Renders a self-contained, mobile-first product card.
 // The Buy button routes through /mz/click so we can attribute the click.
 export function renderProductCard(product, ctx = "page") {
+  if (!product) return "";
   const buyUrl = `/mz/click?type=product&pid=${encodeURIComponent(product.id)}&ctx=${encodeURIComponent(ctx)}`;
   return `
 <div class="mz-product-card" data-pid="${product.id}">

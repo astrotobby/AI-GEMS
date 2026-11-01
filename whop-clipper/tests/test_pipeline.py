@@ -148,7 +148,7 @@ def pipe(tmp_path, monkeypatch):
         p._composio = object()
         posted = []
 
-        def fake_post(c, target, video, title, caption, tags, privacy, category):
+        def fake_post(c, target, video, title, caption, tags, privacy, category, ai=False):
             posted.append(target.get("channel") or target["platform"])
             return f"https://{target['platform']}.example/{len(posted)}"
 
@@ -433,14 +433,15 @@ def test_platform_that_failed_is_retried_on_a_later_run(pipe, monkeypatch):
     real_post = __import__("clipper.publish", fromlist=["post"]).post
     quota = {"on": True}
 
-    def flaky(c, target, *a):
+    def flaky(c, target, *a, **kw):
         if target["platform"] == "youtube" and quota["on"]:
             raise RuntimeError("403 quota exceeded")
-        return real_post(c, target, *a)
+        return real_post(c, target, *a, **kw)
     monkeypatch.setattr("clipper.publish.post", flaky)
     p.advance(job)
     assert job["status"] == "published" and list(job["posts"]) == ["instagram:astr_osignal"]
     quota["on"] = False  # next run, after the quota reset
+    p._quota_hit.clear()  # what run() does at the start of each run
     p.advance(job)
     assert sorted(job["posts"]) == ["instagram:astr_osignal", "youtube:Astro Tobby"]
     assert sorted(p.posted) == ["Astro Tobby", "instagram"]  # each platform exactly once
@@ -539,3 +540,121 @@ def test_connect_link_uses_newest_auth_config_for_this_user():
     assert made == {"user": "pipeline", "ac": "ac_new"}
     c.link("youtube", "ac_mine")
     assert made["ac"] == "ac_mine"
+
+
+# ---- not-a-video bounties, quota handling, staging, TikTok -----------------------------
+
+JOIN_BOUNTY = {
+    "title": "JOIN AND GET PAID (CLIPPERS ANY COUNTRY)",
+    "description": ("You must join this community: https://whop.com/x\n-You must invite at least 1 other "
+                    "clipper\nWhat to submit:\n-A screenshot of you inside the Main Chat\n"
+                    "-A screenshot of the friend you invited"),
+}
+
+
+def test_join_and_invite_bounty_is_not_a_video_bounty():
+    from clipper import brief
+    assert brief.parse(JOIN_BOUNTY["description"], JOIN_BOUNTY["title"]).not_video
+    # a normal clipping brief that also wants an analytics screenshot is still a video bounty
+    clip = ("Clip the podcast into Shorts.\nWhat to submit: the link to your video and a screenshot "
+            "of the analytics.")
+    assert not brief.parse(clip, "Clip podcast").not_video
+    assert not brief.parse(ANON["description"], ANON["title"]).not_video
+
+
+def test_not_video_bounty_is_blocked_in_scoring():
+    b = dict(ANON, **JOIN_BOUNTY, business_goal_type=None)
+    s = scoring.score(b, country="KE", goal_types=["clipping", "ugc_content"])
+    assert not s.eligible and any("not a video bounty" in x for x in s.blockers)
+
+
+def test_quota_errors_wait_without_burning_attempts(pipe, monkeypatch):
+    b = dict(ANON, description=ANON["description"].replace("livestream", "video"))
+    p = pipe(b, views=0)
+    job = clipped_job(p, b)
+    calls = []
+
+    def out_of_quota(c, target, *a, **kw):
+        calls.append(target["platform"])
+        raise RuntimeError("429 Quota exceeded for quota metric 'Video Uploads'")
+    monkeypatch.setattr("clipper.publish.post", out_of_quota)
+    for _ in range(10):  # more than the 8-attempt cap
+        p.advance(job)
+    assert job["status"] == "approved" and "daily upload limit" in job["waiting"]
+    assert not any(e.startswith("approved") for e in job.get("errors", []))
+    assert calls.count("youtube") == 1  # not retried again in the same run
+
+
+def test_stage_copies_clip_into_composio_temp(tmp_path, monkeypatch):
+    from clipper import publish
+    monkeypatch.setattr(publish, "STAGING", tmp_path / "composio-temp")
+    clip = tmp_path / "work" / "a.mp4"
+    clip.parent.mkdir()
+    clip.write_bytes(b"video")
+    out = publish.stage(clip)
+    assert out.parent == tmp_path / "composio-temp" and out.read_bytes() == b"video"
+    with pytest.raises(publish.PublishError):
+        publish.stage(tmp_path / "missing.mp4")
+
+
+class FakeComposio:
+    def __init__(self, responses):
+        self.responses, self.calls, self._owner, self.user_id = responses, [], {}, ""
+
+    def run(self, slug, args, account_id=None):
+        self.calls.append((slug, args))
+        r = self.responses[slug]
+        return r.pop(0) if isinstance(r, list) else r
+
+
+def test_tiktok_posts_publicly_and_reads_views(tmp_path, monkeypatch):
+    from clipper import publish
+    monkeypatch.setattr(publish, "STAGING", tmp_path / "t")
+    monkeypatch.setattr(publish.time, "sleep", lambda s: None)
+    clip = tmp_path / "c.mp4"
+    clip.write_bytes(b"x")
+    c = FakeComposio({
+        "TIKTOK_QUERY_CREATOR_INFO": {"data": {"creator_username": "astro",
+                                               "privacy_level_options": ["PUBLIC_TO_EVERYONE", "SELF_ONLY"]}},
+        "TIKTOK_UPLOAD_VIDEO": {"data": {"publish_id": "p1"}},
+        "TIKTOK_FETCH_PUBLISH_STATUS": [{"data": {"status": "PROCESSING_UPLOAD"}},
+                                        {"data": {"status": "PUBLISH_COMPLETE", "publicaly_available_post_id": ["777"]}}],
+        "TIKTOK_LIST_VIDEOS": {"data": {"videos": [{"id": "777", "view_count": 1234}], "has_more": False}},
+    })
+    target = {"platform": "tiktok", "account_id": "ca_1"}
+    url = publish.post(c, target, clip, "t", "cap", ["a"], ai=True)
+    assert url == "https://www.tiktok.com/@astro/video/777"
+    upload = next(a for s, a in c.calls if s == "TIKTOK_UPLOAD_VIDEO")
+    assert upload["privacy_level"] == "PUBLIC_TO_EVERYONE" and upload["is_aigc"] is True
+    assert publish.views(c, target, url) == 1234
+
+
+def test_tiktok_refuses_private_only_posting(tmp_path, monkeypatch):
+    from clipper import publish
+    clip = tmp_path / "c.mp4"
+    clip.write_bytes(b"x")
+    c = FakeComposio({"TIKTOK_QUERY_CREATOR_INFO": {"data": {"privacy_level_options": ["SELF_ONLY"]}}})
+    with pytest.raises(publish.PublishError, match="private|SELF_ONLY"):
+        publish.post(c, {"platform": "tiktok", "account_id": "ca_1"}, clip, "t", "c", [])
+    assert [s for s, _ in c.calls] == ["TIKTOK_QUERY_CREATOR_INFO"]
+
+
+def test_youtube_lookup_failing_on_quota_says_quota():
+    from clipper import publish
+
+    class C(FakeComposio):
+        def accounts(self, toolkit):
+            return [type("A", (), {"id": "ca_1"})()]
+
+        def run(self, slug, args, account_id=None):
+            raise publish.QuotaError("YOUTUBE_GET_CHANNEL_STATISTICS failed: 403 exceeded your quota")
+    publish.use_cache({})
+    with pytest.raises(publish.QuotaError):
+        publish.resolve(C({}), {"platform": "youtube", "channel": "Astro Tobby"})
+
+
+def test_landscape_explains_an_empty_day(pipe):
+    p = pipe(ANON)
+    p.cfg.allow_livestream_campaigns = False
+    why = p.landscape(p.scan([ANON, dict(ANON, id="b2", business_goal_type="post_engagement")]))
+    assert "2 campaigns open" in why and "livestream" in why and "not a clipping/UGC campaign" in why
