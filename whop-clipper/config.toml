@@ -6,7 +6,7 @@ country = "KE"               # only campaigns open to this country
 max_active_campaigns = 2
 clips_per_campaign = 1
 min_score = 40
-allow_livestream_campaigns = false  # only campaigns the pipeline can finish, incl. the Whop submission
+allow_livestream_campaigns = true   # livestream campaigns are made + posted, then handed to you (needs_livestream) to go live and submit
 goal_types = ["clipping", "ugc_content"]
 whop_via = "connector"       # Whop runs through your Whop connector (see CONNECTOR_TASK.md)
 telegram_chat = "6295868962" # @astrotobby - where updates and clips for review are sent
@@ -44,3 +44,11 @@ kinds = ["ugc"]
 platform = "instagram"
 username = "astr_osignal"    # all videos
 kinds = ["clipping", "ugc"]
+
+# TikTok: connect TikTok in Composio, then uncomment. Note TikTok only allows PUBLIC posts from
+# audited apps; if `python -m clipper check` says "only allows SELF_ONLY", the post would be private
+# (0 views), so the clipper refuses and you post those manually instead.
+# [[targets]]
+# platform = "tiktok"
+# username = "your_tiktok_username"
+# kinds = ["clipping", "ugc"]

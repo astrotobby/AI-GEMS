@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
+    "check": "node scripts/check-config.mjs",
+    "predeploy": "node scripts/check-config.mjs",
     "deploy": "wrangler deploy",
     "tail": "wrangler tail",
     "seed-video": "node -e \"console.log('use: wrangler kv key put --binding=MZ_VIDEOS')\""

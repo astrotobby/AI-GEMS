@@ -39,7 +39,7 @@ def composio(cfg: Settings) -> list[str]:
     try:
         accts = c.sdk.connected_accounts.list(
             user_ids=[cfg.composio_user_id] if cfg.composio_user_id else None,
-            toolkit_slugs=["youtube", "instagram"], statuses=["ACTIVE"])
+            toolkit_slugs=["youtube", "instagram", "tiktok"], statuses=["ACTIVE"])
         for a in getattr(accts, "items", []) or []:
             tk = getattr(getattr(a, "toolkit", None), "slug", "?")
             out.append(f"   • {tk}: {a.id}")
@@ -70,6 +70,13 @@ def composio(cfg: Settings) -> list[str]:
             if t["platform"] == "youtube":
                 data = c.run("YOUTUBE_GET_CHANNEL_STATISTICS", {"mine": True, "part": "snippet"}, r.get("account_id"))
                 who = publish.find(data, "title")
+            elif t["platform"] == "tiktok":
+                data = c.run("TIKTOK_QUERY_CREATOR_INFO", {}, r.get("account_id"))
+                who = "@" + str(publish.find(data, "creator_username"))
+                opts = publish.find(data, "privacy_level_options") or []
+                if "PUBLIC_TO_EVERYONE" not in opts:
+                    raise publish.PublishError(f"{who} connected, but TikTok only allows {opts} posts "
+                                               "for this app - public posting needs an audited TikTok app")
             else:
                 data = c.run("INSTAGRAM_GET_USER_INFO", {"ig_user_id": "me", "fields": "id,username"},
                              r.get("account_id"))

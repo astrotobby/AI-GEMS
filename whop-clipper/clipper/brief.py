@@ -35,6 +35,7 @@ class Brief:
     repeatable: bool = False       # campaign accepts several posts from the same person
     needs_real_person: bool = False  # face/voice of a real person, or AI content forbidden
     product_links: list[str] = field(default_factory=list)  # links the post must carry (UGC)
+    not_video: bool = False        # deliverable is screenshots / joining / inviting, not a posted video
 
 
 def _num(text: str, k: str | None) -> int:
@@ -87,4 +88,22 @@ def parse(description: str, title: str = "") -> Brief:
     if m:
         b.clip_count = int(m.group(1))
     b.vertical = "16:9" not in low or "9:16" in low
+    b.not_video = _not_video(low)
     return b
+
+
+POST_LINK_RE = re.compile(
+    r"(link|url)s?\s+(to|of|for)\s+(your|the|each)\s+(\w+\s+)?(video|post|clip|reel|short|tiktok)|"
+    r"(video|post|clip|reel|shorts?|tiktok|youtube|instagram)\s+(link|url)s?")
+
+
+def _not_video(low: str) -> bool:
+    """True when the proof asked for is screenshots of joining/inviting/chatting, not a posted video.
+    Those bounties score well on paper but a clip link would simply be denied."""
+    m = re.search(r"what (you need )?to submit|submission requirements|to submit:|submit:", low)
+    section = low[m.start():] if m else low
+    asks_screens = "screenshot" in section or "screen recording" in section or "screenrecording" in section
+    wants_post = bool(POST_LINK_RE.search(section))
+    referral = bool(re.search(r"invite (at least )?\d+|invite (a|one|another) (friend|clipper|person)|"
+                              r"must join (this|our) (community|server|discord|whop)", low))
+    return asks_screens and not wants_post and (referral or m is not None)

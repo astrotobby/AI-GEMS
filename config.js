@@ -43,6 +43,13 @@ export function webhookConfigured(url) {
   return Boolean(url) && !url.includes("REPLACE");
 }
 
+// True when a value still holds a REPLACE_ placeholder (or the sample Shopify host).
+// Placeholder ad tags / products are never injected: a broken <script> earns nothing and
+// a product card pointing at your-store.myshopify.com sends buyers to a dead page.
+export function isPlaceholder(value) {
+  return !value || String(value).includes("REPLACE") || String(value).includes("your-store.myshopify.com");
+}
+
 // =============================================================================
 // PRODUCT CATALOG — Task 1 / Task 3 / Task 6
 // `regions` controls geo targeting. Valid regions:

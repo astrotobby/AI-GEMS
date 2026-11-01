@@ -34,6 +34,10 @@ class Pipeline:
         self.tg = Telegram(cfg.telegram_bot_token, cfg.telegram_chat_id)
         self._whop: Whop | None = None
         self._composio: publish.Composio | None = None
+        self._quota_hit: dict[str, str] = {}  # platform -> error, for this run only
+        self.shortfall: dict[str, str] = {}
+        # remember which Composio account is which channel, so runs don't spend quota looking it up
+        publish.use_cache(self.ledger.data.setdefault("accounts", {}))
 
     # ---- lazy clients (scan/clip work without social credentials) ----------
     @property
@@ -119,7 +123,8 @@ class Pipeline:
         """Fill today's quota per kind (e.g. 2 clipping + 2 UGC) from the best campaigns, one slot each."""
         new, day = [], self.today()
         per_slot = {k: max(1, -(-n // len(self.cfg.slots))) for k, n in self.cfg.daily_quota.items()}
-        self.shortfall: dict[str, str] = {}
+        self.shortfall = {}
+        why = self.landscape(ranked)
         for kind, quota in self.cfg.daily_quota.items():
             have = len(self.jobs_on(day, kind))
             pool = [s for s in ranked if s.kind == kind and s.eligible and s.automatable
@@ -138,7 +143,7 @@ class Pipeline:
                     break
                 if pick is None:
                     self.shortfall[kind] = (f"{quota - have} of {quota} {kind} not planned: no more eligible "
-                                            f"{kind} campaigns open to {self.cfg.country}")
+                                            f"{kind} campaigns open to {self.cfg.country}. {why}")
                     break
                 slot = min(have // per_slot[kind], len(self.cfg.slots) - 1)
                 d = self.cfg.work_dir / pick.id
@@ -154,6 +159,24 @@ class Pipeline:
                              f"${pick.bounty.get('net_reward_amount')} net, {pick.bounty.get('spots_remaining')} spots"
                              + ("\n⚠️ " + "; ".join(pick.human_steps) if pick.human_steps else ""))
         return new
+
+    def landscape(self, ranked: list[scoring.Scored]) -> str:
+        """One line on why the campaign list is thin, e.g. for the daily summary."""
+        reasons: dict[str, int] = {}
+        for s in ranked:
+            if s.blockers:
+                key = s.blockers[0].split(" (")[0]
+            elif not s.automatable:
+                key = s.human_steps[0].split(" - ")[0] if s.human_steps else "needs manual work"
+            elif s.brief.livestream_required and not self.cfg.allow_livestream_campaigns:
+                key = "livestream proof required (allow_livestream_campaigns is off)"
+            elif s.score < self.cfg.min_score:
+                key = f"score below {self.cfg.min_score}"
+            else:
+                continue
+            reasons[key] = reasons.get(key, 0) + 1
+        top = sorted(reasons.items(), key=lambda kv: -kv[1])[:4]
+        return (f"{len(ranked)} campaigns open: " + ", ".join(f"{n} {k}" for k, n in top)) if top else ""
 
     # ---- 2-6. advance one job as far as it can go this run -------------------
     def advance(self, job: dict) -> None:
@@ -289,7 +312,15 @@ class Pipeline:
             return
         errors = self._post_missing(job)
         if not job["posts"]:
+            slot = self.slot_time(job["date"], job.get("slot", 0)) if job.get("date") else None
+            within = slot is None or datetime.now(self.tz) - slot < timedelta(days=RETRY_POST_DAYS)
+            if errors and within and all(publish.is_quota(e) for e in errors):
+                # every platform is out of daily quota: wait for the reset without using up attempts
+                job["waiting"] = f"daily upload limit reached: {errors[0][:200]}"
+                self.ledger.save()
+                return
             raise RuntimeError("; ".join(errors))
+        job.pop("waiting", None)
         if errors:
             job.setdefault("errors", []).extend(errors)
         self.ledger.move(job, "published", published_at=datetime.now(timezone.utc).isoformat())
@@ -306,15 +337,21 @@ class Pipeline:
             key = publish.target_key(t)
             if key in job["posts"]:
                 continue  # already live - never double-post
+            if t["platform"] in self._quota_hit:  # don't hammer a platform already out of quota this run
+                errors.append(f"{key}: {self._quota_hit[t['platform']]}")
+                continue
             try:
                 url = publish.post(self.composio, t, Path(c["path"]), c["title"], c["caption"],
-                                   c["hashtags"], self.cfg.youtube_privacy, self.cfg.youtube_category_id)
+                                   c["hashtags"], self.cfg.youtube_privacy, self.cfg.youtube_category_id,
+                                   ai=job.get("kind") == "ugc")
                 job["posts"][key] = {"url": url, "at": datetime.now(timezone.utc).isoformat(), "views": 0,
                                      "target": t}
                 self.ledger.save()
                 if job["status"] == "published":  # a late retry (e.g. after a YouTube quota reset)
                     self.tg.send(f"📤 Also posted: {job['title']}\n{url}")
             except Exception as e:
+                if publish.is_quota(e):
+                    self._quota_hit[t["platform"]] = f"quota exceeded: {str(e)[:200]}"
                 errors.append(f"{key}: {e}")
         return errors
 
@@ -411,8 +448,9 @@ class Pipeline:
                 lines += [f"  • {p['url']}" for p in j["posts"].values()]
             for j in jobs:
                 if not j.get("posts"):
-                    lines.append(f"  ⚠️ {j['title'][:50]}: {j['status']} {(j.get('errors') or [''])[-1][:120]}")
-            if getattr(self, "shortfall", {}).get(kind):
+                    why = j.get("waiting") or (j.get("errors") or [""])[-1]
+                    lines.append(f"  ⚠️ {j['title'][:50]}: {j['status']} {why[:120]}")
+            if self.shortfall.get(kind):
                 lines.append(f"  ➖ {self.shortfall[kind]}")
         self.ledger.data["seen"][key] = ledger_mod.now()
         self.ledger.save()
@@ -421,6 +459,7 @@ class Pipeline:
         return text
 
     def run(self) -> None:
+        self._quota_hit.clear()
         self._migrate()
         try:
             self.plan(self.scan())

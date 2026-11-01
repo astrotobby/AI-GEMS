@@ -72,6 +72,8 @@ def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20) -
         s.blockers.append(f"not a clipping/UGC campaign (goal: {goal})")
     if br.platforms and not set(br.platforms) & OUR_PLATFORMS:
         s.blockers.append(f"only accepts {', '.join(br.platforms)} (we post to YouTube + Instagram)")
+    if br.not_video:
+        s.blockers.append("not a video bounty (asks for screenshots/joining/inviting, not a post link)")
     if br.needs_physical_presence:
         s.blockers.append("needs you physically on camera/location")
     s.eligible = not s.blockers

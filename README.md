@@ -84,10 +84,14 @@ In `wrangler.toml`, set `pattern` and `zone_name` to your domain. The Worker
 fetches unmodified HTML from `ORIGIN`, so `ORIGIN` **must** be the `pages.dev` URL,
 never the apex domain (that would loop).
 
-### 5. Deploy
+### 5. Check, then deploy
 ```powershell
-npx wrangler deploy
+npm run check             # lists every value still left as a placeholder
+npm run deploy            # runs the check first; refuses to deploy on errors
 ```
+Missing tokens or KV ids block the deploy. Missing ad tags, Shopify store or product images
+only warn: the Worker skips any network or product that is still a placeholder, so a half-filled
+config shows fewer components instead of broken ad scripts or dead "Buy Now" links.
 
 ### 6. Confirm the route in the dashboard
 Cloudflare dashboard → **Workers & Pages** → open **blog-monetization-worker** →
