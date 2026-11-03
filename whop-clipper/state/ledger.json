@@ -112,7 +112,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/DepX_2ZAnkx/",
-          "views": 129
+          "views": 131
         },
         "youtube:Astro Tobby": {
           "at": "2026-10-19T07:22:48.526855+00:00",
@@ -211,7 +211,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/DepXIs-iAt3/",
-          "views": 169
+          "views": 171
         },
         "youtube:Astro Tobby": {
           "at": "2026-10-19T07:22:55.768575+00:00",
@@ -352,7 +352,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/Deqfjdhio0y/",
-          "views": 8
+          "views": 32
         },
         "youtube:Astro Tobby": {
           "at": "2026-10-19T07:23:02.580909+00:00",
@@ -476,6 +476,150 @@
       "status": "skipped",
       "title": "Clip Content into Short Video (1k view minimum)",
       "updated": "2026-10-19T09:50:42+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-03-clipping0": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "created": "2026-11-03T17:59:19+00:00",
+      "date": "2026-11-03",
+      "errors": [
+        "sourced: Command '['ffmpeg', '-y', '-ss', '0.83', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BaseballKillingPeopleInAugust.mov', '-t', '55.33', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping0.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping0.mp4']' returned non-zero exit status 234.",
+        "sourced: Command '['ffmpeg', '-y', '-ss', '39.07', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BaseballKillingPeopleInAugust.mov', '-t', '38.21', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping0.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping0.mp4']' returned non-zero exit status 234."
+      ],
+      "history": [
+        {
+          "at": "2026-11-03T17:59:39+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T17:59:39+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T17:59:40+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T17:59:40+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T17:59:41+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T17:59:41+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T17:59:41+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T17:59:41+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T17:59:48+00:00",
+          "from": "planned",
+          "to": "sourced"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-03-clipping0",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 50.7,
+      "slot": 0,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BaseballKillingPeopleInAugust.mov",
+      "status": "sourced",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-03T17:59:48+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-03-clipping1": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "created": "2026-11-03T17:59:19+00:00",
+      "date": "2026-11-03",
+      "errors": [
+        "sourced: Command '['ffmpeg', '-y', '-ss', '1.18', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BetSizeGettingBiggerWhenlosing.mov', '-t', '26.99', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping1.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping1.mp4']' returned non-zero exit status 234.",
+        "sourced: Command '['ffmpeg', '-y', '-ss', '1.18', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BetSizeGettingBiggerWhenlosing.mov', '-t', '26.99', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping1.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping1.mp4']' returned non-zero exit status 234."
+      ],
+      "history": [
+        {
+          "at": "2026-11-03T18:00:24+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T18:00:24+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T18:00:25+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T18:00:25+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T18:00:26+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T18:00:26+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T18:00:26+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T18:00:26+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T18:00:30+00:00",
+          "from": "planned",
+          "to": "sourced"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-03-clipping1",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 50.7,
+      "slot": 1,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BetSizeGettingBiggerWhenlosing.mov",
+      "status": "sourced",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-03T18:00:30+00:00"
     },
     "bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0": {
       "bounty_id": "bnty_GLQ2nZ3EtqTUW",
