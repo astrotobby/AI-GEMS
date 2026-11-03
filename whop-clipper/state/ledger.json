@@ -489,6 +489,7 @@
       "date": "2026-11-03",
       "errors": [
         "sourced: Command '['ffmpeg', '-y', '-ss', '0.83', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BaseballKillingPeopleInAugust.mov', '-t', '55.33', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping0.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping0.mp4']' returned non-zero exit status 234.",
+        "sourced: Command '['ffmpeg', '-y', '-ss', '39.07', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BaseballKillingPeopleInAugust.mov', '-t', '38.21', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping0.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping0.mp4']' returned non-zero exit status 234.",
         "sourced: Command '['ffmpeg', '-y', '-ss', '39.07', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BaseballKillingPeopleInAugust.mov', '-t', '38.21', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping0.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping0.mp4']' returned non-zero exit status 234."
       ],
       "history": [
@@ -536,6 +537,11 @@
           "at": "2026-11-03T17:59:48+00:00",
           "from": "planned",
           "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T19:30:42+00:00",
+          "from": "sourced",
+          "to": "failed"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-11-03-clipping0",
@@ -545,9 +551,9 @@
       "score": 50.7,
       "slot": 0,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BaseballKillingPeopleInAugust.mov",
-      "status": "sourced",
+      "status": "failed",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-11-03T17:59:48+00:00"
+      "updated": "2026-11-03T19:30:42+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-11-03-clipping1": {
       "bad_sources": [
@@ -560,6 +566,7 @@
       "created": "2026-11-03T17:59:19+00:00",
       "date": "2026-11-03",
       "errors": [
+        "sourced: Command '['ffmpeg', '-y', '-ss', '1.18', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BetSizeGettingBiggerWhenlosing.mov', '-t', '26.99', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping1.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping1.mp4']' returned non-zero exit status 234.",
         "sourced: Command '['ffmpeg', '-y', '-ss', '1.18', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BetSizeGettingBiggerWhenlosing.mov', '-t', '26.99', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping1.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping1.mp4']' returned non-zero exit status 234.",
         "sourced: Command '['ffmpeg', '-y', '-ss', '1.18', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BetSizeGettingBiggerWhenlosing.mov', '-t', '26.99', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping1.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping1.mp4']' returned non-zero exit status 234."
       ],
@@ -608,6 +615,11 @@
           "at": "2026-11-03T18:00:30+00:00",
           "from": "planned",
           "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T19:30:48+00:00",
+          "from": "sourced",
+          "to": "failed"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-11-03-clipping1",
@@ -617,9 +629,9 @@
       "score": 50.7,
       "slot": 1,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BetSizeGettingBiggerWhenlosing.mov",
-      "status": "sourced",
+      "status": "failed",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-11-03T18:00:30+00:00"
+      "updated": "2026-11-03T19:30:48+00:00"
     },
     "bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0": {
       "bounty_id": "bnty_GLQ2nZ3EtqTUW",
