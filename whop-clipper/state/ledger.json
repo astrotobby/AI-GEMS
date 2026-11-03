@@ -91,6 +91,11 @@
           "at": "2026-10-19T09:50:42+00:00",
           "from": "published",
           "to": "skipped"
+        },
+        {
+          "at": "2026-11-03T12:51:12+00:00",
+          "from": "skipped",
+          "to": "published"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-0",
@@ -124,12 +129,13 @@
       },
       "published_at": "2026-10-18T18:55:55.884054+00:00",
       "reason": "needs livestream proof (livestream campaigns are off)",
+      "resumed_at": "2026-11-03T12:51:12+00:00",
       "score": 50.7,
       "slot": 0,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/3SignsOfDegenerateGamblers.MOV",
-      "status": "skipped",
+      "status": "published",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-19T09:50:42+00:00"
+      "updated": "2026-11-03T12:51:12+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-10-18-clipping1": {
       "bounty_id": "bnty_4nQb37p7bvjna",
@@ -184,6 +190,11 @@
           "at": "2026-10-19T09:50:42+00:00",
           "from": "published",
           "to": "skipped"
+        },
+        {
+          "at": "2026-11-03T12:51:16+00:00",
+          "from": "skipped",
+          "to": "published"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-10-18-clipping1",
@@ -217,12 +228,13 @@
       },
       "published_at": "2026-10-18T18:48:04.464432+00:00",
       "reason": "needs livestream proof (livestream campaigns are off)",
+      "resumed_at": "2026-11-03T12:51:16+00:00",
       "score": 50.7,
       "slot": 1,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/65KCashPayoutSportsbook.mov",
-      "status": "skipped",
+      "status": "published",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-19T09:50:42+00:00"
+      "updated": "2026-11-03T12:51:16+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-10-19-clipping0": {
       "bad_sources": [
@@ -319,6 +331,11 @@
           "at": "2026-10-19T09:50:42+00:00",
           "from": "published",
           "to": "skipped"
+        },
+        {
+          "at": "2026-11-03T12:51:22+00:00",
+          "from": "skipped",
+          "to": "published"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-10-19-clipping0",
@@ -352,12 +369,13 @@
       },
       "published_at": "2026-10-19T05:21:11.743311+00:00",
       "reason": "needs livestream proof (livestream campaigns are off)",
+      "resumed_at": "2026-11-03T12:51:22+00:00",
       "score": 50.7,
       "slot": 0,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/AreSportsRigged.mov",
-      "status": "skipped",
+      "status": "published",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-19T09:50:42+00:00"
+      "updated": "2026-11-03T12:51:22+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-10-19-clipping1": {
       "bad_sources": [
