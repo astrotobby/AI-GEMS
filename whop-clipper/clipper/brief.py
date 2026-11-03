@@ -9,6 +9,9 @@ MENTION_RE = re.compile(r"(?<![\w.])@([A-Za-z0-9_.]{2,30})")
 VIEWS_RE = re.compile(r"(\d[\d,.]*)\s*(k|K)?\+?\s*(?:public\s+)?(?:organic\s+)?views?", re.I)
 RANGE_RE = re.compile(r"(\d{1,3})\s*(?:–|-|to)\s*(\d{1,3})\s*(?:second|sec|s\b)", re.I)
 MINUTES_RE = re.compile(r"(\d{1,2})\s*(?:–|-|to)\s*(\d{1,2})\s*minutes?\s+long", re.I)
+LIVESTREAM_RE = re.compile(r"livestream|live stream|go live", re.I)
+# a livestream of you *making* the content, vs. a short one showing your profile/post/view count
+CREATION_RE = re.compile(r"creat|cutting|editing|making|brows|start to finish|whole process|creation", re.I)
 
 SOURCE_HOSTS = ("drive.google.com", "youtube.com", "youtu.be", "dropbox.com", "vimeo.com",
                 "twitch.tv", "kick.com", "rumble.com", "x.com/", "twitter.com/")
@@ -29,6 +32,7 @@ class Brief:
     clip_seconds: tuple[int, int] | None = None
     long_form: bool = False
     livestream_required: bool = False
+    livestream_creation: bool = False  # the livestream must show you making the clip, not just its stats
     needs_physical_presence: bool = False
     clip_count: int = 1
     vertical: bool = True
@@ -70,7 +74,12 @@ def parse(description: str, title: str = "") -> Brief:
     if MINUTES_RE.search(text) or "long-form" in low or "long form" in low:
         b.long_form = True
 
-    b.livestream_required = "livestream" in low or "live stream" in low or "go live" in low
+    lives = list(LIVESTREAM_RE.finditer(text))
+    b.livestream_required = bool(lives)
+    # read the rest of each livestream sentence: "...livestream showing your profile and view count" is
+    # a 2-minute job after posting; "...livestream yourself creating the slideshow" can't be automated
+    b.livestream_creation = any(CREATION_RE.search(re.split(r"[.\n]", text[m.end():m.end() + 200])[0])
+                                for m in lives)
     b.needs_physical_presence = any(w in low for w in (
         "head mount", "military base", "on air", "in person", "your location", "record yourself"))
 

@@ -35,7 +35,8 @@ def main(argv: list[str] | None = None) -> int:
     m.add_argument("other", type=Path)
     for name, help_ in (("approve", "approve a clip for publishing (review mode)"),
                         ("skip", "drop a job"),
-                        ("done", "mark a livestream job as submitted by you")):
+                        ("done", "mark a livestream job as submitted by you"),
+                        ("resume", "start tracking views again on a skipped job that was already posted")):
         p = sub.add_parser(name, help=help_)
         p.add_argument("job_id")
 
@@ -98,11 +99,20 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{j['status']:<18} {j['id']:<26} {j['title'][:45]:<45} {posts}")
         return 0
 
-    if a.cmd in ("approve", "skip", "done"):
+    if a.cmd in ("approve", "skip", "done", "resume"):
         job = pipe.ledger.jobs.get(a.job_id)
         if not job:
             print(f"no job {a.job_id}", file=sys.stderr)
             return 1
+        if a.cmd == "resume":
+            if job["status"] != "skipped" or not job.get("posts"):
+                print(f"job is '{job['status']}' with {len(job.get('posts') or {})} posts - "
+                      "only skipped jobs that were posted can be resumed", file=sys.stderr)
+                return 1
+            from .ledger import now
+            pipe.ledger.move(job, "published", resumed_at=now())
+            print(f"{a.job_id} -> published (tracking views again)")
+            return 0
         expected = {"approve": "awaiting_approval", "done": "needs_livestream", "skip": None}[a.cmd]
         if expected and job["status"] != expected:
             print(f"job is '{job['status']}', expected '{expected}'", file=sys.stderr)

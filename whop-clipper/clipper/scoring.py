@@ -87,8 +87,11 @@ def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20) -
     if br.long_form:
         s.automatable = False
         s.human_steps.append("long-form edit (charts/b-roll/script) - not a short clip")
-    if br.livestream_required:
-        s.human_steps.append("livestream proof required at submission - you must go live")
+    if br.livestream_creation:
+        s.automatable = False
+        s.human_steps.append("livestream must show you making the clip yourself - can't be automated")
+    elif br.livestream_required:
+        s.human_steps.append("short livestream of your post + views at submission - you go live, the rest is automatic")
     if br.clip_count > 1:
         s.automatable = False
         s.human_steps.append(f"wants {br.clip_count} clips in one submission")

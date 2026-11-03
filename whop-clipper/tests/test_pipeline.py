@@ -539,3 +539,42 @@ def test_connect_link_uses_newest_auth_config_for_this_user():
     assert made == {"user": "pipeline", "ac": "ac_new"}
     c.link("youtube", "ac_mine")
     assert made["ac"] == "ac_mine"
+
+
+def test_livestream_kind_is_told_apart():
+    """A short livestream of your stats is a 2-minute human step; one of you making the clip is not automatable."""
+    anon = brief.parse(ANON["description"], ANON["title"])
+    assert anon.livestream_required and not anon.livestream_creation
+    for bid in ("bnty_iJpOl5HbBoDQu", "bnty_lyJ5DBAjGJ6gF"):  # Shane Gillis, LIFEMAXX
+        b = BY_ID[bid]
+        assert brief.parse(b["description"], b["title"]).livestream_creation
+    s = scoring.score(BY_ID["bnty_lyJ5DBAjGJ6gF"], country="KE", goal_types=["clipping", "ugc_content"])
+    assert not s.automatable
+    assert scoring.score(ANON, country="KE", goal_types=["clipping"]).automatable
+
+
+def test_posted_job_is_kept_when_livestream_campaigns_are_off(pipe):
+    p = pipe(ANON, views=10)
+    job = clipped_job(p, ANON)
+    p.advance(job)
+    assert job["status"] == "published"
+    p.cfg.allow_livestream_campaigns = False
+    p.advance(job)
+    assert job["status"] == "published"  # still tracking views, not thrown away
+
+
+def test_resume_restarts_view_tracking(pipe, monkeypatch):
+    from clipper import __main__ as cli
+    p = pipe(ANON, views=10)
+    job = clipped_job(p, ANON)
+    p.advance(job)
+    p.ledger.move(job, "skipped", reason="needs livestream proof (livestream campaigns are off)")
+    job["published_at"] = "2026-01-01T00:00:00+00:00"  # long past the 14-day window
+    p.ledger.save()
+    monkeypatch.setattr(cli, "Pipeline", lambda cfg, dry_run=False: p)
+    monkeypatch.setattr(cli.config, "load", lambda path: p.cfg)
+    assert cli.main(["resume", job["id"]]) == 0
+    assert job["status"] == "published" and job["resumed_at"]
+    p.advance(job)
+    assert job["status"] == "published"  # fresh window: not failed for being old
+    assert cli.main(["resume", job["id"]]) == 1  # only skipped jobs

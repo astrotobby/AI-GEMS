@@ -161,7 +161,8 @@ class Pipeline:
             "planned": self._source, "sourced": self._clip, "clipped": self._gate,
             "approved": self._publish, "published": self._track, "ready_to_submit": self._submit,
         }
-        if not self.cfg.allow_livestream_campaigns and job["status"] in handlers:
+        # once a clip is live, keep tracking it: dropping it would throw away posts that may still earn
+        if not self.cfg.allow_livestream_campaigns and job["status"] in ("planned", "sourced", "clipped", "approved"):
             b = self.bounty(job)
             if brief_mod.parse(b["description"], b["title"]).livestream_required:
                 # submission would need a human livestream - drop it instead of handing it over
@@ -340,6 +341,8 @@ class Pipeline:
         if best >= need:
             self.ledger.move(job, "ready_to_submit")
             return
+        if job.get("resumed_at"):  # `resume` restarts the tracking window for an abandoned post
+            age = min(age, datetime.now(timezone.utc) - datetime.fromisoformat(job["resumed_at"]))
         if age > timedelta(days=VIEW_DEADLINE_DAYS):
             self.ledger.move(job, "failed", reason=f"only {best}/{need} views after {VIEW_DEADLINE_DAYS} days")
             self.tg.send(f"📉 {job['title']}: {best}/{need} views after {VIEW_DEADLINE_DAYS} days - stopped tracking.")
