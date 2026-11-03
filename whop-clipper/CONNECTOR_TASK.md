@@ -20,22 +20,55 @@ Repository: `astrotobby/AI-GEMS`, default branch `main`, files under `whop-clipp
 
 ## 2. Submit queued jobs
 
-Read `whop-clipper/state/ledger.json`. For every job with `"status": "awaiting_submission"`:
+Read `whop-clipper/state/ledger.json`. Jobs in `awaiting_submission` and `needs_livestream`
+carry a `submission` object: `bounty_id`, `urls`, `caption`, and `clip_url` (a public download
+of the rendered clip, may be missing or `null` on older jobs).
+
+**Attaching the clip.** When `submission.clip_url` is set: download it, create a file with the
+connector's create-file tool (`filename` = `<job.id>.mp4`, `idempotency_key` = `clip-<job.id>`),
+PUT the bytes to the returned `upload_url`, and wait until the file's status is `ready` before
+using its `file_...` id. If the download 404s (the workflow has not published it yet), skip the
+job this run and try again next run. Without a `clip_url`, submit links only.
+
+### 2a. `awaiting_submission` (no livestream needed)
 
 1. Read the bounty with the connector's get-bounty tool. If it is no longer `open` or has
    `spots_remaining` 0, set the job's status to `skipped` with `"reason": "closed before submission"`.
 2. Otherwise create the submission with the connector's create-bounty-submission tool:
    `bounty_id` = `job.submission.bounty_id`, deliverable `urls` = `job.submission.urls`,
-   `caption` = `job.submission.caption`, and `idempotency_key` = `submit-<job.id>` so a retry
-   can never double-submit.
-3. Set the job's status to `submitted`, record `submission_id` (the returned `btys_...` id),
-   set `updated` to now (UTC ISO-8601), and append
-   `{"at": <now>, "from": "awaiting_submission", "to": "submitted"}` to its `history`.
-   `updated` matters: when GitHub Actions and this task both touched the ledger, the copy of each
-   job with the newer `updated` wins.
+   `file_ids` = the clip's file id (if any), `caption` = `job.submission.caption`, and
+   `idempotency_key` = `submit-<job.id>` so a retry can never double-submit.
+3. Mark it submitted (see "Marking a job" below).
 
-Never submit jobs in any other status. In particular, `needs_livestream` jobs are for the owner
-to submit with a livestream, and must not be submitted without one.
+### 2b. `needs_livestream` (the owner streams, you attach and submit)
+
+The proof livestream can only be done by the owner in the Whop app; the API cannot start or fake
+one. These jobs wait until the owner has streamed:
+
+1. List the owner's submissions on `job.submission.bounty_id` with the connector's
+   list-bounty-submissions tool.
+2. If there is none, do nothing (the owner has not streamed yet). If one is `approved`, `denied`
+   or already has the job's URLs attached, just mark the job submitted with that id.
+3. If an attempt exists whose proof livestream has **ended** (read it with the
+   retrieve-bounty-submission tool; `latest_proof_livestream_feed.ended_at` is set), submit it
+   with the connector's submit-bounty-submission tool: `id` = the `btys_...` id, deliverable
+   `urls` = `job.submission.urls`, `file_ids` = the clip's file id, `caption` =
+   `job.submission.caption`, `idempotency_key` = `submit-<job.id>`. (If the attempt already went
+   to review when the stream ended, this attaches the deliverable to it, which is what we want.)
+   A stream that is still live: leave it for the next run.
+4. Mark it submitted.
+
+Never create a new submission for a `needs_livestream` job, and never submit one whose
+livestream has not ended: without the owner's real livestream it would be denied.
+
+### Marking a job
+
+Set the job's status to `submitted`, record `submission_id` (the `btys_...` id), set `updated` to
+now (UTC ISO-8601), and append `{"at": <now>, "from": <old status>, "to": "submitted"}` to its
+`history`. `updated` matters: when GitHub Actions and this task both touched the ledger, the copy
+of each job with the newer `updated` wins.
+
+Never submit jobs in any other status.
 
 ## 3. Commit
 

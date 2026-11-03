@@ -90,6 +90,23 @@ jobs:
           fi
           python -m clipper status
 
+      # the Whop connector task attaches the clip file to the submission: publish each one it will
+      # need as an asset of the "clips" release (public download URL, nothing committed to git)
+      - name: Publish clips for submission
+        if: always() && github.event_name != 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python -m clipper pending-clips > "$RUNNER_TEMP/clips.tsv" || exit 0
+          [ -s "$RUNNER_TEMP/clips.tsv" ] || exit 0
+          gh release view clips >/dev/null 2>&1 || gh release create clips --title "Clipper clips" \
+            --notes "Rendered clips attached to Whop submissions by the clipper." --latest=false
+          have=$(gh release view clips --json assets -q '.assets[].name')
+          while IFS=$'\t' read -r path name; do
+            echo "$have" | grep -qxF "$name" && continue
+            cp "$path" "$RUNNER_TEMP/$name" && gh release upload clips "$RUNNER_TEMP/$name" || echo "upload of $name failed"
+          done < "$RUNNER_TEMP/clips.tsv"
+
       - name: Save ledger
         if: always() && github.event_name != 'push'
         run: |

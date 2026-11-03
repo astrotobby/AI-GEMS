@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import time
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -20,6 +21,15 @@ log = logging.getLogger(__name__)
 VIEW_DEADLINE_DAYS = 14
 MAX_BAD_SOURCES = 5  # music-only source files to skip before giving up on a clip
 RETRY_POST_DAYS = 2  # keep retrying a platform that failed at posting time (e.g. YouTube quota) this long
+
+
+CLIP_RELEASE = "clips"  # GitHub release whose assets are the rendered clips, for the Whop submission
+
+
+def clip_url(job: dict) -> str | None:
+    """Public download URL the workflow publishes this job's clip at (None outside GitHub Actions)."""
+    repo = os.environ.get("GITHUB_REPOSITORY")
+    return f"https://github.com/{repo}/releases/download/{CLIP_RELEASE}/{job['id']}.mp4" if repo else None
 
 
 def bounty_link(b: dict) -> str:
@@ -358,23 +368,30 @@ class Pipeline:
         b = self.bounty(job, refresh=True)
         br = brief_mod.parse(b["description"], b["title"])
         urls = [p["url"] for p in job["posts"].values()]
-        if br.livestream_required:
-            self.ledger.move(job, "needs_livestream")
-            self.tg.send(
-                f"🔴 Your turn: {job['title']} needs a livestream to submit.\n"
-                f"Bounty: {bounty_link(b)}\n"
-                f"Live posts: " + " | ".join(f"{p['url']} ({p.get('views', 0)} views)" for p in job["posts"].values())
-                + f"\nClip file: {job['clip']['path']}\nSubmission notes: {self._submission_caption(job)}\n"
-                "Go live on Whop showing what the brief asks for, attach the links above, then run:\n"
-                f"python -m clipper done {job['id']}")
-            return
         if b.get("status") != "open" or (b.get("spots_remaining") or 0) <= 0:
             self.ledger.move(job, "skipped", reason="campaign closed before submission")
             return
+        # everything the Whop-connector task needs to submit as you; the clip file is published as a
+        # GitHub release asset by the workflow so the task can attach it
+        submission = {"bounty_id": b["id"], "urls": urls, "caption": self._submission_caption(job),
+                      "clip_url": clip_url(job)}
+        if br.livestream_required:
+            # the proof livestream can only be done by you in the Whop app (the API has no way to do it);
+            # once your stream has ended, the connector task attaches the links + clip and submits
+            self.ledger.move(job, "needs_livestream", submission=submission)
+            self.tg.send(
+                f"🔴 Your turn (2 min): {job['title']} hit its view target.\n"
+                f"Live posts: " + " | ".join(f"{p['url']} ({p.get('views', 0)} views)" for p in job["posts"].values())
+                + f"\n\n1. Open the bounty in the Whop app: {bounty_link(b)}\n"
+                "2. Start the proof livestream and show what the brief asks for (your profile, the live post, "
+                "its publish date and view count).\n"
+                "3. End the stream. That's all - within 4 hours the clipper attaches the links, the clip file "
+                "and the source timestamps and submits it for you.\n"
+                f"(Submitted it yourself instead? Run: done {job['id']})")
+            return
         if self.cfg.whop_via != "api":
             # the scheduled Whop-connector task picks this up, submits as you, and marks it submitted
-            self.ledger.move(job, "awaiting_submission", submission={
-                "bounty_id": b["id"], "urls": urls, "caption": self._submission_caption(job)})
+            self.ledger.move(job, "awaiting_submission", submission=submission)
             self.tg.send(f"📨 Queued for Whop submission: {job['title']}\n" + "\n".join(urls))
             return
         file_ids = []

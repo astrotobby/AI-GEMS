@@ -578,3 +578,20 @@ def test_resume_restarts_view_tracking(pipe, monkeypatch):
     p.advance(job)
     assert job["status"] == "published"  # fresh window: not failed for being old
     assert cli.main(["resume", job["id"]]) == 1  # only skipped jobs
+
+
+def test_livestream_job_carries_everything_the_submitter_needs(pipe, monkeypatch, capsys):
+    from clipper import __main__ as cli
+    monkeypatch.setenv("GITHUB_REPOSITORY", "astrotobby/AI-GEMS")
+    p = pipe(ANON)
+    job = clipped_job(p, ANON)
+    Path(job["clip"]["path"]).write_bytes(b"mp4")
+    p.advance(job)
+    assert job["status"] == "needs_livestream"
+    sub = job["submission"]
+    assert sub["bounty_id"] == ANON["id"] and len(sub["urls"]) == 2 and "Source:" in sub["caption"]
+    assert sub["clip_url"] == f"https://github.com/astrotobby/AI-GEMS/releases/download/clips/{job['id']}.mp4"
+    monkeypatch.setattr(cli, "Pipeline", lambda cfg, dry_run=False: p)
+    monkeypatch.setattr(cli.config, "load", lambda path: p.cfg)
+    assert cli.main(["pending-clips"]) == 0
+    assert capsys.readouterr().out.strip().endswith(f"\t{job['id']}.mp4")

@@ -31,6 +31,7 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("--dry-run", action="store_true", help="clip but never publish or submit")
 
     sub.add_parser("status", help="show jobs in the ledger")
+    sub.add_parser("pending-clips", help="list clip files the Whop submission needs published (path<TAB>asset name)")
     m = sub.add_parser("merge-ledger", help="fold another copy of the ledger into ours (newest job wins)")
     m.add_argument("other", type=Path)
     for name, help_ in (("approve", "approve a clip for publishing (review mode)"),
@@ -84,6 +85,13 @@ def main(argv: list[str] | None = None) -> int:
 
     if a.cmd == "run":
         pipe.run()
+        return 0
+
+    if a.cmd == "pending-clips":
+        for j in pipe.ledger.jobs.values():
+            path = Path((j.get("clip") or {}).get("path") or "")
+            if j["status"] in ("needs_livestream", "awaiting_submission") and path.is_file():
+                print(f"{path}\t{j['id']}.mp4")
         return 0
 
     if a.cmd == "merge-ledger":
