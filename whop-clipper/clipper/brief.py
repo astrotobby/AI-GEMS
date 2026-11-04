@@ -33,6 +33,7 @@ class Brief:
     long_form: bool = False
     livestream_required: bool = False
     livestream_creation: bool = False  # the livestream must show you making the clip, not just its stats
+    livestream_ask: list[str] = field(default_factory=list)  # the brief's own lines about the livestream
     needs_physical_presence: bool = False
     clip_count: int = 1
     vertical: bool = True
@@ -80,6 +81,11 @@ def parse(description: str, title: str = "") -> Brief:
     # a 2-minute job after posting; "...livestream yourself creating the slideshow" can't be automated
     b.livestream_creation = any(CREATION_RE.search(re.split(r"[.\n]", text[m.end():m.end() + 200])[0])
                                 for m in lives)
+    # the brief's own words, so the owner sees exactly what to show on stream
+    for line in text.splitlines():
+        line = line.strip(" \t•*-")
+        if LIVESTREAM_RE.search(line) and line not in b.livestream_ask:
+            b.livestream_ask.append(line[:300])
     b.needs_physical_presence = any(w in low for w in (
         "head mount", "military base", "on air", "in person", "your location", "record yourself"))
 

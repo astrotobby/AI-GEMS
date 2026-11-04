@@ -62,6 +62,12 @@ clip file (published by the workflow as an asset of the `clips` release) and the
 timestamps, and submits the attempt. Campaigns without a livestream go all the way through by
 themselves.
 
+What you get on Telegram when a clip qualifies: the posts to show (best one first, with their view
+counts), the brief's own words about what the stream must show, the bounty link and four steps.
+Until you've streamed, a reminder comes every 12 hours. If the campaign closes or fills up first,
+the job is dropped and you're told there's no need to go live. To get the checklist again at any
+time, run `live` (GitHub → Actions → *Whop clipper* → *Run workflow* → command `live`).
+
 Campaigns whose livestream must show you *making* the clip from start to finish are skipped:
 the bot made it, so that stream can't honestly be done.
 
@@ -93,7 +99,7 @@ clips in a single submission.
    connection without posting (and sends the report to Telegram). Run it any time locally too.
 
 4. **Run it**: the workflow `.github/workflows/whop-clipper.yml` runs every 4 hours. From
-   GitHub → Actions → *Whop clipper* → *Run workflow* you can send `scan`, `status`,
+   GitHub → Actions → *Whop clipper* → *Run workflow* you can send `scan`, `status`, `live`,
    `approve <job>`, `skip <job>`, `done <job>`, or `run` with *dry run* ticked.
 
    Locally:

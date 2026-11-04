@@ -20,6 +20,7 @@ from .whop import Whop
 log = logging.getLogger(__name__)
 VIEW_DEADLINE_DAYS = 14
 MAX_BAD_SOURCES = 5  # music-only source files to skip before giving up on a clip
+LIVESTREAM_REMIND_HOURS = 12  # nudge again while a qualified clip waits for your proof livestream
 RETRY_POST_DAYS = 2  # keep retrying a platform that failed at posting time (e.g. YouTube quota) this long
 
 
@@ -379,15 +380,7 @@ class Pipeline:
             # the proof livestream can only be done by you in the Whop app (the API has no way to do it);
             # once your stream has ended, the connector task attaches the links + clip and submits
             self.ledger.move(job, "needs_livestream", submission=submission)
-            self.tg.send(
-                f"🔴 Your turn (2 min): {job['title']} hit its view target.\n"
-                f"Live posts: " + " | ".join(f"{p['url']} ({p.get('views', 0)} views)" for p in job["posts"].values())
-                + f"\n\n1. Open the bounty in the Whop app: {bounty_link(b)}\n"
-                "2. Start the proof livestream and show what the brief asks for (your profile, the live post, "
-                "its publish date and view count).\n"
-                "3. End the stream. That's all - within 4 hours the clipper attaches the links, the clip file "
-                "and the source timestamps and submits it for you.\n"
-                f"(Submitted it yourself instead? Run: done {job['id']})")
+            self.tg.send(self.livestream_checklist(job, b))
             return
         if self.cfg.whop_via != "api":
             # the scheduled Whop-connector task picks this up, submits as you, and marks it submitted
@@ -400,6 +393,56 @@ class Pipeline:
         res = self.whop.submit(b["id"], urls, self._submission_caption(job), file_ids, key=f"submit-{job['id']}")
         self.ledger.move(job, "submitted", submission_id=res.get("id"))
         self.tg.send(f"✅ Submitted to Whop: {job['title']}\n" + "\n".join(urls))
+
+    # ---- the proof livestream (you) ------------------------------------------------
+    def livestream_checklist(self, job: dict, b: dict, reminder: bool = False) -> str:
+        """What to do in the Whop app, in the brief's own words, with the posts to show on screen."""
+        br = brief_mod.parse(b["description"], b["title"])
+        posts = sorted(job["posts"].values(), key=lambda p: -p.get("views", 0))
+        need = br.min_views
+        head = "⏰ Still waiting for your livestream" if reminder else "🔴 Your turn (2 min)"
+        lines = [f"{head}: {job['title']}",
+                 f"Spots left: {b.get('spots_remaining', '?')} - stream soon, before they run out.", "",
+                 "Show on screen (best post first):"]
+        for p in posts:
+            ok = "✅" if p.get("views", 0) >= need else "⚠️ below target"
+            lines.append(f"  • {p['url']} - {p.get('views', 0)} views {ok if need else ''}".rstrip())
+        if br.livestream_ask:
+            lines += ["", "The brief asks for:"] + [f"  “{a}”" for a in br.livestream_ask]
+        lines += ["",
+                  f"1. Open the bounty in the Whop app: {bounty_link(b)}",
+                  "2. Start the proof livestream from the bounty (share your screen if the brief asks for it).",
+                  "3. On stream: open your profile, then the post above, and scroll so the publish date and "
+                  "view count are clearly visible. Keep it in one take, about 1-2 minutes.",
+                  "4. End the stream. Don't submit anything - within 4 hours the clipper attaches the post links, "
+                  "the clip file and the source timestamps and submits it for you.",
+                  f"(Submitted it yourself instead? Run: done {job['id']})"]
+        return "\n".join(lines)
+
+    def remind_livestreams(self, now: datetime | None = None) -> int:
+        """Nudge for qualified clips still waiting on your stream; drop ones whose campaign closed."""
+        now = now or datetime.now(timezone.utc)
+        sent = 0
+        for job in [j for j in self.ledger.jobs.values() if j["status"] == "needs_livestream"]:
+            try:
+                b = self.bounty(job, refresh=True)
+            except Exception as e:
+                log.warning("livestream reminder for %s: %s", job["id"], e)
+                continue
+            if b.get("status") != "open" or (b.get("spots_remaining") or 0) <= 0:
+                self.ledger.move(job, "skipped", reason="campaign closed before the livestream")
+                self.tg.send(f"🚫 {job['title']}: the campaign closed or filled up before you streamed - "
+                             "no need to go live for it any more.")
+                continue
+            last = job.get("reminded_at") or job.get("updated") or job["created"]
+            if now - datetime.fromisoformat(last) < timedelta(hours=LIVESTREAM_REMIND_HOURS):
+                continue
+            self.tg.send(self.livestream_checklist(job, b, reminder=True))
+            # deliberately not touching `updated`: the connector task's "submitted" must win a ledger merge
+            job["reminded_at"] = now.isoformat(timespec="seconds")
+            sent += 1
+        self.ledger.save()
+        return sent
 
     # ---- one scheduled run ---------------------------------------------------
     def _wait_for_slot(self, max_wait_min: int = 45) -> None:
@@ -451,6 +494,7 @@ class Pipeline:
         for job in list(self.ledger.active()):  # make anything due later today first
             if job["status"] != "approved":
                 self.advance(job)
+        self.remind_livestreams()
         self._wait_for_slot()
         for job in list(self.ledger.active()):
             self.advance(job)
