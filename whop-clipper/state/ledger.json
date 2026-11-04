@@ -633,6 +633,196 @@
       "title": "Clip Content into Short Video (1k view minimum)",
       "updated": "2026-11-03T19:30:48+00:00"
     },
+    "bnty_4nQb37p7bvjna-2026-11-04-clipping0": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "Plus or minus, it's just numbers on a screen. It's all about the math \ud83e\uddee\nFollow @ANON_BETTING on IG / @AnonPicks on TikTok for more",
+        "end": 50.01,
+        "hashtags": [
+          "sportsbetting",
+          "bettingtips",
+          "underdogs",
+          "sportsbettingtips",
+          "anonbetting"
+        ],
+        "hook": "Favorites aren't as safe as they feel",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-04-clipping0.mp4",
+        "reason": "claude: This clip starts on a direct, relatable line, \"Be honest, you've bet favorites before because they feel safe,\" so there's no slow intro. It runs about 48.7 seconds (1.0s to 49.7s), which fits the 20\u201360 second window. It covers one complete idea: sportsbooks make favorites feel safer than they are, underdog odds make you nervous, odds are really just numbers on a screen, and it ends on \"It's all about math.\" The speaker's meaning stays the same, and the clip doesn't need any outside context.",
+        "start": 0.86,
+        "text": "Be honest, you've bet favorites before because they feel safe. Favorites are psychologically designed by the books to feel safer, but they're really not. And don't worry, I've even fallen for that trap, right? I'll see a line and I'll think, oh man, that feels so safe. Or just because this team is favored means, hey, this team should probably win the game and it's probably the safer bet to take. Whereas every time you take an underdog, you know, your hand is shaking as you're trying to hit the b",
+        "title": "Why Betting Favorites Feels Safe (But Really Isn't) #sportsbetting"
+      },
+      "created": "2026-11-04T00:38:18+00:00",
+      "date": "2026-11-04",
+      "history": [
+        {
+          "at": "2026-11-04T00:38:39+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:38:39+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:38:40+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:38:40+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:38:41+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:38:41+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:38:42+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:38:42+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:38:46+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:41:30+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-04T00:41:30+00:00",
+          "from": "clipped",
+          "to": "approved"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-04-clipping0",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 48.2,
+      "slot": 0,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BettingFavoritesBecauseTheyFeelSafe.MOV",
+      "status": "approved",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-04T00:41:30+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-04-clipping1": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "Stop betting the whole board. Quality over quantity \ud83c\udfaf\nFollow @ANON_BETTING on IG / @AnonPicks on TikTok for more",
+        "end": 57.15,
+        "hashtags": [
+          "sportsbetting",
+          "bettingtips",
+          "sportsbettingadvice",
+          "bettingstrategy",
+          "anonbetting"
+        ],
+        "hook": "Betting the board is costing you",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-04-clipping1.mp4",
+        "reason": "claude: I picked 0.8s to 56.9s (about 56 seconds), which fits under the 60-second limit. It opens on the hook, \"Betting the board is costing you a lot of money,\" so there's no slow intro. From there the speaker explains his whole point in order: the sharpest bettors go for quality over quantity, it lowers the pressure, it helps with the sportsbook's cut (the \"juice\"), and finding one best play out of 12 games is far easier than finding an edge in every game. It ends on a finished thought about losing focus when you bet the entire board, so it makes sense with no extra context and keeps his meaning. The \"win seven of 10 games\" math (57.2\u201374.9s) is the punchiest line, but adding it would push the clip past 60 seconds. On its own it's only about 18 seconds, which is under the 20-second minimum.",
+        "start": 0.7,
+        "text": "Betting the board is costing you a lot of money. The sharpest betters in the world, including myself, focus on quality over quantity. And the reason we do is because there's a lot less pressure in having to win one or two games in a day. Not only are we overcoming juice, which is a big factor that the sports books essentially make a killing on, but we are putting less pressure on ourselves to find the best plays on the board. It's a lot harder when you're betting the board out of 10 or 12 games ",
+        "title": "Why Betting Every Game Is Costing You Money | Quality Over Quantity"
+      },
+      "created": "2026-11-04T00:38:19+00:00",
+      "date": "2026-11-04",
+      "history": [
+        {
+          "at": "2026-11-04T00:41:31+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:41:31+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:41:32+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:41:32+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:41:33+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:41:33+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:41:33+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:41:33+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:41:38+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:44:37+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-04T00:44:37+00:00",
+          "from": "clipped",
+          "to": "approved"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-04-clipping1",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 48.2,
+      "slot": 1,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BettingTheBoardIsCostingYou.MOV",
+      "status": "approved",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-04T00:44:37+00:00"
+    },
     "bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0": {
       "bounty_id": "bnty_GLQ2nZ3EtqTUW",
       "clip": {
