@@ -31,7 +31,7 @@ export interface PricedPlan {
 
 export const site = {
   /** Your Whop business ID (prefixed `biz_`). Filled in by `npm run setup:plans`. */
-  whopAccountId: "biz_REPLACE",
+  whopAccountId: "biz_DR9Z8WvJCxWicE",
 
   company: {
     name: "Summit Ridge Roofing",
@@ -90,8 +90,8 @@ export const site = {
   plans: [
     {
       key: "inspection",
-      planId: "plan_REPLACE_INSPECTION",
-      productId: "prod_REPLACE",
+      planId: "plan_84kCUJCZ5pOzz",
+      productId: "prod_cf8V4cXeOzs6w",
       name: "Certified Inspection",
       price: 149,
       priceNote: "one-time",
@@ -101,8 +101,8 @@ export const site = {
     },
     {
       key: "deposit",
-      planId: "plan_REPLACE_DEPOSIT",
-      productId: "prod_REPLACE",
+      planId: "plan_9aexUyWFGwJSN",
+      productId: "prod_cf8V4cXeOzs6w",
       name: "Project Deposit",
       price: 500,
       priceNote: "applied to your project",
@@ -112,8 +112,8 @@ export const site = {
     },
     {
       key: "flatRate",
-      planId: "plan_REPLACE_FLATRATE",
-      productId: "prod_REPLACE",
+      planId: "plan_FAg9KGMomYaVU",
+      productId: "prod_cf8V4cXeOzs6w",
       name: "Leak Repair (Flat Rate)",
       price: 395,
       priceNote: "flat rate",
