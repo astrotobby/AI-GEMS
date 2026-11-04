@@ -31,6 +31,7 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("--dry-run", action="store_true", help="clip but never publish or submit")
 
     sub.add_parser("status", help="show jobs in the ledger")
+    sub.add_parser("live", help="send the livestream checklist for every clip waiting on your stream")
     sub.add_parser("pending-clips", help="list clip files the Whop submission needs published (path<TAB>asset name)")
     m = sub.add_parser("merge-ledger", help="fold another copy of the ledger into ours (newest job wins)")
     m.add_argument("other", type=Path)
@@ -99,6 +100,18 @@ def main(argv: list[str] | None = None) -> int:
             n = pipe.ledger.merge(json.loads(a.other.read_text()))
             pipe.ledger.save()
             print(f"merged: {n} job(s) taken from {a.other}")
+        return 0
+
+    if a.cmd == "live":
+        waiting = [j for j in pipe.ledger.jobs.values() if j["status"] == "needs_livestream"]
+        if not waiting:
+            print("nothing waiting for a livestream")
+            pipe.tg.send("✅ No clip is waiting for a livestream right now. You'll get a message when one hits "
+                         "its view target.")
+        for j in waiting:
+            text = pipe.livestream_checklist(j, pipe.bounty(j, refresh=True))
+            print(text + "\n")
+            pipe.tg.send(text)
         return 0
 
     if a.cmd == "status":

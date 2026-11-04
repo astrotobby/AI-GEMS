@@ -595,3 +595,30 @@ def test_livestream_job_carries_everything_the_submitter_needs(pipe, monkeypatch
     monkeypatch.setattr(cli.config, "load", lambda path: p.cfg)
     assert cli.main(["pending-clips"]) == 0
     assert capsys.readouterr().out.strip().endswith(f"\t{job['id']}.mp4")
+
+
+def test_livestream_checklist_quotes_the_brief_and_reminds(pipe):
+    from datetime import datetime, timedelta, timezone
+    br = brief.parse(ANON["description"], ANON["title"])
+    assert any("view count" in a for a in br.livestream_ask)
+    p = pipe(ANON, whop_via="connector")
+    p.cfg.campaigns_path.write_text(json.dumps({"fetched_at": datetime.now(timezone.utc).isoformat(),
+                                                "data": [ANON]}))
+    job = clipped_job(p, ANON)
+    p.advance(job)
+    assert job["status"] == "needs_livestream"
+    sent = []
+    p.tg.send = lambda text, private=False: sent.append(text) or True
+    text = p.livestream_checklist(job, ANON)
+    assert "view count" in text and all(u in text for u in job["submission"]["urls"])
+    stamp = job["updated"]
+    assert p.remind_livestreams() == 0  # just handed over: no reminder yet
+    later = datetime.now(timezone.utc) + timedelta(hours=13)
+    assert p.remind_livestreams(now=later) == 1 and sent[-1].startswith("⏰")
+    assert job["updated"] == stamp  # a reminder never outranks the connector's "submitted" in a merge
+    assert p.remind_livestreams(now=later + timedelta(hours=1)) == 0
+    # campaign gone from a fresh snapshot: stop asking for a stream
+    p.cfg.campaigns_path.write_text(json.dumps({"fetched_at": datetime.now(timezone.utc).isoformat(),
+                                                "data": []}))
+    p.remind_livestreams(now=later + timedelta(hours=30))
+    assert job["status"] == "skipped" and "closed" in sent[-1]
