@@ -740,6 +740,18 @@
           },
           "url": "https://www.instagram.com/reel/DfUDpKJjZAw/",
           "views": 201
+        },
+        "youtube:Astro Tobby": {
+          "at": "2026-11-04T19:45:45.402545+00:00",
+          "target": {
+            "channel": "Astro Tobby",
+            "kinds": [
+              "clipping"
+            ],
+            "platform": "youtube"
+          },
+          "url": "https://youtube.com/shorts/dFbaGUwxhgQ",
+          "views": 0
         }
       },
       "published_at": "2026-11-04T08:45:24.145874+00:00",
