@@ -20,6 +20,7 @@ export function App() {
   const elements = useMemo(() => loadWhop(), []);
   const [checkoutPlan, setCheckoutPlan] = useState<Exclude<PlanKey, "deposit"> | null>(null);
   const [isAdmin, setIsAdmin] = useState(() => location.hash === "#admin");
+  const showDemo = Boolean(site.demoPlan) && new URLSearchParams(location.search).get("demo") === "1";
 
   useEffect(() => {
     const onHash = () => setIsAdmin(location.hash === "#admin");
@@ -59,6 +60,14 @@ export function App() {
           </main>
         ) : (
           <main>
+            {showDemo && site.demoPlan && (
+              <div className="demo-bar">
+                <span>Demo mode: run a real ${site.demoPlan.price} checkout through the same Whop Payment Elements.</span>
+                <button className="btn btn-primary btn-sm" onClick={() => setCheckoutPlan("demo")}>
+                  {site.demoPlan.cta}
+                </button>
+              </div>
+            )}
             <Hero />
             <Services onBook={book} />
             <Pricing onBook={book} />

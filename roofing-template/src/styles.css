@@ -56,6 +56,9 @@ code { background: var(--bg-alt); padding: 0 4px; border-radius: 4px; }
 .header-cta { display: flex; align-items: center; gap: 14px; }
 .phone { font-weight: 700; color: var(--ink); text-decoration: none; }
 
+/* Demo bar (only with ?demo=1) */
+.demo-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; padding: 12px 16px; background: #fff7ed; border-bottom: 1px solid #fed7aa; font-weight: 600; color: var(--brand-dark); text-align: center; }
+
 /* Hero */
 .hero { padding: 64px 0 72px; background: linear-gradient(160deg, #fff7ed 0%, #fff 55%); }
 .hero-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center; }

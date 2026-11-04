@@ -4,7 +4,7 @@
  * services, prices, plan IDs, colors). No component needs to change.
  */
 
-export type PlanKey = "inspection" | "deposit" | "flatRate";
+export type PlanKey = "inspection" | "deposit" | "flatRate" | "demo";
 
 export interface Service {
   id: string;
@@ -123,6 +123,23 @@ export const site = {
     },
   ] satisfies PricedPlan[],
 
+  /**
+   * Optional $1 plan for demoing a real, completed checkout without charging a
+   * full price. Only shown when the page is opened with `?demo=1`.
+   * Set to null to remove it.
+   */
+  demoPlan: {
+    key: "demo",
+    planId: "plan_7Bxh1umWQbdog",
+    productId: "prod_cf8V4cXeOzs6w",
+    name: "Test Checkout",
+    price: 1,
+    priceNote: "test",
+    description: "A $1 live checkout that runs the exact same Whop Payment Elements flow as the paid plans.",
+    features: [],
+    cta: "Run $1 test checkout",
+  } as PricedPlan | null,
+
   serviceArea: {
     summary: "Serving the greater metro and surrounding counties within 50 miles.",
     areas: ["Austin", "Round Rock", "Cedar Park", "Georgetown", "Pflugerville", "Leander", "Buda", "Kyle", "San Marcos", "Lakeway"],
@@ -146,7 +163,7 @@ export const site = {
 };
 
 export const planByKey = (key: PlanKey): PricedPlan => {
-  const plan = site.plans.find((p) => p.key === key);
+  const plan = key === "demo" ? site.demoPlan : site.plans.find((p) => p.key === key);
   if (!plan) throw new Error(`Unknown plan ${key}`);
   return plan;
 };
