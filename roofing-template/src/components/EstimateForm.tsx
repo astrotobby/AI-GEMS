@@ -12,17 +12,19 @@ export function EstimateForm() {
     const form = e.currentTarget;
     const data = Object.fromEntries(new FormData(form).entries());
     setStatus({ kind: "sending" });
+    // Customer matching: hand the pixel the contact details first, so Whop can
+    // link this visitor to their Whop account before the server records the lead.
+    track("lead", { name: String(data.name ?? ""), email: String(data.email ?? ""), phone: String(data.phone ?? "") });
     try {
       const res = await fetch("/api/leads", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(data),
       });
-      const body = (await res.json()) as { lead_id?: string; error?: string };
+      const body = (await res.json()) as { lead_id?: string | null; error?: string };
       if (!res.ok) throw new Error(body.error ?? "Could not send your request.");
-      // Fire after the lead is confirmed so the event matches a real lead.
-      track("estimate_requested", { service: String(data.service ?? ""), event_id: body.lead_id });
-      track("lead", { event_id: body.lead_id });
+      // Fire after the request is confirmed so the event matches a real submission.
+      track("estimate_requested", { service: String(data.service ?? ""), event_id: body.lead_id ?? undefined });
       setStatus({ kind: "done", leadId: body.lead_id ?? "" });
       form.reset();
     } catch (err) {
@@ -46,7 +48,7 @@ export function EstimateForm() {
           <div className="card success" role="status">
             <h3>Thanks — we got it!</h3>
             <p>Your request is in our queue. Expect a call within one business day.</p>
-            <p className="muted small">Reference: {status.leadId}</p>
+            {status.leadId && <p className="muted small">Reference: {status.leadId}</p>}
             <button className="btn btn-outline" onClick={() => setStatus({ kind: "idle" })}>
               Send another request
             </button>

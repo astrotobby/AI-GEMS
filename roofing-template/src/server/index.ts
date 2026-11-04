@@ -125,8 +125,21 @@ async function createLead(req: Request, env: Env) {
   if (str(b.company_website)) return json({ ok: true }); // honeypot
   if (!name || !isEmail(email) || !phone) throw new HttpError(400, "Name, a valid email and a phone number are required.");
 
+  const accountId = requireAccount(env);
+  // The Leads API records a lead against a Whop user, so resolve the visitor's
+  // email to one first: the pixel's person record (linked by the `lead` event
+  // the form fires with this email), then the account's members.
+  const userId = await findWhopUserId(env, accountId, email);
+  if (!userId) {
+    // No Whop account behind this email: the pixel `lead` event (fired client
+    // side with name/email/phone) still records the request in Whop's People.
+    console.log("lead_without_whop_user", email);
+    return json({ ok: true, lead_id: null, recorded_as: "pixel_lead_event" });
+  }
+
   const lead = await whopApi<{ id: string }>(env, "POST", "/leads", {
-    account_id: requireAccount(env),
+    account_id: accountId,
+    user_id: userId,
     product_id: site.plans[0].productId.includes("REPLACE") ? undefined : site.plans[0].productId,
     referrer: req.headers.get("referer") ?? undefined,
     metadata: {
@@ -140,7 +153,34 @@ async function createLead(req: Request, env: Env) {
       submitted_at: new Date().toISOString(),
     },
   });
-  return json({ ok: true, lead_id: lead.id });
+  return json({ ok: true, lead_id: lead.id, recorded_as: "whop_lead" });
+}
+
+async function findWhopUserId(env: Env, accountId: string, email: string): Promise<string | null> {
+  const qs = (o: Record<string, string>) => new URLSearchParams(o).toString();
+  try {
+    const person = await whopApi<{ user?: { id?: string } | null; user_ids?: string[] }>(
+      env,
+      "GET",
+      `/people/${encodeURIComponent(email)}?${qs({ account_id: accountId })}`,
+    );
+    const id = person.user?.id ?? person.user_ids?.[0];
+    if (id) return id;
+  } catch {
+    /* not tracked yet */
+  }
+  try {
+    const members = await whopApi<{ data?: { user?: { id?: string } | null }[] }>(
+      env,
+      "GET",
+      `/members?${qs({ account_id: accountId, query: email, first: "1" })}`,
+    );
+    const id = members.data?.[0]?.user?.id;
+    if (id) return id;
+  } catch {
+    /* no member match */
+  }
+  return null;
 }
 
 /* ------------------------------------------------------------------ */

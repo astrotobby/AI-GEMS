@@ -1,5 +1,7 @@
 # Roofing Website Template — built on Whop Websites
 
+**Live demo:** https://chainztobby.whop.site (app `app_eHEE702xOFUnjC`) · office invoicing page: https://chainztobby.whop.site/#admin
+
 A production-ready, reusable website template for a US roofing company, hosted on **Whop Websites** (`*.whop.site`). It demos Whop end-to-end for a high-ticket service business: **deposit → job → final invoice**.
 
 - **Sections:** services (repair, replacement, inspection), pricing, deposit booking, financing callout, reviews & trust badges, service area, estimate/contact form.
@@ -18,7 +20,7 @@ A production-ready, reusable website template for a US roofing company, hosted o
 | Card on file via a **setup intent** at deposit checkout | Payment Elements in `mode: "setup"` → `POST /setup_intents` → `handleNextAction` (3DS) → poll until `succeeded` |
 | Deposit charged to the saved card | `POST /payments` with `member_id` + `payment_method_id` |
 | Final balance billed with the **Invoices API** | `POST /invoices` → `/issue` (auto-charge the stored card) or `/send` (email a pay link). UI at `/#admin` |
-| "Request an Estimate" form → **Whop Leads API** | `POST /api/leads` → `POST /leads` with the form fields as metadata |
+| "Request an Estimate" form → **Whop Leads API** | The form fires a pixel `lead` event with name, email and phone (customer matching). Then `POST /api/leads` resolves the email to a Whop user (`GET /people/{email}`, then `GET /members?query=`) and calls `POST /leads` with `user_id` and the form fields as metadata. The Leads API requires a Whop user, so an email with no Whop account is kept as the pixel lead event instead. |
 | Custom pixel events with `whop.track` | `estimate_requested`, `service_viewed`, `deposit_started` (plus standard `lead`, `initiate_checkout`). Page views and checkout events are automatic on whop.site |
 | Product attribution attributes | `data-whop-product-id` / `variant-id` / `price` / `currency` on pricing cards and the checkout modal |
 | Responsive | Mobile-first CSS, tested at 390px and 1280px, no horizontal scroll |
