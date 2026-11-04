@@ -20,7 +20,8 @@ export function App() {
   const elements = useMemo(() => loadWhop(), []);
   const [checkoutPlan, setCheckoutPlan] = useState<Exclude<PlanKey, "deposit"> | null>(null);
   const [isAdmin, setIsAdmin] = useState(() => location.hash === "#admin");
-  const showDemo = Boolean(site.demoPlan) && new URLSearchParams(location.search).get("demo") === "1";
+  // Shown whenever a demo plan is configured; set site.demoPlan to null for a real client.
+  const showDemo = Boolean(site.demoPlan);
 
   useEffect(() => {
     const onHash = () => setIsAdmin(location.hash === "#admin");

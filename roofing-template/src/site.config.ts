@@ -125,8 +125,8 @@ export const site = {
 
   /**
    * Optional $1 plan for demoing a real, completed checkout without charging a
-   * full price. Only shown when the page is opened with `?demo=1`.
-   * Set to null to remove it.
+   * full price. Shown as a banner at the top of the page while set.
+   * Set to null before handing the site to a real roofing client.
    */
   demoPlan: {
     key: "demo",
