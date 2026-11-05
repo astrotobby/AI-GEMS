@@ -21,9 +21,16 @@ def transcribe(video: Path, model_size: str = "small") -> list[Word]:
     import numpy as np
     from faster_whisper import WhisperModel
 
-    # decode with ffmpeg ourselves: avoids PyAV version mismatches and handles any container
-    pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", str(video), "-ac", "1", "-ar", "16000",
-                          "-f", "s16le", "-"], capture_output=True, check=True).stdout
+    from .render import audio_stream
+
+    a = audio_stream(video)
+    if a is None:  # no audio track at all: nothing to transcribe
+        return []
+    # decode with ffmpeg ourselves: avoids PyAV version mismatches and handles any container.
+    # Pick the audio track explicitly - ffmpeg's default prefers the most channels, which on
+    # iPhone footage is the undecodable spatial-audio track.
+    pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", str(video), "-map", f"0:{a}", "-ac", "1",
+                          "-ar", "16000", "-f", "s16le", "-"], capture_output=True, check=True).stdout
     audio = np.frombuffer(pcm, np.int16).astype(np.float32) / 32768.0
     model = WhisperModel(model_size, device="cpu", compute_type="int8")
     segments, _ = model.transcribe(audio, word_timestamps=True, vad_filter=True)

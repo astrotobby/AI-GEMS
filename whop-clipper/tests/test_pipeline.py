@@ -99,6 +99,39 @@ def test_ass_is_relative_to_clip_and_highlights_words():
     assert r"{\c&H00E5FF&}HERE{\c&HFFFFFF&}" in first
 
 
+def _fake_ffprobe(monkeypatch, payload: dict):
+    class Done:
+        stdout = json.dumps(payload)
+    monkeypatch.setattr("clipper.render.subprocess.run", lambda *a, **k: Done())
+
+
+def test_probe_reads_iphone_rotation_as_portrait(monkeypatch):
+    _fake_ffprobe(monkeypatch, {"streams": [{"width": 1920, "height": 1080,
+                                             "side_data_list": [{"rotation": -90}]}]})
+    assert render.probe(Path("phone.mov")) == (1080, 1920)
+    _fake_ffprobe(monkeypatch, {"streams": [{"width": 1920, "height": 1080}]})
+    assert render.probe(Path("tv.mp4")) == (1920, 1080)
+
+
+def test_audio_stream_skips_apple_spatial_audio(monkeypatch):
+    # iPhone order: video, aac, apple_apac - and on some files the apac track comes first
+    _fake_ffprobe(monkeypatch, {"streams": [{"index": 1, "codec_name": "apple_apac"},
+                                            {"index": 2, "codec_name": "aac"}]})
+    assert render.audio_stream(Path("phone.mov")) == 2
+    _fake_ffprobe(monkeypatch, {"streams": []})
+    assert render.audio_stream(Path("silent.mp4")) is None
+
+
+def test_brief_flags_join_and_invite_bounties_as_not_video():
+    join = BY_ID.get("bnty_GLQ2nZ3EtqTUW") or {
+        "title": "JOIN AND GET PAID",
+        "description": "-You must join this community: https://whop.com/clip-influence\n"
+                       "-You must invite at least 1 other clipper"}
+    br = brief.parse(join["description"], join["title"])
+    assert br.not_a_video
+    assert not brief.parse(ANON["description"], ANON["title"]).not_a_video
+
+
 def test_filter_graph_handles_both_orientations():
     assert "boxblur" in render.filter_graph(1920, 1080, "s.ass")
     assert "pad=1080:1920" in render.filter_graph(1080, 1920, "s.ass")
@@ -462,6 +495,21 @@ def test_music_only_source_is_swapped_for_another_file(pipe, monkeypatch):
     p.advance(job)
     assert job["bad_sources"] == ["slots.mov"] and "slots.mov" in fetched[0]
     assert job["status"] == "planned" and "no usable source" in job["errors"][-1]
+
+
+def test_retrying_the_same_silent_file_counts_it_once(pipe, monkeypatch):
+    b = dict(ANON, description=ANON["description"].replace("livestream", "video"))
+    p = pipe(b)
+    p.plan(p.scan([b]))
+    job = sorted(p.ledger.jobs.values(), key=lambda j: j["slot"])[0]
+    src = p.cfg.work_dir / "src" / "quiet.mov"
+    src.parent.mkdir(parents=True, exist_ok=True)
+    src.write_bytes(b"x")
+    monkeypatch.setattr("clipper.transcribe.transcribe", lambda *a: [])
+    for _ in range(3):  # the same file handed back by several runs
+        p.ledger.move(job, "sourced", source=str(src))
+        p._clip(job)
+    assert job["bad_sources"] == ["quiet.mov"] and job["status"] == "planned"
 
 
 def test_instagram_views_come_from_media_insights():

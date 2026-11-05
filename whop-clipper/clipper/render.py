@@ -55,12 +55,38 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     return head + "\n".join(lines) + "\n"
 
 
+def _rotation(stream: dict) -> int:
+    rot = stream.get("tags", {}).get("rotate")
+    for sd in stream.get("side_data_list", []):
+        rot = sd.get("rotation", rot)
+    return abs(int(float(rot or 0))) % 180
+
+
 def probe(path: Path) -> tuple[int, int]:
+    """Displayed size: phone .MOVs store portrait video as landscape plus a 90-degree rotation flag."""
     out = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
-                          "stream=width,height", "-of", "json", str(path)],
+                          "stream=width,height:stream_tags=rotate:stream_side_data=rotation",
+                          "-of", "json", str(path)],
                          capture_output=True, text=True, check=True)
     st = json.loads(out.stdout)["streams"][0]
-    return int(st["width"]), int(st["height"])
+    w, h = int(st["width"]), int(st["height"])
+    return (h, w) if _rotation(st) == 90 else (w, h)
+
+
+# Audio codecs ffmpeg can decode. iPhone .MOVs also carry an Apple spatial-audio track
+# (apple_apac) it can't, and mapping that track makes the whole command fail.
+DECODABLE_AUDIO = {"aac", "mp3", "opus", "vorbis", "flac", "alac", "ac3", "eac3", "pcm_s16le",
+                   "pcm_s24le", "pcm_f32le", "pcm_s16be", "pcm_s24be", "mp2", "wmav2", "amr_nb"}
+
+
+def audio_stream(path: Path) -> int | None:
+    """Index of the first decodable audio stream, or None when there is no usable audio."""
+    out = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries",
+                          "stream=index,codec_name", "-of", "json", str(path)],
+                         capture_output=True, text=True, check=True)
+    streams = json.loads(out.stdout).get("streams", [])
+    pick = [s for s in streams if s.get("codec_name") in DECODABLE_AUDIO] or streams
+    return int(pick[0]["index"]) if pick else None
 
 
 def filter_graph(src_w: int, src_h: int, ass_name: str) -> str:
@@ -79,11 +105,13 @@ def render(src: Path, words: list[Word], start: float, end: float, out: Path,
     ass = out.with_suffix(".ass")
     ass.write_text(build_ass(words, start, end, hook, font))
     sw, sh = probe(src)
+    a = audio_stream(src)
+    audio = (["-map", f"0:{a}", "-c:a", "aac", "-b:a", "160k", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11"]
+             if a is not None else [])
     cmd = [
         "ffmpeg", "-y", "-ss", f"{start:.2f}", "-i", str(src.resolve()), "-t", f"{end - start:.2f}",
-        "-filter_complex", filter_graph(sw, sh, ass.name), "-map", "[v]", "-map", "0:a?",
+        "-filter_complex", filter_graph(sw, sh, ass.name), "-map", "[v]", *audio,
         "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-maxrate", "6M", "-bufsize", "12M", "-pix_fmt", "yuv420p", "-r", "30",
-        "-c:a", "aac", "-b:a", "160k", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11",
         "-movflags", "+faststart", out.name,
     ]
     subprocess.run(cmd, cwd=out.parent, check=True, capture_output=True)
