@@ -48,7 +48,9 @@ def budget_left(b: dict) -> float:
     return float(b.get("budget_amount") or 0) - float(b.get("gross_paid_out_amount") or 0)
 
 
-def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20) -> Scored:
+def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20,
+          typical_views: int | None = None) -> Scored:
+    """typical_views: what our posts usually reach (None = no history yet)."""
     br = brief_mod.parse(b.get("description") or "", b.get("title") or "")
     s = Scored(bounty=b, brief=br, kind=kind_of(b))
     net = float(b.get("net_reward_amount") or 0)
@@ -126,13 +128,18 @@ def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20) -
     if not br.long_form:
         pts += 15
     if br.min_views == 0:
-        pts += 10
-        s.reasons.append("paid on approval, no view threshold (+10)")
+        pts += 20  # submitted right after posting, so it can actually pay out
+        s.reasons.append("paid on approval, no view threshold (+20)")
     elif br.min_views <= 1000:
         pts += 5
         s.reasons.append(f"needs {br.min_views} views (+5)")
     else:
         s.reasons.append(f"needs {br.min_views} views (+0)")
+    if br.min_views and typical_views is not None and typical_views < br.min_views / 2:
+        # our posts rarely get there: rank it below campaigns that pay on approval, but keep it
+        # above min_score so the accounts keep posting (and growing) when it's the only option
+        pts -= 5
+        s.reasons.append(f"your clips peak around {typical_views} views, under half the target (-5)")
     if br.livestream_required:
         pts -= 10
         s.reasons.append("livestream proof (-10)")
@@ -144,6 +151,8 @@ def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20) -
     return s
 
 
-def rank(bounties: list[dict], *, country: str, goal_types: list[str], min_clip: int = 20) -> list[Scored]:
-    scored = [score(b, country=country, goal_types=goal_types, min_clip=min_clip) for b in bounties]
+def rank(bounties: list[dict], *, country: str, goal_types: list[str], min_clip: int = 20,
+         typical_views: int | None = None) -> list[Scored]:
+    scored = [score(b, country=country, goal_types=goal_types, min_clip=min_clip,
+                    typical_views=typical_views) for b in bounties]
     return sorted(scored, key=lambda x: (x.eligible, x.automatable, x.score), reverse=True)

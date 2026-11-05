@@ -122,6 +122,19 @@ def test_audio_stream_skips_apple_spatial_audio(monkeypatch):
     assert render.audio_stream(Path("silent.mp4")) is None
 
 
+def test_view_target_campaigns_rank_below_pay_on_approval():
+    anon = scoring.score(ANON, country="KE", goal_types=["clipping", "ugc_content"])
+    no_views = dict(ANON, title=brief.VIEWS_RE.sub("", ANON["title"]),
+                    description=brief.VIEWS_RE.sub("", ANON["description"]))
+    assert brief.parse(no_views["description"], no_views["title"]).min_views == 0
+    no_target = scoring.score(no_views, country="KE", goal_types=["clipping", "ugc_content"])
+    assert no_target.score > anon.score
+    low_reach = scoring.score(ANON, country="KE", goal_types=["clipping", "ugc_content"], typical_views=140)
+    assert low_reach.score == anon.score - 5
+    assert any("peak around 140" in r for r in low_reach.reasons)
+    assert scoring.score(ANON, country="KE", goal_types=["clipping"], typical_views=900).score == anon.score
+
+
 def test_brief_flags_join_and_invite_bounties_as_not_video():
     join = BY_ID.get("bnty_GLQ2nZ3EtqTUW") or {
         "title": "JOIN AND GET PAID",

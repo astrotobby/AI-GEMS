@@ -95,7 +95,13 @@ class Pipeline:
     def scan(self, bounties: list[dict] | None = None) -> list[scoring.Scored]:
         bounties = bounties if bounties is not None else self.campaigns()
         return scoring.rank(bounties, country=self.cfg.country, goal_types=self.cfg.goal_types,
-                            min_clip=self.cfg.min_clip_seconds)
+                            min_clip=self.cfg.min_clip_seconds, typical_views=self.typical_views())
+
+    def typical_views(self) -> int | None:
+        """Median of each posted job's best view count, or None before anything was posted."""
+        best = sorted(max((p.get("views") or 0) for p in j["posts"].values())
+                      for j in self.ledger.jobs.values() if j.get("posts"))
+        return best[len(best) // 2] if best else None
 
     # ---- schedule helpers ------------------------------------------------------
     @property

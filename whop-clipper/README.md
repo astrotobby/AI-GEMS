@@ -18,10 +18,10 @@ job, so runs resume where they stopped and nothing is ever posted or submitted t
 | When | What |
 |---|---|
 | 05:00 | Pick today's videos from the freshest campaign list: **2 clipping + 2 UGC**, best-scoring campaigns first (a campaign is reused only if its brief allows several posts). Make all four. |
-| **08:20** | 1 clipping + 1 UGC go live |
-| **14:00** | the other clipping + UGC go live |
+| **19:00** | 1 clipping + 1 UGC go live (11:00 New York - the campaigns target US viewers) |
+| **22:30** | the other clipping + UGC go live (14:30 New York) |
 | every 4h | track views, submit what's ready, re-try anything that failed, catch up a missed slot |
-| ~14:30 | Telegram summary: what went live, and why anything is missing |
+| ~23:15 | Telegram summary: what went live, and why anything is missing |
 
 Routing: **clipping → YouTube Astro Tobby (@astrotobyc)**, **UGC → YouTube DIJITOL NOMAD**, everything
 → **Instagram @astr_osignal** (only on platforms each campaign accepts). Accounts are matched by

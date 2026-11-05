@@ -29,7 +29,7 @@ class Settings:
     # daily schedule: how many videos of each kind per day, and the local go-live times.
     # Each slot gets an even share (2 per kind over 2 slots = 1 clipping + 1 UGC per slot).
     daily_quota: dict = field(default_factory=lambda: {"clipping": 2, "ugc": 2})
-    slots: list[str] = field(default_factory=lambda: ["08:20", "14:00"])
+    slots: list[str] = field(default_factory=lambda: ["19:00", "22:30"])
     timezone: str = "Africa/Nairobi"
     max_per_campaign_per_day: int = 2  # repeat posts only for campaigns that allow several
 

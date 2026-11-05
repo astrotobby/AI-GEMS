@@ -16,7 +16,9 @@ telegram_chat = "6295868962" # @astrotobby - where updates and clips for review 
 
 [schedule]
 daily_quota = { clipping = 2, ugc = 2 }
-slots = ["08:20", "14:00"]   # Kenyan time; each slot posts 1 clipping + 1 UGC video
+# Kenyan time; each slot posts 1 clipping + 1 UGC video. The campaigns target US viewers:
+# 19:00 / 22:30 EAT = 11:00 / 14:30 New York, when they're awake (08:20 EAT was 00:20 there).
+slots = ["19:00", "22:30"]
 timezone = "Africa/Nairobi"
 max_per_campaign_per_day = 2
 
