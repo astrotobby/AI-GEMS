@@ -1040,6 +1040,197 @@
       "title": "Clip Content into Short Video (1k view minimum)",
       "updated": "2026-11-05T09:05:20+00:00"
     },
+    "bnty_4nQb37p7bvjna-2026-11-06-clipping0": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "Sharps don't buy hype, they sell it \ud83d\udcc9\nWhy betting the Sixers to win the title on signing day means paying the worst price.\nFollow @ANON_BETTING (IG) / @AnonPicks (TikTok) for more",
+        "end": 53.68,
+        "hashtags": [
+          "sportsbetting",
+          "NBA",
+          "LeBronJames",
+          "Sixers",
+          "bettingtips",
+          "AnonBetting"
+        ],
+        "hook": "Don't bet the Sixers yet",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-06-clipping0.mp4",
+        "reason": "claude: Lines 0-10 run 0.0s to 53.4s, so the clip is about 53 seconds. It opens right on the strongest hook (LeBron signs with the Sixers and \"don't do it because you're getting robbed\"), then gives the \"sharps sell hype\" explanation and the advice to wait until things get rocky. It makes sense without any other context. The speaker's caveat that he isn't saying whether they can win stays in, so his meaning isn't changed. I left out the last line with the 11% / +700 odds because the full 62.2s goes over the 60s limit. The clip still ends on a clear piece of advice, and nothing in it is a made-up stat.",
+        "start": 0.0,
+        "text": "LeBron James just got announced to sign with the Philadelphia Sixers and if you're thinking about putting money on the Sixers to win the championship this upcoming season, don't do it because you're getting robbed in a way that you can't even frankly see right now. Okay so let me first explain how this works. Sharps do not buy hype, they sell hype. Okay and all that's happened with this signing is it's created a bunch of buzz and a bunch of hype and now a bunch of people are running to the sport",
+        "title": "LeBron to the Sixers? Why Betting Their Title Odds Today Is the Worst Price"
+      },
+      "created": "2026-11-05T21:31:43+00:00",
+      "date": "2026-11-06",
+      "history": [
+        {
+          "at": "2026-11-05T21:32:17+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:32:17+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:32:17+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:32:17+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:32:18+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:32:18+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:32:19+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:32:19+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:32:23+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:34:31+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-05T21:34:31+00:00",
+          "from": "clipped",
+          "to": "approved"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-06-clipping0",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 45.7,
+      "slot": 0,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/c1558799ccca4080be9ac452bc37a732.mov",
+      "status": "approved",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-05T21:34:31+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-06-clipping1": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "I was in awful sports better until I met a non -bedding.\n@ANON_BETTING @AnonPicks",
+        "end": 10.76,
+        "hashtags": [
+          "picks",
+          "awful",
+          "sports",
+          "shorts",
+          "clips"
+        ],
+        "hook": "I was in awful sports better until",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-06-clipping1.mp4",
+        "reason": "heuristic score -1000000000.0",
+        "start": 0.03,
+        "text": "Chad here. I was in awful sports better until I met a non -bedding. Now I'm winning consistently with his picks and I'm making some exercise income each month. His picks truly win.",
+        "title": "I was in awful sports better until I met a non -bedding."
+      },
+      "created": "2026-11-05T21:31:43+00:00",
+      "date": "2026-11-06",
+      "history": [
+        {
+          "at": "2026-11-05T21:34:32+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:34:32+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:34:33+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:34:33+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:34:34+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:34:34+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:34:34+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:34:34+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:34:37+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:35:13+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-05T21:35:13+00:00",
+          "from": "clipped",
+          "to": "approved"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-06-clipping1",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 45.7,
+      "slot": 1,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/ChadVideoReview.mov",
+      "status": "approved",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-05T21:35:13+00:00"
+    },
     "bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0": {
       "bounty_id": "bnty_GLQ2nZ3EtqTUW",
       "clip": {
