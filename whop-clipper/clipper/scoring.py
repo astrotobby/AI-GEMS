@@ -84,6 +84,9 @@ def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20) -
     elif not br.source_links:
         s.automatable = False
         s.human_steps.append("no downloadable source footage linked - pick sources manually")
+    if br.not_a_video:
+        s.automatable = False
+        s.human_steps.append("not a video bounty: asks you to join/invite/chat - a post link would be denied")
     if br.long_form:
         s.automatable = False
         s.human_steps.append("long-form edit (charts/b-roll/script) - not a short clip")

@@ -38,6 +38,7 @@ class Brief:
     vertical: bool = True
     repeatable: bool = False       # campaign accepts several posts from the same person
     needs_real_person: bool = False  # face/voice of a real person, or AI content forbidden
+    not_a_video: bool = False  # deliverable is joining/inviting/chatting, so a post link would be denied
     product_links: list[str] = field(default_factory=list)  # links the post must carry (UGC)
 
 
@@ -89,6 +90,9 @@ def parse(description: str, title: str = "") -> Brief:
         r"no ai|not ai|ai[- ]generated (content )?(is )?(not allowed|prohibited|will be rejected)|"
         r"show (your|ur) face|face on camera|on[- ]camera|film yourself|your (own )?voice|real person\b|"
         r"selfie|talking head of you|unboxing|in your hands|wear(ing)? (it|the)", low))
+    b.not_a_video = bool(re.search(
+        r"must invite|invite at least|refer at least|you must join (this|the|our) (community|server|discord|group)|"
+        r"(say|post|type|send)\s+[\"“'].{3,80}[\"”']\s*(in|inside)|screenshot of (the|your) (chat|message|invite|dm)", low))
     b.product_links = [u for u in dict.fromkeys(b.reference_links)
                        if not any(h in u for h in ("whop.com", "discord.gg", "docs.google.com", "drive.google.com"))]
 

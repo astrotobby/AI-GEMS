@@ -19,7 +19,7 @@ from .whop import Whop
 
 log = logging.getLogger(__name__)
 VIEW_DEADLINE_DAYS = 14
-MAX_BAD_SOURCES = 5  # music-only source files to skip before giving up on a clip
+MAX_BAD_SOURCES = 15  # music-only source files to skip before giving up (campaign folders hold ~100 files)
 RETRY_POST_DAYS = 2  # keep retrying a platform that failed at posting time (e.g. YouTube quota) this long
 
 
@@ -245,7 +245,8 @@ class Pipeline:
                 if j.get("clip") and j.get("source") == job["source"] and j["id"] != job["id"]]
         if not highlights.sentences(words):  # music-only footage: nothing to clip on - try another file from the campaign
             bad = job.setdefault("bad_sources", [])
-            bad.append(src.name)
+            if src.name not in bad:  # a retry of the same file must not count it twice
+                bad.append(src.name)
             if len(bad) >= MAX_BAD_SOURCES:
                 raise RuntimeError(f"{len(bad)} source videos had no speech: {', '.join(bad)}")
             self.ledger.move(job, "planned", reason=f"{src.name} has no speech - fetching another source")
