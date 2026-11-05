@@ -869,7 +869,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/DfUa9FUnHr5/",
-          "views": 137
+          "views": 140
         }
       },
       "published_at": "2026-11-04T12:09:24.887438+00:00",
@@ -880,6 +880,152 @@
       "status": "published",
       "title": "Clip Content into Short Video (1k view minimum)",
       "updated": "2026-11-04T12:09:24+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-05-clipping0": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov",
+        "BillboardVideoEdited.mov",
+        "BillboardVideoEdited.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "created": "2026-11-05T00:53:52+00:00",
+      "date": "2026-11-05",
+      "errors": [
+        "sourced: 5 source videos had no speech: 100kCashCasinoSlots.mov, AnonIGPhoneNBAGame.mov, AnonMaskAPWatchMoney.mov, AnonMaskInPorsche.mov, BillboardVideoEdited.mov",
+        "sourced: 6 source videos had no speech: 100kCashCasinoSlots.mov, AnonIGPhoneNBAGame.mov, AnonMaskAPWatchMoney.mov, AnonMaskInPorsche.mov, BillboardVideoEdited.mov, BillboardVideoEdited.mov"
+      ],
+      "history": [
+        {
+          "at": "2026-11-05T00:54:15+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:15+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:16+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:16+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:17+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:17+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:17+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:17+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:20+00:00",
+          "from": "planned",
+          "to": "sourced"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-05-clipping0",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 50.7,
+      "slot": 0,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BillboardVideoEdited.mov",
+      "status": "sourced",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-05T00:54:20+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-05-clipping1": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "created": "2026-11-05T00:53:52+00:00",
+      "date": "2026-11-05",
+      "errors": [
+        "sourced: Command '['ffmpeg', '-y', '-ss', '0.44', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BuyTeamsWhenPeopleAreScared.MOV', '-t', '58.61', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-05-clipping1.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-05-clipping1.mp4']' returned non-zero exit status 234.",
+        "sourced: Command '['ffmpeg', '-y', '-ss', '0.44', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BuyTeamsWhenPeopleAreScared.MOV', '-t', '58.61', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-05-clipping1.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-05-clipping1.mp4']' returned non-zero exit status 234."
+      ],
+      "history": [
+        {
+          "at": "2026-11-05T00:54:24+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:24+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:24+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:24+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:25+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:25+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:26+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:26+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:33+00:00",
+          "from": "planned",
+          "to": "sourced"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-05-clipping1",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 50.7,
+      "slot": 1,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BuyTeamsWhenPeopleAreScared.MOV",
+      "status": "sourced",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-05T00:54:33+00:00"
     },
     "bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0": {
       "bounty_id": "bnty_GLQ2nZ3EtqTUW",
