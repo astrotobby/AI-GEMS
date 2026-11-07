@@ -1383,7 +1383,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/Dfc8Xk1j5uS/",
-          "views": 4
+          "views": 129
         }
       },
       "published_at": "2026-11-07T19:34:40.974201+00:00",
@@ -1501,7 +1501,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/Dfc8hWFjX0R/",
-          "views": 0
+          "views": 41
         }
       },
       "published_at": "2026-11-07T19:36:12.806121+00:00",
@@ -1512,6 +1512,229 @@
       "status": "published",
       "title": "Clip Content into Short Video (1k view minimum)",
       "updated": "2026-11-07T19:36:12+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-08-clipping0": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov",
+        "ChocolateDessertExpensiveDinner.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "Books with money in hand saying give me the Philadelphia 76ers to win the NBA\u2026\n@ANON_BETTING @AnonPicks",
+        "end": 62.46,
+        "hashtags": [
+          "saying",
+          "books",
+          "championship",
+          "shorts",
+          "clips"
+        ],
+        "hook": "Books with money in hand saying give",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-08-clipping0.mp4",
+        "reason": "Claude skipped: no API credit, and the Claude plan failed too (Claude Code: claude-opus-5-5: Claude Code: You've hit your weekly limit \u00b7 resets 7am (UTC) / sonnet: Claude Code: You've hit your weekly limit \u00b7 resets 7am (UTC) / haiku: Claude Code: You've hit your weekly limit \u00b7 resets 7am (UTC)); heuristic score 24.1",
+        "start": 29.83,
+        "text": "books with money in hand saying give me the Philadelphia 76ers to win the NBA championship. Now I'm not sitting here saying that they can or can't win the championship, all I'm saying is if you bet it today, the day of him signing with the Sixers, you are quite literally paying the worst possible price you should wait until things get rocky, maybe they have a losing streak, maybe an injury for a few weeks, whatever it is, but right now to buy them at 11 % odds or plus 700 on books would be a gia",
+        "title": "Books with money in hand saying give me the Philadelphia 76ers to win the NBA\u2026"
+      },
+      "created": "2026-11-07T22:33:07+00:00",
+      "date": "2026-11-08",
+      "history": [
+        {
+          "at": "2026-11-07T22:33:54+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:33:54+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:33:54+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:33:54+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:33:55+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:33:55+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:33:56+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:33:56+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:33:58+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:34:01+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:34:09+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:35:07+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-07T22:35:07+00:00",
+          "from": "clipped",
+          "to": "approved"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-08-clipping0",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "ChocolateDessertExpensiveDinner.mov has no speech - fetching another source",
+      "score": 45.7,
+      "slot": 0,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/copy_9E5DEDC8-E2CD-4E3C-AD51-0ED2E980F3D2.mov",
+      "status": "approved",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-07T22:35:07+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-08-clipping1": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov",
+        "ChocolateDessertExpensiveDinner.mov",
+        "DayTimeZoomInBillboard.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "I love sports and betting on it but I could never win consistently.\n@ANON_BETTING @AnonPicks",
+        "end": 37.7,
+        "hashtags": [
+          "sports",
+          "betting",
+          "legit",
+          "shorts",
+          "clips"
+        ],
+        "hook": "I love sports and betting on it",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-08-clipping1.mp4",
+        "reason": "Claude skipped: no API credit, and the Claude plan failed too (Claude Code: claude-opus-5-5: Claude Code: You've hit your weekly limit \u00b7 resets 7am (UTC) / sonnet: Claude Code: You've hit your weekly limit \u00b7 resets 7am (UTC) / haiku: Claude Code: You've hit your weekly limit \u00b7 resets 7am (UTC)); heuristic score 21.1",
+        "start": 5.15,
+        "text": "I love sports and betting on it but I could never win consistently. I always lost more than I won. Last year I found and I'm during the MLB season when I was having a really tough time winning and I joined his VIP and tell his peaks and it was the most amazing thing that ever happened to me. His undefeated MLB system is absolutely legit. I was there for the last 80 bets or so and we won every single one. If you want to win betting on sports and on his demand for sure, he's legit.",
+        "title": "I love sports and betting on it but I could never win consistently."
+      },
+      "created": "2026-11-07T22:33:08+00:00",
+      "date": "2026-11-08",
+      "history": [
+        {
+          "at": "2026-11-07T22:35:08+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:35:08+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:35:09+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:35:09+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:35:10+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:35:10+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:35:10+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:35:10+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:35:11+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:35:11+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:35:15+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:35:18+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:35:21+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:36:08+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-07T22:36:08+00:00",
+          "from": "clipped",
+          "to": "approved"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-08-clipping1",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "DayTimeZoomInBillboard.mov has no speech - fetching another source",
+      "score": 45.7,
+      "slot": 1,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/DiegoReviewForAnon.mov",
+      "status": "approved",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-07T22:36:08+00:00"
     },
     "bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0": {
       "bounty_id": "bnty_GLQ2nZ3EtqTUW",
