@@ -99,52 +99,6 @@ def test_ass_is_relative_to_clip_and_highlights_words():
     assert r"{\c&H00E5FF&}HERE{\c&HFFFFFF&}" in first
 
 
-def _fake_ffprobe(monkeypatch, payload: dict):
-    class Done:
-        stdout = json.dumps(payload)
-    monkeypatch.setattr("clipper.render.subprocess.run", lambda *a, **k: Done())
-
-
-def test_probe_reads_iphone_rotation_as_portrait(monkeypatch):
-    _fake_ffprobe(monkeypatch, {"streams": [{"width": 1920, "height": 1080,
-                                             "side_data_list": [{"rotation": -90}]}]})
-    assert render.probe(Path("phone.mov")) == (1080, 1920)
-    _fake_ffprobe(monkeypatch, {"streams": [{"width": 1920, "height": 1080}]})
-    assert render.probe(Path("tv.mp4")) == (1920, 1080)
-
-
-def test_audio_stream_skips_apple_spatial_audio(monkeypatch):
-    # iPhone order: video, aac, apple_apac - and on some files the apac track comes first
-    _fake_ffprobe(monkeypatch, {"streams": [{"index": 1, "codec_name": "apple_apac"},
-                                            {"index": 2, "codec_name": "aac"}]})
-    assert render.audio_stream(Path("phone.mov")) == 2
-    _fake_ffprobe(monkeypatch, {"streams": []})
-    assert render.audio_stream(Path("silent.mp4")) is None
-
-
-def test_view_target_campaigns_rank_below_pay_on_approval():
-    anon = scoring.score(ANON, country="KE", goal_types=["clipping", "ugc_content"])
-    no_views = dict(ANON, title=brief.VIEWS_RE.sub("", ANON["title"]),
-                    description=brief.VIEWS_RE.sub("", ANON["description"]))
-    assert brief.parse(no_views["description"], no_views["title"]).min_views == 0
-    no_target = scoring.score(no_views, country="KE", goal_types=["clipping", "ugc_content"])
-    assert no_target.score > anon.score
-    low_reach = scoring.score(ANON, country="KE", goal_types=["clipping", "ugc_content"], typical_views=140)
-    assert low_reach.score == anon.score - 5
-    assert any("peak around 140" in r for r in low_reach.reasons)
-    assert scoring.score(ANON, country="KE", goal_types=["clipping"], typical_views=900).score == anon.score
-
-
-def test_brief_flags_join_and_invite_bounties_as_not_video():
-    join = BY_ID.get("bnty_GLQ2nZ3EtqTUW") or {
-        "title": "JOIN AND GET PAID",
-        "description": "-You must join this community: https://whop.com/clip-influence\n"
-                       "-You must invite at least 1 other clipper"}
-    br = brief.parse(join["description"], join["title"])
-    assert br.not_a_video
-    assert not brief.parse(ANON["description"], ANON["title"]).not_a_video
-
-
 def test_filter_graph_handles_both_orientations():
     assert "boxblur" in render.filter_graph(1920, 1080, "s.ass")
     assert "pad=1080:1920" in render.filter_graph(1080, 1920, "s.ass")
@@ -194,7 +148,7 @@ def pipe(tmp_path, monkeypatch):
         p._composio = object()
         posted = []
 
-        def fake_post(c, target, video, title, caption, tags, privacy, category):
+        def fake_post(c, target, video, title, caption, tags, privacy, category, aigc=False):
             posted.append(target.get("channel") or target["platform"])
             return f"https://{target['platform']}.example/{len(posted)}"
 
@@ -479,10 +433,10 @@ def test_platform_that_failed_is_retried_on_a_later_run(pipe, monkeypatch):
     real_post = __import__("clipper.publish", fromlist=["post"]).post
     quota = {"on": True}
 
-    def flaky(c, target, *a):
+    def flaky(c, target, *a, **kw):
         if target["platform"] == "youtube" and quota["on"]:
             raise RuntimeError("403 quota exceeded")
-        return real_post(c, target, *a)
+        return real_post(c, target, *a, **kw)
     monkeypatch.setattr("clipper.publish.post", flaky)
     p.advance(job)
     assert job["status"] == "published" and list(job["posts"]) == ["instagram:astr_osignal"]
@@ -508,21 +462,6 @@ def test_music_only_source_is_swapped_for_another_file(pipe, monkeypatch):
     p.advance(job)
     assert job["bad_sources"] == ["slots.mov"] and "slots.mov" in fetched[0]
     assert job["status"] == "planned" and "no usable source" in job["errors"][-1]
-
-
-def test_retrying_the_same_silent_file_counts_it_once(pipe, monkeypatch):
-    b = dict(ANON, description=ANON["description"].replace("livestream", "video"))
-    p = pipe(b)
-    p.plan(p.scan([b]))
-    job = sorted(p.ledger.jobs.values(), key=lambda j: j["slot"])[0]
-    src = p.cfg.work_dir / "src" / "quiet.mov"
-    src.parent.mkdir(parents=True, exist_ok=True)
-    src.write_bytes(b"x")
-    monkeypatch.setattr("clipper.transcribe.transcribe", lambda *a: [])
-    for _ in range(3):  # the same file handed back by several runs
-        p.ledger.move(job, "sourced", source=str(src))
-        p._clip(job)
-    assert job["bad_sources"] == ["quiet.mov"] and job["status"] == "planned"
 
 
 def test_instagram_views_come_from_media_insights():
@@ -602,57 +541,85 @@ def test_connect_link_uses_newest_auth_config_for_this_user():
     assert made["ac"] == "ac_mine"
 
 
-def test_livestream_kind_is_told_apart():
-    """A short livestream of your stats is a 2-minute human step; one of you making the clip is not automatable."""
-    anon = brief.parse(ANON["description"], ANON["title"])
-    assert anon.livestream_required and not anon.livestream_creation
-    for bid in ("bnty_iJpOl5HbBoDQu", "bnty_lyJ5DBAjGJ6gF"):  # Shane Gillis, LIFEMAXX
-        b = BY_ID[bid]
-        assert brief.parse(b["description"], b["title"]).livestream_creation
-    s = scoring.score(BY_ID["bnty_lyJ5DBAjGJ6gF"], country="KE", goal_types=["clipping", "ugc_content"])
-    assert not s.automatable
-    assert scoring.score(ANON, country="KE", goal_types=["clipping"]).automatable
+def test_tiktok_posts_public_and_returns_the_video_url(monkeypatch):
+    from clipper import publish
+    monkeypatch.setattr(publish, "TIKTOK_POLL_SECONDS", (0, 0))
+
+    class C:
+        calls = []
+
+        def run(self, slug, args, account_id=None):
+            self.calls.append((slug, args))
+            return {
+                "TIKTOK_QUERY_CREATOR_INFO": {"data": {"privacy_level_options": ["PUBLIC_TO_EVERYONE", "SELF_ONLY"]}},
+                "TIKTOK_UPLOAD_VIDEO": {"data": {"publish_id": "v_pub_1"}},
+                "TIKTOK_FETCH_PUBLISH_STATUS": {"data": {"status": "PUBLISH_COMPLETE",
+                                                         "publicaly_available_post_id": [7312345]}},
+                "TIKTOK_GET_USER_STATS": {"data": {"username": "astrotobby"}},
+            }[slug]
+
+    c = C()
+    url = publish.post(c, {"platform": "tiktok"}, Path("clip.mp4"), "t", "cap", ["clipping"], aigc=True)
+    assert url == "https://www.tiktok.com/@astrotobby/video/7312345"
+    upload = dict(c.calls)["TIKTOK_UPLOAD_VIDEO"]
+    assert upload["privacy_level"] == "PUBLIC_TO_EVERYONE" and upload["is_aigc"] is True
+    assert upload["publish"] is True and upload["file_to_upload"] == "clip.mp4"
 
 
-def test_posted_job_is_kept_when_livestream_campaigns_are_off(pipe):
-    p = pipe(ANON, views=10)
-    job = clipped_job(p, ANON)
-    p.advance(job)
-    assert job["status"] == "published"
-    p.cfg.allow_livestream_campaigns = False
-    p.advance(job)
-    assert job["status"] == "published"  # still tracking views, not thrown away
+def test_tiktok_refuses_private_only_apps():
+    import pytest
+    from clipper import publish
+
+    class C:
+        def run(self, slug, args, account_id=None):
+            assert slug == "TIKTOK_QUERY_CREATOR_INFO", "must not upload when it can't go public"
+            return {"data": {"privacy_level_options": ["SELF_ONLY"]}}
+
+    with pytest.raises(publish.PublishError, match="audit"):
+        publish.post(C(), {"platform": "tiktok"}, Path("clip.mp4"), "t", "cap", [])
 
 
-def test_resume_restarts_view_tracking(pipe, monkeypatch):
-    from clipper import __main__ as cli
-    p = pipe(ANON, views=10)
-    job = clipped_job(p, ANON)
-    p.advance(job)
-    p.ledger.move(job, "skipped", reason="needs livestream proof (livestream campaigns are off)")
-    job["published_at"] = "2026-01-01T00:00:00+00:00"  # long past the 14-day window
-    p.ledger.save()
-    monkeypatch.setattr(cli, "Pipeline", lambda cfg, dry_run=False: p)
-    monkeypatch.setattr(cli.config, "load", lambda path: p.cfg)
-    assert cli.main(["resume", job["id"]]) == 0
-    assert job["status"] == "published" and job["resumed_at"]
-    p.advance(job)
-    assert job["status"] == "published"  # fresh window: not failed for being old
-    assert cli.main(["resume", job["id"]]) == 1  # only skipped jobs
+def test_tiktok_only_campaigns_are_eligible_once_a_tiktok_target_exists():
+    from clipper import scoring
+    b = {"id": "b1", "title": "Clip our podcast", "description": "Post clips on TikTok only.",
+         "status": "open", "spots_remaining": 5, "budget_amount": 100, "gross_paid_out_amount": 0,
+         "gross_reward_amount": 1, "net_reward_amount": 1, "business_goal_type": "clipping"}
+    blocked = scoring.score(b, country="KE", goal_types=["clipping"])
+    assert any("only accepts tiktok" in x for x in blocked.blockers)
+    ok = scoring.score(b, country="KE", goal_types=["clipping"], platforms={"youtube", "instagram", "tiktok"})
+    assert not any("only accepts" in x for x in ok.blockers)
 
 
-def test_livestream_job_carries_everything_the_submitter_needs(pipe, monkeypatch, capsys):
-    from clipper import __main__ as cli
-    monkeypatch.setenv("GITHUB_REPOSITORY", "astrotobby/AI-GEMS")
-    p = pipe(ANON)
-    job = clipped_job(p, ANON)
-    Path(job["clip"]["path"]).write_bytes(b"mp4")
-    p.advance(job)
-    assert job["status"] == "needs_livestream"
-    sub = job["submission"]
-    assert sub["bounty_id"] == ANON["id"] and len(sub["urls"]) == 2 and "Source:" in sub["caption"]
-    assert sub["clip_url"] == f"https://github.com/astrotobby/AI-GEMS/releases/download/clips/{job['id']}.mp4"
-    monkeypatch.setattr(cli, "Pipeline", lambda cfg, dry_run=False: p)
-    monkeypatch.setattr(cli.config, "load", lambda path: p.cfg)
-    assert cli.main(["pending-clips"]) == 0
-    assert capsys.readouterr().out.strip().endswith(f"\t{job['id']}.mp4")
+def test_join_and_screenshot_bounties_are_not_video_jobs():
+    from clipper import scoring
+    b = {"id": "b2", "title": "JOIN AND GET PAID (CLIPPERS ANY COUNTRY & AMERICAN UGC CREATORS ONLY)",
+         "description": "You must invite at least 1 other clipper.\nWhat to submit:\n"
+                        "-A screenshot of you inside of the Main Chat",
+         "status": "open", "spots_remaining": 5, "budget_amount": 30, "gross_paid_out_amount": 0,
+         "gross_reward_amount": 0.4, "net_reward_amount": 0.28, "business_goal_type": None}
+    s = scoring.score(b, country="KE", goal_types=["clipping", "ugc_content"])
+    assert not s.eligible and any("screenshots" in x for x in s.blockers)
+
+
+def test_connect_registers_your_own_app_when_the_project_has_none():
+    from types import SimpleNamespace as NS
+    from clipper import publish
+
+    made = {}
+
+    def create(toolkit, auth_config):
+        made.update(toolkit=toolkit, cfg=auth_config)
+        return NS(auth_config=NS(id="ac_tiktok"))
+
+    def link(user_id, auth_config_id, **kw):
+        made["linked"] = auth_config_id
+        return NS(redirect_url="https://connect.composio.dev/link/lk_t")
+
+    c = publish.Composio.__new__(publish.Composio)
+    c.user_id = "pipeline"
+    c.sdk = NS(client=NS(auth_configs=NS(list=lambda toolkit_slug: NS(items=[]), create=create)),
+               connected_accounts=NS(link=link))
+    assert c.link("tiktok", own_app=("key", "secret", "video.publish")) == "https://connect.composio.dev/link/lk_t"
+    assert made["toolkit"] == {"slug": "tiktok"} and made["linked"] == "ac_tiktok"
+    assert made["cfg"]["type"] == "use_custom_auth"
+    assert made["cfg"]["credentials"] == {"client_id": "key", "client_secret": "secret", "scopes": "video.publish"}

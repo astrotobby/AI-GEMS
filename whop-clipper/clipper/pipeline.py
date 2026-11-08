@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 import time
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -19,17 +18,8 @@ from .whop import Whop
 
 log = logging.getLogger(__name__)
 VIEW_DEADLINE_DAYS = 14
-MAX_BAD_SOURCES = 15  # music-only source files to skip before giving up (campaign folders hold ~100 files)
+MAX_BAD_SOURCES = 5  # music-only source files to skip before giving up on a clip
 RETRY_POST_DAYS = 2  # keep retrying a platform that failed at posting time (e.g. YouTube quota) this long
-
-
-CLIP_RELEASE = "clips"  # GitHub release whose assets are the rendered clips, for the Whop submission
-
-
-def clip_url(job: dict) -> str | None:
-    """Public download URL the workflow publishes this job's clip at (None outside GitHub Actions)."""
-    repo = os.environ.get("GITHUB_REPOSITORY")
-    return f"https://github.com/{repo}/releases/download/{CLIP_RELEASE}/{job['id']}.mp4" if repo else None
 
 
 def bounty_link(b: dict) -> str:
@@ -94,14 +84,9 @@ class Pipeline:
     # ---- 1. discover --------------------------------------------------------
     def scan(self, bounties: list[dict] | None = None) -> list[scoring.Scored]:
         bounties = bounties if bounties is not None else self.campaigns()
+        platforms = {t["platform"] for t in self.cfg.targets} or scoring.OUR_PLATFORMS
         return scoring.rank(bounties, country=self.cfg.country, goal_types=self.cfg.goal_types,
-                            min_clip=self.cfg.min_clip_seconds, typical_views=self.typical_views())
-
-    def typical_views(self) -> int | None:
-        """Median of each posted job's best view count, or None before anything was posted."""
-        best = sorted(max((p.get("views") or 0) for p in j["posts"].values())
-                      for j in self.ledger.jobs.values() if j.get("posts"))
-        return best[len(best) // 2] if best else None
+                            min_clip=self.cfg.min_clip_seconds, platforms=platforms)
 
     # ---- schedule helpers ------------------------------------------------------
     @property
@@ -177,8 +162,7 @@ class Pipeline:
             "planned": self._source, "sourced": self._clip, "clipped": self._gate,
             "approved": self._publish, "published": self._track, "ready_to_submit": self._submit,
         }
-        # once a clip is live, keep tracking it: dropping it would throw away posts that may still earn
-        if not self.cfg.allow_livestream_campaigns and job["status"] in ("planned", "sourced", "clipped", "approved"):
+        if not self.cfg.allow_livestream_campaigns and job["status"] in handlers:
             b = self.bounty(job)
             if brief_mod.parse(b["description"], b["title"]).livestream_required:
                 # submission would need a human livestream - drop it instead of handing it over
@@ -251,8 +235,7 @@ class Pipeline:
                 if j.get("clip") and j.get("source") == job["source"] and j["id"] != job["id"]]
         if not highlights.sentences(words):  # music-only footage: nothing to clip on - try another file from the campaign
             bad = job.setdefault("bad_sources", [])
-            if src.name not in bad:  # a retry of the same file must not count it twice
-                bad.append(src.name)
+            bad.append(src.name)
             if len(bad) >= MAX_BAD_SOURCES:
                 raise RuntimeError(f"{len(bad)} source videos had no speech: {', '.join(bad)}")
             self.ledger.move(job, "planned", reason=f"{src.name} has no speech - fetching another source")
@@ -326,7 +309,8 @@ class Pipeline:
                 continue  # already live - never double-post
             try:
                 url = publish.post(self.composio, t, Path(c["path"]), c["title"], c["caption"],
-                                   c["hashtags"], self.cfg.youtube_privacy, self.cfg.youtube_category_id)
+                                   c["hashtags"], self.cfg.youtube_privacy, self.cfg.youtube_category_id,
+                                   aigc=job.get("kind") == "ugc")
                 job["posts"][key] = {"url": url, "at": datetime.now(timezone.utc).isoformat(), "views": 0,
                                      "target": t}
                 self.ledger.save()
@@ -358,8 +342,6 @@ class Pipeline:
         if best >= need:
             self.ledger.move(job, "ready_to_submit")
             return
-        if job.get("resumed_at"):  # `resume` restarts the tracking window for an abandoned post
-            age = min(age, datetime.now(timezone.utc) - datetime.fromisoformat(job["resumed_at"]))
         if age > timedelta(days=VIEW_DEADLINE_DAYS):
             self.ledger.move(job, "failed", reason=f"only {best}/{need} views after {VIEW_DEADLINE_DAYS} days")
             self.tg.send(f"📉 {job['title']}: {best}/{need} views after {VIEW_DEADLINE_DAYS} days - stopped tracking.")
@@ -375,30 +357,23 @@ class Pipeline:
         b = self.bounty(job, refresh=True)
         br = brief_mod.parse(b["description"], b["title"])
         urls = [p["url"] for p in job["posts"].values()]
+        if br.livestream_required:
+            self.ledger.move(job, "needs_livestream")
+            self.tg.send(
+                f"🔴 Your turn: {job['title']} needs a livestream to submit.\n"
+                f"Bounty: {bounty_link(b)}\n"
+                f"Live posts: " + " | ".join(f"{p['url']} ({p.get('views', 0)} views)" for p in job["posts"].values())
+                + f"\nClip file: {job['clip']['path']}\nSubmission notes: {self._submission_caption(job)}\n"
+                "Go live on Whop showing what the brief asks for, attach the links above, then run:\n"
+                f"python -m clipper done {job['id']}")
+            return
         if b.get("status") != "open" or (b.get("spots_remaining") or 0) <= 0:
             self.ledger.move(job, "skipped", reason="campaign closed before submission")
             return
-        # everything the Whop-connector task needs to submit as you; the clip file is published as a
-        # GitHub release asset by the workflow so the task can attach it
-        submission = {"bounty_id": b["id"], "urls": urls, "caption": self._submission_caption(job),
-                      "clip_url": clip_url(job)}
-        if br.livestream_required:
-            # the proof livestream can only be done by you in the Whop app (the API has no way to do it);
-            # once your stream has ended, the connector task attaches the links + clip and submits
-            self.ledger.move(job, "needs_livestream", submission=submission)
-            self.tg.send(
-                f"🔴 Your turn (2 min): {job['title']} hit its view target.\n"
-                f"Live posts: " + " | ".join(f"{p['url']} ({p.get('views', 0)} views)" for p in job["posts"].values())
-                + f"\n\n1. Open the bounty in the Whop app: {bounty_link(b)}\n"
-                "2. Start the proof livestream and show what the brief asks for (your profile, the live post, "
-                "its publish date and view count).\n"
-                "3. End the stream. That's all - within 4 hours the clipper attaches the links, the clip file "
-                "and the source timestamps and submits it for you.\n"
-                f"(Submitted it yourself instead? Run: done {job['id']})")
-            return
         if self.cfg.whop_via != "api":
             # the scheduled Whop-connector task picks this up, submits as you, and marks it submitted
-            self.ledger.move(job, "awaiting_submission", submission=submission)
+            self.ledger.move(job, "awaiting_submission", submission={
+                "bounty_id": b["id"], "urls": urls, "caption": self._submission_caption(job)})
             self.tg.send(f"📨 Queued for Whop submission: {job['title']}\n" + "\n".join(urls))
             return
         file_ids = []

@@ -9,9 +9,6 @@ MENTION_RE = re.compile(r"(?<![\w.])@([A-Za-z0-9_.]{2,30})")
 VIEWS_RE = re.compile(r"(\d[\d,.]*)\s*(k|K)?\+?\s*(?:public\s+)?(?:organic\s+)?views?", re.I)
 RANGE_RE = re.compile(r"(\d{1,3})\s*(?:–|-|to)\s*(\d{1,3})\s*(?:second|sec|s\b)", re.I)
 MINUTES_RE = re.compile(r"(\d{1,2})\s*(?:–|-|to)\s*(\d{1,2})\s*minutes?\s+long", re.I)
-LIVESTREAM_RE = re.compile(r"livestream|live stream|go live", re.I)
-# a livestream of you *making* the content, vs. a short one showing your profile/post/view count
-CREATION_RE = re.compile(r"creat|cutting|editing|making|brows|start to finish|whole process|creation", re.I)
 
 SOURCE_HOSTS = ("drive.google.com", "youtube.com", "youtu.be", "dropbox.com", "vimeo.com",
                 "twitch.tv", "kick.com", "rumble.com", "x.com/", "twitter.com/")
@@ -32,14 +29,13 @@ class Brief:
     clip_seconds: tuple[int, int] | None = None
     long_form: bool = False
     livestream_required: bool = False
-    livestream_creation: bool = False  # the livestream must show you making the clip, not just its stats
     needs_physical_presence: bool = False
     clip_count: int = 1
     vertical: bool = True
     repeatable: bool = False       # campaign accepts several posts from the same person
     needs_real_person: bool = False  # face/voice of a real person, or AI content forbidden
-    not_a_video: bool = False  # deliverable is joining/inviting/chatting, so a post link would be denied
     product_links: list[str] = field(default_factory=list)  # links the post must carry (UGC)
+    screenshot_proof: bool = False  # proof is screenshots of joining/inviting, not a posted video
 
 
 def _num(text: str, k: str | None) -> int:
@@ -75,12 +71,10 @@ def parse(description: str, title: str = "") -> Brief:
     if MINUTES_RE.search(text) or "long-form" in low or "long form" in low:
         b.long_form = True
 
-    lives = list(LIVESTREAM_RE.finditer(text))
-    b.livestream_required = bool(lives)
-    # read the rest of each livestream sentence: "...livestream showing your profile and view count" is
-    # a 2-minute job after posting; "...livestream yourself creating the slideshow" can't be automated
-    b.livestream_creation = any(CREATION_RE.search(re.split(r"[.\n]", text[m.end():m.end() + 200])[0])
-                                for m in lives)
+    # e.g. "submit a screenshot of you inside the main chat" / "invite at least 1 other clipper"
+    b.screenshot_proof = bool(re.search(r"screenshot of (you|the friend|your)|invite at least \d", low))
+
+    b.livestream_required = "livestream" in low or "live stream" in low or "go live" in low
     b.needs_physical_presence = any(w in low for w in (
         "head mount", "military base", "on air", "in person", "your location", "record yourself"))
 
@@ -90,9 +84,6 @@ def parse(description: str, title: str = "") -> Brief:
         r"no ai|not ai|ai[- ]generated (content )?(is )?(not allowed|prohibited|will be rejected)|"
         r"show (your|ur) face|face on camera|on[- ]camera|film yourself|your (own )?voice|real person\b|"
         r"selfie|talking head of you|unboxing|in your hands|wear(ing)? (it|the)", low))
-    b.not_a_video = bool(re.search(
-        r"must invite|invite at least|refer at least|you must join (this|the|our) (community|server|discord|group)|"
-        r"(say|post|type|send)\s+[\"“'].{3,80}[\"”']\s*(in|inside)|screenshot of (the|your) (chat|message|invite|dm)", low))
     b.product_links = [u for u in dict.fromkeys(b.reference_links)
                        if not any(h in u for h in ("whop.com", "discord.gg", "docs.google.com", "drive.google.com"))]
 

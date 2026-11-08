@@ -49,8 +49,7 @@ def budget_left(b: dict) -> float:
 
 
 def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20,
-          typical_views: int | None = None) -> Scored:
-    """typical_views: what our posts usually reach (None = no history yet)."""
+          platforms: set[str] | frozenset[str] = OUR_PLATFORMS) -> Scored:
     br = brief_mod.parse(b.get("description") or "", b.get("title") or "")
     s = Scored(bounty=b, brief=br, kind=kind_of(b))
     net = float(b.get("net_reward_amount") or 0)
@@ -72,8 +71,10 @@ def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20,
     goal = b.get("business_goal_type")
     if s.kind is None or (goal is not None and goal not in goal_types):
         s.blockers.append(f"not a clipping/UGC campaign (goal: {goal})")
-    if br.platforms and not set(br.platforms) & OUR_PLATFORMS:
-        s.blockers.append(f"only accepts {', '.join(br.platforms)} (we post to YouTube + Instagram)")
+    if br.platforms and not set(br.platforms) & set(platforms):
+        s.blockers.append(f"only accepts {', '.join(br.platforms)} (we post to {', '.join(sorted(platforms))})")
+    if br.screenshot_proof:
+        s.blockers.append("wants screenshots of joining/inviting, not a posted video")
     if br.needs_physical_presence:
         s.blockers.append("needs you physically on camera/location")
     s.eligible = not s.blockers
@@ -86,17 +87,11 @@ def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20,
     elif not br.source_links:
         s.automatable = False
         s.human_steps.append("no downloadable source footage linked - pick sources manually")
-    if br.not_a_video:
-        s.automatable = False
-        s.human_steps.append("not a video bounty: asks you to join/invite/chat - a post link would be denied")
     if br.long_form:
         s.automatable = False
         s.human_steps.append("long-form edit (charts/b-roll/script) - not a short clip")
-    if br.livestream_creation:
-        s.automatable = False
-        s.human_steps.append("livestream must show you making the clip yourself - can't be automated")
-    elif br.livestream_required:
-        s.human_steps.append("short livestream of your post + views at submission - you go live, the rest is automatic")
+    if br.livestream_required:
+        s.human_steps.append("livestream proof required at submission - you must go live")
     if br.clip_count > 1:
         s.automatable = False
         s.human_steps.append(f"wants {br.clip_count} clips in one submission")
@@ -128,18 +123,13 @@ def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20,
     if not br.long_form:
         pts += 15
     if br.min_views == 0:
-        pts += 20  # submitted right after posting, so it can actually pay out
-        s.reasons.append("paid on approval, no view threshold (+20)")
+        pts += 10
+        s.reasons.append("paid on approval, no view threshold (+10)")
     elif br.min_views <= 1000:
         pts += 5
         s.reasons.append(f"needs {br.min_views} views (+5)")
     else:
         s.reasons.append(f"needs {br.min_views} views (+0)")
-    if br.min_views and typical_views is not None and typical_views < br.min_views / 2:
-        # our posts rarely get there: rank it below campaigns that pay on approval, but keep it
-        # above min_score so the accounts keep posting (and growing) when it's the only option
-        pts -= 5
-        s.reasons.append(f"your clips peak around {typical_views} views, under half the target (-5)")
     if br.livestream_required:
         pts -= 10
         s.reasons.append("livestream proof (-10)")
@@ -152,7 +142,7 @@ def score(b: dict, *, country: str, goal_types: list[str], min_clip: int = 20,
 
 
 def rank(bounties: list[dict], *, country: str, goal_types: list[str], min_clip: int = 20,
-         typical_views: int | None = None) -> list[Scored]:
-    scored = [score(b, country=country, goal_types=goal_types, min_clip=min_clip,
-                    typical_views=typical_views) for b in bounties]
+         platforms: set[str] | frozenset[str] = OUR_PLATFORMS) -> list[Scored]:
+    scored = [score(b, country=country, goal_types=goal_types, min_clip=min_clip, platforms=platforms)
+              for b in bounties]
     return sorted(scored, key=lambda x: (x.eligible, x.automatable, x.score), reverse=True)
