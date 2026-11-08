@@ -1646,7 +1646,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/DffjaK7Gasr/",
-          "views": 1
+          "views": 98
         }
       },
       "published_at": "2026-11-08T19:54:33.724273+00:00",
@@ -1787,7 +1787,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/DffjjFXkqDf/",
-          "views": 0
+          "views": 2
         }
       },
       "published_at": "2026-11-08T19:55:31.097739+00:00",
@@ -1798,6 +1798,154 @@
       "status": "published",
       "title": "Clip Content into Short Video (1k view minimum)",
       "updated": "2026-11-08T19:55:31+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-09-clipping0": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov",
+        "ChocolateDessertExpensiveDinner.mov",
+        "ChocolateDessertExpensiveDinner.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "created": "2026-11-08T22:42:15+00:00",
+      "date": "2026-11-09",
+      "errors": [
+        "sourced: 5 source videos had no speech: 100kCashCasinoSlots.mov, AnonIGPhoneNBAGame.mov, AnonMaskAPWatchMoney.mov, AnonMaskInPorsche.mov, ChocolateDessertExpensiveDinner.mov",
+        "sourced: 6 source videos had no speech: 100kCashCasinoSlots.mov, AnonIGPhoneNBAGame.mov, AnonMaskAPWatchMoney.mov, AnonMaskInPorsche.mov, ChocolateDessertExpensiveDinner.mov, ChocolateDessertExpensiveDinner.mov"
+      ],
+      "history": [
+        {
+          "at": "2026-11-08T22:43:01+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-08T22:43:01+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-08T22:43:02+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-08T22:43:02+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-08T22:43:02+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-08T22:43:02+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-08T22:43:03+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-08T22:43:03+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-08T22:43:04+00:00",
+          "from": "planned",
+          "to": "sourced"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-09-clipping0",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 48.2,
+      "slot": 0,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/ChocolateDessertExpensiveDinner.mov",
+      "status": "sourced",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-08T22:43:04+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-09-clipping1": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov",
+        "DayTimeZoomInBillboard.mov",
+        "DayTimeZoomInBillboard.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "created": "2026-11-08T22:42:15+00:00",
+      "date": "2026-11-09",
+      "errors": [
+        "sourced: 5 source videos had no speech: 100kCashCasinoSlots.mov, AnonIGPhoneNBAGame.mov, AnonMaskAPWatchMoney.mov, AnonMaskInPorsche.mov, DayTimeZoomInBillboard.mov",
+        "sourced: 6 source videos had no speech: 100kCashCasinoSlots.mov, AnonIGPhoneNBAGame.mov, AnonMaskAPWatchMoney.mov, AnonMaskInPorsche.mov, DayTimeZoomInBillboard.mov, DayTimeZoomInBillboard.mov"
+      ],
+      "history": [
+        {
+          "at": "2026-11-08T22:43:04+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-08T22:43:04+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-08T22:43:05+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-08T22:43:05+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-08T22:43:06+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-08T22:43:06+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-08T22:43:06+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-08T22:43:06+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-08T22:43:07+00:00",
+          "from": "planned",
+          "to": "sourced"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-09-clipping1",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 48.2,
+      "slot": 1,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/DayTimeZoomInBillboard.mov",
+      "status": "sourced",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-08T22:43:07+00:00"
     },
     "bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0": {
       "bounty_id": "bnty_GLQ2nZ3EtqTUW",
@@ -1935,6 +2083,7 @@
       "created": "2026-11-08T15:11:00+00:00",
       "date": "2026-11-08",
       "errors": [
+        "approved: tiktok:kijanadigital: no connected tiktok account named 'kijanadigital' (found: [])",
         "approved: tiktok:kijanadigital: no connected tiktok account named 'kijanadigital' (found: [])",
         "approved: tiktok:kijanadigital: no connected tiktok account named 'kijanadigital' (found: [])"
       ],
