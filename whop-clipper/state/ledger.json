@@ -1646,7 +1646,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/DffjaK7Gasr/",
-          "views": 0
+          "views": 1
         }
       },
       "published_at": "2026-11-08T19:54:33.724273+00:00",
@@ -1935,6 +1935,7 @@
       "created": "2026-11-08T15:11:00+00:00",
       "date": "2026-11-08",
       "errors": [
+        "approved: tiktok:kijanadigital: no connected tiktok account named 'kijanadigital' (found: [])",
         "approved: tiktok:kijanadigital: no connected tiktok account named 'kijanadigital' (found: [])"
       ],
       "history": [
@@ -1985,6 +1986,7 @@
     "summary:2026-11-03": "2026-11-03T11:56:04+00:00",
     "summary:2026-11-04": "2026-11-04T12:09:33+00:00",
     "summary:2026-11-05": "2026-11-05T12:19:34+00:00",
-    "summary:2026-11-07": "2026-11-07T20:16:09+00:00"
+    "summary:2026-11-07": "2026-11-07T20:16:09+00:00",
+    "summary:2026-11-08": "2026-11-08T20:30:33+00:00"
   }
 }
