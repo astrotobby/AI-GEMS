@@ -96,6 +96,11 @@
           "at": "2026-11-03T12:51:12+00:00",
           "from": "skipped",
           "to": "published"
+        },
+        {
+          "at": "2026-11-08T15:11:10+00:00",
+          "from": "published",
+          "to": "failed"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-0",
@@ -128,14 +133,14 @@
         }
       },
       "published_at": "2026-10-18T18:55:55.884054+00:00",
-      "reason": "needs livestream proof (livestream campaigns are off)",
+      "reason": "only 131/1000 views after 14 days",
       "resumed_at": "2026-11-03T12:51:12+00:00",
       "score": 50.7,
       "slot": 0,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/3SignsOfDegenerateGamblers.MOV",
-      "status": "published",
+      "status": "failed",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-11-03T12:51:12+00:00"
+      "updated": "2026-11-08T15:11:10+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-10-18-clipping1": {
       "bounty_id": "bnty_4nQb37p7bvjna",
@@ -195,6 +200,11 @@
           "at": "2026-11-03T12:51:16+00:00",
           "from": "skipped",
           "to": "published"
+        },
+        {
+          "at": "2026-11-08T15:11:12+00:00",
+          "from": "published",
+          "to": "failed"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-10-18-clipping1",
@@ -211,7 +221,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/DepXIs-iAt3/",
-          "views": 0
+          "views": 171
         },
         "youtube:Astro Tobby": {
           "at": "2026-10-19T07:22:55.768575+00:00",
@@ -227,14 +237,14 @@
         }
       },
       "published_at": "2026-10-18T18:48:04.464432+00:00",
-      "reason": "needs livestream proof (livestream campaigns are off)",
+      "reason": "only 171/1000 views after 14 days",
       "resumed_at": "2026-11-03T12:51:16+00:00",
       "score": 50.7,
       "slot": 1,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/65KCashPayoutSportsbook.mov",
-      "status": "published",
+      "status": "failed",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-11-03T12:51:16+00:00"
+      "updated": "2026-11-08T15:11:12+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-10-19-clipping0": {
       "bad_sources": [
@@ -336,6 +346,11 @@
           "at": "2026-11-03T12:51:22+00:00",
           "from": "skipped",
           "to": "published"
+        },
+        {
+          "at": "2026-11-08T15:11:15+00:00",
+          "from": "published",
+          "to": "failed"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-10-19-clipping0",
@@ -352,7 +367,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/Deqfjdhio0y/",
-          "views": 0
+          "views": 32
         },
         "youtube:Astro Tobby": {
           "at": "2026-10-19T07:23:02.580909+00:00",
@@ -368,14 +383,14 @@
         }
       },
       "published_at": "2026-10-19T05:21:11.743311+00:00",
-      "reason": "needs livestream proof (livestream campaigns are off)",
+      "reason": "only 32/1000 views after 14 days",
       "resumed_at": "2026-11-03T12:51:22+00:00",
       "score": 50.7,
       "slot": 0,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/AreSportsRigged.mov",
-      "status": "published",
+      "status": "failed",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-11-03T12:51:22+00:00"
+      "updated": "2026-11-08T15:11:15+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-10-19-clipping1": {
       "bad_sources": [
@@ -1501,7 +1516,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/Dfc8hWFjX0R/",
-          "views": 121
+          "views": 122
         }
       },
       "published_at": "2026-11-07T19:36:12.806121+00:00",
@@ -1848,6 +1863,55 @@
       },
       "title": "JOIN AND GET PAID (CLIPPERS ANY COUNTRY & AMERICAN UGC CREATORS ONLY)",
       "updated": "2026-10-26T07:34:24+00:00"
+    },
+    "bnty_lyJ5DBAjGJ6gF-2026-11-08-ugc0": {
+      "bounty_id": "bnty_lyJ5DBAjGJ6gF",
+      "clip": {
+        "caption": "30 days, daily quests, XP, streaks and photo + journal proof for everything you do. A self-improvement challenge you can actually finish \ud83d\udc47\nLifeMaxx: 30-Day Life Reset \u2192 https://apps.apple.com/us/app/lifemaxx-30-day-life-reset/id6784335572",
+        "end": 41.01,
+        "hashtags": [
+          "lifemaxx",
+          "30dayreset",
+          "dopaminedetox",
+          "glowup",
+          "selfimprovement",
+          "discipline"
+        ],
+        "hook": "Most self-improvement apps hand you a to-do",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_lyJ5DBAjGJ6gF/clips/bnty_lyJ5DBAjGJ6gF-2026-11-08-ugc0.mp4",
+        "reason": "6 product images; Claude script; ElevenLabs voice",
+        "start": 0.0,
+        "text": "Most self-improvement apps hand you a to-do list that never ends, and that's why you quit. LifeMaxx does it differently: you get one 30-day reset with a real start and a real finish line. Every day you get quests you can actually finish today, and each one has a clear problem, a clear action and a clear win. You earn XP, keep your streak alive and level up from Dormant all the way to Legendary. For every quest you snap a photo and write a journal entry, so your proof keeps stacking up. It covers",
+        "title": "Turn your next 30 days into a game"
+      },
+      "created": "2026-11-08T15:11:00+00:00",
+      "date": "2026-11-08",
+      "history": [
+        {
+          "at": "2026-11-08T15:12:03+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-08T15:13:57+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-08T15:13:57+00:00",
+          "from": "clipped",
+          "to": "approved"
+        }
+      ],
+      "id": "bnty_lyJ5DBAjGJ6gF-2026-11-08-ugc0",
+      "kind": "ugc",
+      "posts": {},
+      "score": 54.6,
+      "slot": 0,
+      "source": "",
+      "status": "approved",
+      "title": "Create TikTok Slideshow for LIFEMAXX.APP, Reach 1,000 Views",
+      "updated": "2026-11-08T15:13:57+00:00"
     }
   },
   "seen": {
