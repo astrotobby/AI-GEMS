@@ -6,14 +6,19 @@ country = "KE"               # only campaigns open to this country
 max_active_campaigns = 2
 clips_per_campaign = 1
 min_score = 40
-allow_livestream_campaigns = false  # only campaigns the pipeline can finish, incl. the Whop submission
+# Nearly every clipping campaign asks for a short livestream at submission (your profile + view
+# count). The pipeline does everything up to that point, then sends you a checklist on Telegram.
+# Campaigns whose livestream must show you *making* the clip are never picked.
+allow_livestream_campaigns = true
 goal_types = ["clipping", "ugc_content"]
 whop_via = "connector"       # Whop runs through your Whop connector (see CONNECTOR_TASK.md)
 telegram_chat = "6295868962" # @astrotobby - where updates and clips for review are sent
 
 [schedule]
 daily_quota = { clipping = 2, ugc = 2 }
-slots = ["08:20", "14:00"]   # Kenyan time; each slot posts 1 clipping + 1 UGC video
+# Kenyan time; each slot posts 1 clipping + 1 UGC video. The campaigns target US viewers:
+# 19:00 / 22:30 EAT = 11:00 / 14:30 New York, when they're awake (08:20 EAT was 00:20 there).
+slots = ["19:00", "22:30"]
 timezone = "Africa/Nairobi"
 max_per_campaign_per_day = 2
 

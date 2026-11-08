@@ -18,10 +18,10 @@ job, so runs resume where they stopped and nothing is ever posted or submitted t
 | When | What |
 |---|---|
 | 05:00 | Pick today's videos from the freshest campaign list: **2 clipping + 2 UGC**, best-scoring campaigns first (a campaign is reused only if its brief allows several posts). Make all four. |
-| **08:20** | 1 clipping + 1 UGC go live |
-| **14:00** | the other clipping + UGC go live |
+| **19:00** | 1 clipping + 1 UGC go live (11:00 New York - the campaigns target US viewers) |
+| **22:30** | the other clipping + UGC go live (14:30 New York) |
 | every 4h | track views, submit what's ready, re-try anything that failed, catch up a missed slot |
-| ~14:30 | Telegram summary: what went live, and why anything is missing |
+| ~23:15 | Telegram summary: what went live, and why anything is missing |
 
 Routing: **clipping → YouTube Astro Tobby (@astrotobyc)**, **UGC → YouTube DIJITOL NOMAD**, everything
 → **Instagram @astr_osignal** (only on platforms each campaign accepts). Accounts are matched by
@@ -52,12 +52,18 @@ skipped.
 
 ### The livestream rule (read this)
 
-Right now every clipping campaign open to Kenya asks for a **livestream proving you
-made/posted the clip yourself**. That is the campaign's anti-bot check, and software cannot
-honestly satisfy it. For those campaigns the pipeline does all the work (clip, post, wait for
-views), then stops at `needs_livestream` and sends you a Telegram checklist (links, view
-counts, clip file, timestamps). You go live on Whop, submit, then mark it `done <job>`.
-Campaigns without that rule go all the way through by themselves.
+Right now almost every clipping campaign open to Kenya asks for a **livestream at submission**.
+That is the campaign's anti-bot check: Whop's API cannot start one, and faking one would get the
+account banned. For those campaigns the pipeline does all the work (clip, post, wait for views),
+then stops at `needs_livestream` and sends you a Telegram message. Your part is about 2 minutes:
+open the bounty in the Whop app, stream what the brief asks for (usually your profile, the post
+and its view count), end the stream. The Whop connector task then attaches the post links, the
+clip file (published by the workflow as an asset of the `clips` release) and the source
+timestamps, and submits the attempt. Campaigns without a livestream go all the way through by
+themselves.
+
+Campaigns whose livestream must show you *making* the clip from start to finish are skipped:
+the bot made it, so that stream can't honestly be done.
 
 Campaigns that are skipped on purpose: engagement farming (likes/follows/DMs), anything needing
 you physically somewhere, long-form edits with scripts/charts, and campaigns asking for many

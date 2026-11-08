@@ -4,8 +4,8 @@ on:
   schedule:
     # all times UTC; Kenya (EAT) = UTC+3
     - cron: "0 2 * * *"      # 05:00 EAT: plan today's 2 clipping + 2 UGC videos and make them
-    - cron: "50 4 * * *"     # 07:50 EAT: finish anything left, wait, go live at 08:20
-    - cron: "30 10 * * *"    # 13:30 EAT: wait, go live at 14:00
+    - cron: "30 15 * * *"    # 18:30 EAT: finish anything left, wait, go live at 19:00 (11:00 New York)
+    - cron: "0 19 * * *"     # 22:00 EAT: wait, go live at 22:30 (14:30 New York)
     - cron: "17 */4 * * *"   # every 4h: views, submissions, catch-up if a slot was missed
   push:   # on the feature branch: verify credentials + rank campaigns, never post or submit
     branches: [claude/whoop-clipping-automation-pdxfm6]
@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
     inputs:
       command:
-        description: "clipper command (run, scan, status, approve <job>, skip <job>, done <job>)"
+        description: "clipper command (run, scan, status, approve <job>, skip <job>, done <job>, resume <job>)"
         default: "run"
       dry_run:
         description: "clip but never publish or submit"
@@ -91,6 +91,23 @@ jobs:
             case "$CMD" in approve*) python -m clipper run $DRY ;; esac
           fi
           python -m clipper status
+
+      # the Whop connector task attaches the clip file to the submission: publish each one it will
+      # need as an asset of the "clips" release (public download URL, nothing committed to git)
+      - name: Publish clips for submission
+        if: always() && github.event_name != 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python -m clipper pending-clips > "$RUNNER_TEMP/clips.tsv" || exit 0
+          [ -s "$RUNNER_TEMP/clips.tsv" ] || exit 0
+          gh release view clips >/dev/null 2>&1 || gh release create clips --title "Clipper clips" \
+            --notes "Rendered clips attached to Whop submissions by the clipper." --latest=false
+          have=$(gh release view clips --json assets -q '.assets[].name')
+          while IFS=$'\t' read -r path name; do
+            echo "$have" | grep -qxF "$name" && continue
+            cp "$path" "$RUNNER_TEMP/$name" && gh release upload clips "$RUNNER_TEMP/$name" || echo "upload of $name failed"
+          done < "$RUNNER_TEMP/clips.tsv"
 
       - name: Save ledger
         if: always() && github.event_name != 'push'

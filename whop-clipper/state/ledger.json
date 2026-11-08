@@ -91,6 +91,11 @@
           "at": "2026-10-19T09:50:42+00:00",
           "from": "published",
           "to": "skipped"
+        },
+        {
+          "at": "2026-11-03T12:51:12+00:00",
+          "from": "skipped",
+          "to": "published"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-0",
@@ -107,7 +112,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/DepX_2ZAnkx/",
-          "views": 129
+          "views": 131
         },
         "youtube:Astro Tobby": {
           "at": "2026-10-19T07:22:48.526855+00:00",
@@ -119,17 +124,18 @@
             "platform": "youtube"
           },
           "url": "https://youtube.com/shorts/IYjWIDGfwzI",
-          "views": 3
+          "views": 5
         }
       },
       "published_at": "2026-10-18T18:55:55.884054+00:00",
       "reason": "needs livestream proof (livestream campaigns are off)",
+      "resumed_at": "2026-11-03T12:51:12+00:00",
       "score": 50.7,
       "slot": 0,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/3SignsOfDegenerateGamblers.MOV",
-      "status": "skipped",
+      "status": "published",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-19T09:50:42+00:00"
+      "updated": "2026-11-03T12:51:12+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-10-18-clipping1": {
       "bounty_id": "bnty_4nQb37p7bvjna",
@@ -184,6 +190,11 @@
           "at": "2026-10-19T09:50:42+00:00",
           "from": "published",
           "to": "skipped"
+        },
+        {
+          "at": "2026-11-03T12:51:16+00:00",
+          "from": "skipped",
+          "to": "published"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-10-18-clipping1",
@@ -200,7 +211,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/DepXIs-iAt3/",
-          "views": 169
+          "views": 0
         },
         "youtube:Astro Tobby": {
           "at": "2026-10-19T07:22:55.768575+00:00",
@@ -212,17 +223,18 @@
             "platform": "youtube"
           },
           "url": "https://youtube.com/shorts/cVFv8XkNme4",
-          "views": 0
+          "views": 2
         }
       },
       "published_at": "2026-10-18T18:48:04.464432+00:00",
       "reason": "needs livestream proof (livestream campaigns are off)",
+      "resumed_at": "2026-11-03T12:51:16+00:00",
       "score": 50.7,
       "slot": 1,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/65KCashPayoutSportsbook.mov",
-      "status": "skipped",
+      "status": "published",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-19T09:50:42+00:00"
+      "updated": "2026-11-03T12:51:16+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-10-19-clipping0": {
       "bad_sources": [
@@ -319,6 +331,11 @@
           "at": "2026-10-19T09:50:42+00:00",
           "from": "published",
           "to": "skipped"
+        },
+        {
+          "at": "2026-11-03T12:51:22+00:00",
+          "from": "skipped",
+          "to": "published"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-10-19-clipping0",
@@ -335,7 +352,7 @@
             "username": "astr_osignal"
           },
           "url": "https://www.instagram.com/reel/Deqfjdhio0y/",
-          "views": 8
+          "views": 0
         },
         "youtube:Astro Tobby": {
           "at": "2026-10-19T07:23:02.580909+00:00",
@@ -347,17 +364,18 @@
             "platform": "youtube"
           },
           "url": "https://youtube.com/shorts/yYJ6SxUci6Y",
-          "views": 0
+          "views": 3
         }
       },
       "published_at": "2026-10-19T05:21:11.743311+00:00",
       "reason": "needs livestream proof (livestream campaigns are off)",
+      "resumed_at": "2026-11-03T12:51:22+00:00",
       "score": 50.7,
       "slot": 0,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/AreSportsRigged.mov",
-      "status": "skipped",
+      "status": "published",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-10-19T09:50:42+00:00"
+      "updated": "2026-11-03T12:51:22+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-10-19-clipping1": {
       "bad_sources": [
@@ -458,6 +476,1265 @@
       "status": "skipped",
       "title": "Clip Content into Short Video (1k view minimum)",
       "updated": "2026-10-19T09:50:42+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-03-clipping0": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "created": "2026-11-03T17:59:19+00:00",
+      "date": "2026-11-03",
+      "errors": [
+        "sourced: Command '['ffmpeg', '-y', '-ss', '0.83', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BaseballKillingPeopleInAugust.mov', '-t', '55.33', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping0.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping0.mp4']' returned non-zero exit status 234.",
+        "sourced: Command '['ffmpeg', '-y', '-ss', '39.07', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BaseballKillingPeopleInAugust.mov', '-t', '38.21', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping0.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping0.mp4']' returned non-zero exit status 234.",
+        "sourced: Command '['ffmpeg', '-y', '-ss', '39.07', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BaseballKillingPeopleInAugust.mov', '-t', '38.21', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping0.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping0.mp4']' returned non-zero exit status 234."
+      ],
+      "history": [
+        {
+          "at": "2026-11-03T17:59:39+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T17:59:39+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T17:59:40+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T17:59:40+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T17:59:41+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T17:59:41+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T17:59:41+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T17:59:41+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T17:59:48+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T19:30:42+00:00",
+          "from": "sourced",
+          "to": "failed"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-03-clipping0",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 50.7,
+      "slot": 0,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BaseballKillingPeopleInAugust.mov",
+      "status": "failed",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-03T19:30:42+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-03-clipping1": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "created": "2026-11-03T17:59:19+00:00",
+      "date": "2026-11-03",
+      "errors": [
+        "sourced: Command '['ffmpeg', '-y', '-ss', '1.18', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BetSizeGettingBiggerWhenlosing.mov', '-t', '26.99', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping1.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping1.mp4']' returned non-zero exit status 234.",
+        "sourced: Command '['ffmpeg', '-y', '-ss', '1.18', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BetSizeGettingBiggerWhenlosing.mov', '-t', '26.99', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping1.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping1.mp4']' returned non-zero exit status 234.",
+        "sourced: Command '['ffmpeg', '-y', '-ss', '1.18', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BetSizeGettingBiggerWhenlosing.mov', '-t', '26.99', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-03-clipping1.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-03-clipping1.mp4']' returned non-zero exit status 234."
+      ],
+      "history": [
+        {
+          "at": "2026-11-03T18:00:24+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T18:00:24+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T18:00:25+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T18:00:25+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T18:00:26+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T18:00:26+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T18:00:26+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T18:00:26+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-03T18:00:30+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-03T19:30:48+00:00",
+          "from": "sourced",
+          "to": "failed"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-03-clipping1",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 50.7,
+      "slot": 1,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BetSizeGettingBiggerWhenlosing.mov",
+      "status": "failed",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-03T19:30:48+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-04-clipping0": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "Plus or minus, it's just numbers on a screen. It's all about the math \ud83e\uddee\nFollow @ANON_BETTING on IG / @AnonPicks on TikTok for more",
+        "end": 50.01,
+        "hashtags": [
+          "sportsbetting",
+          "bettingtips",
+          "underdogs",
+          "sportsbettingtips",
+          "anonbetting"
+        ],
+        "hook": "Favorites aren't as safe as they feel",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-04-clipping0.mp4",
+        "reason": "claude: This clip starts on a direct, relatable line, \"Be honest, you've bet favorites before because they feel safe,\" so there's no slow intro. It runs about 48.7 seconds (1.0s to 49.7s), which fits the 20\u201360 second window. It covers one complete idea: sportsbooks make favorites feel safer than they are, underdog odds make you nervous, odds are really just numbers on a screen, and it ends on \"It's all about math.\" The speaker's meaning stays the same, and the clip doesn't need any outside context.",
+        "start": 0.86,
+        "text": "Be honest, you've bet favorites before because they feel safe. Favorites are psychologically designed by the books to feel safer, but they're really not. And don't worry, I've even fallen for that trap, right? I'll see a line and I'll think, oh man, that feels so safe. Or just because this team is favored means, hey, this team should probably win the game and it's probably the safer bet to take. Whereas every time you take an underdog, you know, your hand is shaking as you're trying to hit the b",
+        "title": "Why Betting Favorites Feels Safe (But Really Isn't) #sportsbetting"
+      },
+      "created": "2026-11-04T00:38:18+00:00",
+      "date": "2026-11-04",
+      "errors": [
+        "youtube:Astro Tobby: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"service\": \"youtube.googleapis.com\",\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\",\n          \"quota_limit_value\": \"966\",\n          \"quota_location\": \"global\",\n          \"consumer\": \"projects/1068312718386\",\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\",\n          \"quota_unit\": \"1/d/{project}\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+      ],
+      "history": [
+        {
+          "at": "2026-11-04T00:38:39+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:38:39+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:38:40+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:38:40+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:38:41+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:38:41+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:38:42+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:38:42+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:38:46+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:41:30+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-04T00:41:30+00:00",
+          "from": "clipped",
+          "to": "approved"
+        },
+        {
+          "at": "2026-11-04T08:45:24+00:00",
+          "from": "approved",
+          "to": "published"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-04-clipping0",
+      "kind": "clipping",
+      "posts": {
+        "instagram:astr_osignal": {
+          "at": "2026-11-04T08:45:24.144267+00:00",
+          "target": {
+            "kinds": [
+              "clipping",
+              "ugc"
+            ],
+            "platform": "instagram",
+            "username": "astr_osignal"
+          },
+          "url": "https://www.instagram.com/reel/DfUDpKJjZAw/",
+          "views": 201
+        },
+        "youtube:Astro Tobby": {
+          "at": "2026-11-04T19:45:45.402545+00:00",
+          "target": {
+            "channel": "Astro Tobby",
+            "kinds": [
+              "clipping"
+            ],
+            "platform": "youtube"
+          },
+          "url": "https://youtube.com/shorts/dFbaGUwxhgQ",
+          "views": 51
+        }
+      },
+      "published_at": "2026-11-04T08:45:24.145874+00:00",
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 48.2,
+      "slot": 0,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BettingFavoritesBecauseTheyFeelSafe.MOV",
+      "status": "published",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-04T08:45:24+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-04-clipping1": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "Stop betting the whole board. Quality over quantity \ud83c\udfaf\nFollow @ANON_BETTING on IG / @AnonPicks on TikTok for more",
+        "end": 57.15,
+        "hashtags": [
+          "sportsbetting",
+          "bettingtips",
+          "sportsbettingadvice",
+          "bettingstrategy",
+          "anonbetting"
+        ],
+        "hook": "Betting the board is costing you",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-04-clipping1.mp4",
+        "reason": "claude: I picked 0.8s to 56.9s (about 56 seconds), which fits under the 60-second limit. It opens on the hook, \"Betting the board is costing you a lot of money,\" so there's no slow intro. From there the speaker explains his whole point in order: the sharpest bettors go for quality over quantity, it lowers the pressure, it helps with the sportsbook's cut (the \"juice\"), and finding one best play out of 12 games is far easier than finding an edge in every game. It ends on a finished thought about losing focus when you bet the entire board, so it makes sense with no extra context and keeps his meaning. The \"win seven of 10 games\" math (57.2\u201374.9s) is the punchiest line, but adding it would push the clip past 60 seconds. On its own it's only about 18 seconds, which is under the 20-second minimum.",
+        "start": 0.7,
+        "text": "Betting the board is costing you a lot of money. The sharpest betters in the world, including myself, focus on quality over quantity. And the reason we do is because there's a lot less pressure in having to win one or two games in a day. Not only are we overcoming juice, which is a big factor that the sports books essentially make a killing on, but we are putting less pressure on ourselves to find the best plays on the board. It's a lot harder when you're betting the board out of 10 or 12 games ",
+        "title": "Why Betting Every Game Is Costing You Money | Quality Over Quantity"
+      },
+      "created": "2026-11-04T00:38:19+00:00",
+      "date": "2026-11-04",
+      "errors": [
+        "youtube:Astro Tobby: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"service\": \"youtube.googleapis.com\",\n          \"quota_location\": \"global\",\n          \"quota_unit\": \"1/d/{project}\",\n          \"consumer\": \"projects/1068312718386\",\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\",\n          \"quota_limit_value\": \"966\",\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+      ],
+      "history": [
+        {
+          "at": "2026-11-04T00:41:31+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:41:31+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:41:32+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:41:32+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:41:33+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:41:33+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:41:33+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:41:33+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-04T00:41:38+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-04T00:44:37+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-04T00:44:37+00:00",
+          "from": "clipped",
+          "to": "approved"
+        },
+        {
+          "at": "2026-11-04T12:09:24+00:00",
+          "from": "approved",
+          "to": "published"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-04-clipping1",
+      "kind": "clipping",
+      "posts": {
+        "instagram:astr_osignal": {
+          "at": "2026-11-04T12:09:24.885834+00:00",
+          "target": {
+            "kinds": [
+              "clipping",
+              "ugc"
+            ],
+            "platform": "instagram",
+            "username": "astr_osignal"
+          },
+          "url": "https://www.instagram.com/reel/DfUa9FUnHr5/",
+          "views": 141
+        }
+      },
+      "published_at": "2026-11-04T12:09:24.887438+00:00",
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 48.2,
+      "slot": 1,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BettingTheBoardIsCostingYou.MOV",
+      "status": "published",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-04T12:09:24+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-05-clipping0": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov",
+        "BillboardVideoEdited.mov",
+        "BillboardVideoEdited.mov",
+        "BillboardVideoEdited.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "created": "2026-11-05T00:53:52+00:00",
+      "date": "2026-11-05",
+      "errors": [
+        "sourced: 5 source videos had no speech: 100kCashCasinoSlots.mov, AnonIGPhoneNBAGame.mov, AnonMaskAPWatchMoney.mov, AnonMaskInPorsche.mov, BillboardVideoEdited.mov",
+        "sourced: 6 source videos had no speech: 100kCashCasinoSlots.mov, AnonIGPhoneNBAGame.mov, AnonMaskAPWatchMoney.mov, AnonMaskInPorsche.mov, BillboardVideoEdited.mov, BillboardVideoEdited.mov",
+        "sourced: 7 source videos had no speech: 100kCashCasinoSlots.mov, AnonIGPhoneNBAGame.mov, AnonMaskAPWatchMoney.mov, AnonMaskInPorsche.mov, BillboardVideoEdited.mov, BillboardVideoEdited.mov, BillboardVideoEdited.mov"
+      ],
+      "history": [
+        {
+          "at": "2026-11-05T00:54:15+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:15+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:16+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:16+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:17+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:17+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:17+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:17+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:20+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T09:05:11+00:00",
+          "from": "sourced",
+          "to": "failed"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-05-clipping0",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 50.7,
+      "slot": 0,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BillboardVideoEdited.mov",
+      "status": "failed",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-05T09:05:11+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-05-clipping1": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "created": "2026-11-05T00:53:52+00:00",
+      "date": "2026-11-05",
+      "errors": [
+        "sourced: Command '['ffmpeg', '-y', '-ss', '0.44', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BuyTeamsWhenPeopleAreScared.MOV', '-t', '58.61', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-05-clipping1.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-05-clipping1.mp4']' returned non-zero exit status 234.",
+        "sourced: Command '['ffmpeg', '-y', '-ss', '0.44', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BuyTeamsWhenPeopleAreScared.MOV', '-t', '58.61', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-05-clipping1.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-05-clipping1.mp4']' returned non-zero exit status 234.",
+        "sourced: Command '['ffmpeg', '-y', '-ss', '0.44', '-i', '/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BuyTeamsWhenPeopleAreScared.MOV', '-t', '58.61', '-filter_complex', '[0:v]split[a][b];[a]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=24:4,eq=brightness=-0.08[bg];[b]scale=1080:-2[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2-80,setsar=1[base];[base]ass=bnty_4nQb37p7bvjna-2026-11-05-clipping1.ass[v]', '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-r', '30', '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-movflags', '+faststart', 'bnty_4nQb37p7bvjna-2026-11-05-clipping1.mp4']' returned non-zero exit status 234."
+      ],
+      "history": [
+        {
+          "at": "2026-11-05T00:54:24+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:24+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:24+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:24+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:25+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:25+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:26+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T00:54:26+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T00:54:33+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T09:05:20+00:00",
+          "from": "sourced",
+          "to": "failed"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-05-clipping1",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 50.7,
+      "slot": 1,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BuyTeamsWhenPeopleAreScared.MOV",
+      "status": "failed",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-05T09:05:20+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-06-clipping0": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "Sharps don't buy hype, they sell it \ud83d\udcc9\nWhy betting the Sixers to win the title on signing day means paying the worst price.\nFollow @ANON_BETTING (IG) / @AnonPicks (TikTok) for more",
+        "end": 53.68,
+        "hashtags": [
+          "sportsbetting",
+          "NBA",
+          "LeBronJames",
+          "Sixers",
+          "bettingtips",
+          "AnonBetting"
+        ],
+        "hook": "Don't bet the Sixers yet",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-06-clipping0.mp4",
+        "reason": "claude: Lines 0-10 run 0.0s to 53.4s, so the clip is about 53 seconds. It opens right on the strongest hook (LeBron signs with the Sixers and \"don't do it because you're getting robbed\"), then gives the \"sharps sell hype\" explanation and the advice to wait until things get rocky. It makes sense without any other context. The speaker's caveat that he isn't saying whether they can win stays in, so his meaning isn't changed. I left out the last line with the 11% / +700 odds because the full 62.2s goes over the 60s limit. The clip still ends on a clear piece of advice, and nothing in it is a made-up stat.",
+        "start": 0.0,
+        "text": "LeBron James just got announced to sign with the Philadelphia Sixers and if you're thinking about putting money on the Sixers to win the championship this upcoming season, don't do it because you're getting robbed in a way that you can't even frankly see right now. Okay so let me first explain how this works. Sharps do not buy hype, they sell hype. Okay and all that's happened with this signing is it's created a bunch of buzz and a bunch of hype and now a bunch of people are running to the sport",
+        "title": "LeBron to the Sixers? Why Betting Their Title Odds Today Is the Worst Price"
+      },
+      "created": "2026-11-05T21:31:43+00:00",
+      "date": "2026-11-06",
+      "errors": [
+        "youtube:Astro Tobby: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"quota_limit_value\": \"966\",\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\",\n          \"window_start_time\": \"1793952000\",\n          \"consumer\": \"projects/1068312718386\",\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\",\n          \"service\": \"youtube.googleapis.com\",\n          \"quota_unit\": \"1/d/{project}\",\n          \"quota_location\": \"global\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+      ],
+      "history": [
+        {
+          "at": "2026-11-05T21:32:17+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:32:17+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:32:17+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:32:17+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:32:18+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:32:18+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:32:19+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:32:19+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:32:23+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:34:31+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-05T21:34:31+00:00",
+          "from": "clipped",
+          "to": "approved"
+        },
+        {
+          "at": "2026-11-06T16:02:28+00:00",
+          "from": "approved",
+          "to": "published"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-06-clipping0",
+      "kind": "clipping",
+      "posts": {
+        "instagram:astr_osignal": {
+          "at": "2026-11-06T16:02:28.685536+00:00",
+          "target": {
+            "kinds": [
+              "clipping",
+              "ugc"
+            ],
+            "platform": "instagram",
+            "username": "astr_osignal"
+          },
+          "url": "https://www.instagram.com/reel/DfZ_PZ7CfNA/",
+          "views": 117
+        }
+      },
+      "published_at": "2026-11-06T16:02:28.688053+00:00",
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 45.7,
+      "slot": 0,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/c1558799ccca4080be9ac452bc37a732.mov",
+      "status": "published",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-06T16:02:28+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-06-clipping1": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "I was in awful sports better until I met a non -bedding.\n@ANON_BETTING @AnonPicks",
+        "end": 10.76,
+        "hashtags": [
+          "picks",
+          "awful",
+          "sports",
+          "shorts",
+          "clips"
+        ],
+        "hook": "I was in awful sports better until",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-06-clipping1.mp4",
+        "reason": "heuristic score -1000000000.0",
+        "start": 0.03,
+        "text": "Chad here. I was in awful sports better until I met a non -bedding. Now I'm winning consistently with his picks and I'm making some exercise income each month. His picks truly win.",
+        "title": "I was in awful sports better until I met a non -bedding."
+      },
+      "created": "2026-11-05T21:31:43+00:00",
+      "date": "2026-11-06",
+      "errors": [
+        "youtube:Astro Tobby: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"quota_unit\": \"1/d/{project}\",\n          \"consumer\": \"projects/1068312718386\",\n          \"quota_location\": \"global\",\n          \"quota_limit_value\": \"966\",\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\",\n          \"window_start_time\": \"1793952000\",\n          \"service\": \"youtube.googleapis.com\",\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+      ],
+      "history": [
+        {
+          "at": "2026-11-05T21:34:32+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:34:32+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:34:33+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:34:33+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:34:34+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:34:34+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:34:34+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:34:34+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-05T21:34:37+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-05T21:35:13+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-05T21:35:13+00:00",
+          "from": "clipped",
+          "to": "approved"
+        },
+        {
+          "at": "2026-11-06T21:05:04+00:00",
+          "from": "approved",
+          "to": "published"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-06-clipping1",
+      "kind": "clipping",
+      "posts": {
+        "instagram:astr_osignal": {
+          "at": "2026-11-06T21:05:04.077367+00:00",
+          "target": {
+            "kinds": [
+              "clipping",
+              "ugc"
+            ],
+            "platform": "instagram",
+            "username": "astr_osignal"
+          },
+          "url": "https://www.instagram.com/reel/Dfah7O_DWlM/",
+          "views": 58
+        }
+      },
+      "published_at": "2026-11-06T21:05:04.079894+00:00",
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 45.7,
+      "slot": 1,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/ChadVideoReview.mov",
+      "status": "published",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-06T21:05:04+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-07-clipping0": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "-3 didn't look good, but -4.5 suddenly does? \ud83e\udd14 Line movement can make a bet feel right without making it any better.\nFollow @ANON_BETTING (IG) / @AnonPicks (TikTok) for more betting tips.",
+        "end": 28.18,
+        "hashtags": [
+          "sportsbetting",
+          "linemovement",
+          "bettingtips",
+          "anonbetting",
+          "sportsbettingadvice"
+        ],
+        "hook": "You took the WORSE number?",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-07-clipping0.mp4",
+        "reason": "claude: The whole transcript runs about 27.1 seconds (0.8s to 27.9s) and makes one complete point: you pass on a team at -3, then want to bet them at -4.5 because the line moved, even though that's a worse number. It ends on \"line movement can validate an idea without actually improving the bet. Don't forget that,\" which is a strong closer. Starting later at \"minus four and a half\" would cut the -3 setup and the point wouldn't make sense, so the clip should start right on the -3 example. Trim or tighten the garbled opening words (\"There is something better to do without ever realizing it\") so it opens on the example. The on-screen hook works because the clip goes straight into the counterintuitive idea that the worse number feels safer. For accurate captions, check the audio: \"My movement\" in segment 6 is most likely \"Line movement.\" I've written the caption that way, so confirm it against the audio before posting. The copy includes the required tags and makes no claims about results.",
+        "start": 0.67,
+        "text": "There is something better to do without ever realizing it a team starts off at minus three You don't like it. All of a sudden it moves to minus four and a half and suddenly you want to bet this number Think about that. You just got a worse number But now that bet feels safer because other people apparently around you agree with you My movement can validate an idea without actually improving the bet. Don't forget that",
+        "title": "Why Line Movement Tricks Bettors Into Taking Worse Numbers"
+      },
+      "created": "2026-11-06T21:00:02+00:00",
+      "date": "2026-11-07",
+      "errors": [
+        "youtube:Astro Tobby: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\",\n          \"quota_unit\": \"1/d/{project}\",\n          \"consumer\": \"projects/1068312718386\",\n          \"service\": \"youtube.googleapis.com\",\n          \"window_start_time\": \"1794038400\",\n          \"quota_location\": \"global\",\n          \"quota_limit_value\": \"966\",\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+      ],
+      "history": [
+        {
+          "at": "2026-11-06T21:00:57+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-06T21:00:57+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-06T21:00:58+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-06T21:00:58+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-06T21:00:59+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-06T21:00:59+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-06T21:00:59+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-06T21:00:59+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-06T21:01:03+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-06T21:02:06+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-06T21:02:06+00:00",
+          "from": "clipped",
+          "to": "approved"
+        },
+        {
+          "at": "2026-11-07T19:34:40+00:00",
+          "from": "approved",
+          "to": "published"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-07-clipping0",
+      "kind": "clipping",
+      "posts": {
+        "instagram:astr_osignal": {
+          "at": "2026-11-07T19:34:40.971910+00:00",
+          "target": {
+            "kinds": [
+              "clipping",
+              "ugc"
+            ],
+            "platform": "instagram",
+            "username": "astr_osignal"
+          },
+          "url": "https://www.instagram.com/reel/Dfc8Xk1j5uS/",
+          "views": 130
+        }
+      },
+      "published_at": "2026-11-07T19:34:40.974201+00:00",
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 45.7,
+      "slot": 0,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/ChasingLines.mov",
+      "status": "published",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-07T19:34:40+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-07-clipping1": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "Red lights, drive-thrus, the bathroom at dinner\u2026 sound familiar? \ud83d\udc40\nFollow @ANON_BETTING (IG) / @AnonPicks (TikTok)",
+        "end": 51.25,
+        "hashtags": [
+          "sportsbetting",
+          "anonbetting",
+          "sportsbettor",
+          "bettinglife",
+          "sportsfan"
+        ],
+        "hook": "I checked scores at every red light",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-07-clipping1.mp4",
+        "reason": "claude: This runs about 50s (0.7\u201351.0s). It opens right on a hook people can relate to (\"I used to check scores everywhere\") and builds through clear, specific details: the phone face down on the passenger seat, knowing which lights were long, feeling relief at the 90-second red light, sneaking a look in the bathroom at dinner. It closes on a strong line: \"I remember exactly which light it was. That's how much room it took up.\" Using the full story keeps the speaker's reflective meaning, so the clip doesn't come across as hype or praise for constant checking. It also makes sense without any outside context and needs no added claims or stats.",
+        "start": 0.54,
+        "text": "I used to check scores everywhere. Red lights, the bathroom, driving, every single place, sometimes even in the shower. Not just at home, not just on the couch, even at red lights. iPhone face down on the passenger seat and the second the car stopped, the car hasn't even begun breaking. I would reach, grab from my phone, boom, flip it over. I knew which lights were long on my drive back home. There was one by my house, it's about 90 seconds. And I used to feel relief when I caught it red. I chec",
+        "title": "He Checked Scores at Every Red Light\u2026 Even in the Shower"
+      },
+      "created": "2026-11-06T21:00:02+00:00",
+      "date": "2026-11-07",
+      "errors": [
+        "youtube:Astro Tobby: YOUTUBE_MULTIPART_UPLOAD_VIDEO failed: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n    \"errors\": [\n      {\n        \"message\": \"Quota exceeded for quota metric 'Video Uploads' and limit 'Video Uploads per day' of service 'youtube.googleapis.com' for consumer 'project_number:1068312718386'.\",\n        \"domain\": \"global\",\n        \"reason\": \"rateLimitExceeded\"\n      }\n    ],\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",\n        \"reason\": \"RATE_LIMIT_EXCEEDED\",\n        \"domain\": \"googleapis.com\",\n        \"metadata\": {\n          \"quota_unit\": \"1/d/{project}\",\n          \"quota_limit_value\": \"966\",\n          \"window_start_time\": \"1794038400\",\n          \"quota_location\": \"global\",\n          \"quota_metric\": \"youtube.googleapis.com/video_insert\",\n          \"consumer\": \"projects/1068312718386\",\n          \"service\": \"youtube.googleapis.com\",\n          \"quota_limit\": \"defaultVideoInsertPerDayPerProject\"\n        }\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Request a higher quota limit.\",\n            \"url\": \"https://cloud.google.com/docs/quotas/help/request_increase\"\n          }\n        ]\n      }\n    ]\n  }\n}\n"
+      ],
+      "history": [
+        {
+          "at": "2026-11-06T21:02:07+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-06T21:02:07+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-06T21:02:08+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-06T21:02:08+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-06T21:02:08+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-06T21:02:08+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-06T21:02:09+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-06T21:02:09+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-06T21:02:13+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-06T21:04:02+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-06T21:04:02+00:00",
+          "from": "clipped",
+          "to": "approved"
+        },
+        {
+          "at": "2026-11-07T19:36:12+00:00",
+          "from": "approved",
+          "to": "published"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-07-clipping1",
+      "kind": "clipping",
+      "posts": {
+        "instagram:astr_osignal": {
+          "at": "2026-11-07T19:36:12.803765+00:00",
+          "target": {
+            "kinds": [
+              "clipping",
+              "ugc"
+            ],
+            "platform": "instagram",
+            "username": "astr_osignal"
+          },
+          "url": "https://www.instagram.com/reel/Dfc8hWFjX0R/",
+          "views": 121
+        }
+      },
+      "published_at": "2026-11-07T19:36:12.806121+00:00",
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 45.7,
+      "slot": 1,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/CheckingScoresEverywhere.mov",
+      "status": "published",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-07T19:36:12+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-08-clipping0": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov",
+        "ChocolateDessertExpensiveDinner.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "Books with money in hand saying give me the Philadelphia 76ers to win the NBA\u2026\n@ANON_BETTING @AnonPicks",
+        "end": 62.46,
+        "hashtags": [
+          "saying",
+          "books",
+          "championship",
+          "shorts",
+          "clips"
+        ],
+        "hook": "Books with money in hand saying give",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-08-clipping0.mp4",
+        "reason": "Claude skipped: no API credit, and the Claude plan failed too (Claude Code: claude-opus-5-5: Claude Code: You've hit your weekly limit \u00b7 resets 7am (UTC) / sonnet: Claude Code: You've hit your weekly limit \u00b7 resets 7am (UTC) / haiku: Claude Code: You've hit your weekly limit \u00b7 resets 7am (UTC)); heuristic score 24.1",
+        "start": 29.83,
+        "text": "books with money in hand saying give me the Philadelphia 76ers to win the NBA championship. Now I'm not sitting here saying that they can or can't win the championship, all I'm saying is if you bet it today, the day of him signing with the Sixers, you are quite literally paying the worst possible price you should wait until things get rocky, maybe they have a losing streak, maybe an injury for a few weeks, whatever it is, but right now to buy them at 11 % odds or plus 700 on books would be a gia",
+        "title": "Books with money in hand saying give me the Philadelphia 76ers to win the NBA\u2026"
+      },
+      "created": "2026-11-07T22:33:07+00:00",
+      "date": "2026-11-08",
+      "history": [
+        {
+          "at": "2026-11-07T22:33:54+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:33:54+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:33:54+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:33:54+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:33:55+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:33:55+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:33:56+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:33:56+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:33:58+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:34:01+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:34:09+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:35:07+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-07T22:35:07+00:00",
+          "from": "clipped",
+          "to": "approved"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-08-clipping0",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "ChocolateDessertExpensiveDinner.mov has no speech - fetching another source",
+      "score": 45.7,
+      "slot": 0,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/copy_9E5DEDC8-E2CD-4E3C-AD51-0ED2E980F3D2.mov",
+      "status": "approved",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-07T22:35:07+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-08-clipping1": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov",
+        "ChocolateDessertExpensiveDinner.mov",
+        "DayTimeZoomInBillboard.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "I love sports and betting on it but I could never win consistently.\n@ANON_BETTING @AnonPicks",
+        "end": 37.7,
+        "hashtags": [
+          "sports",
+          "betting",
+          "legit",
+          "shorts",
+          "clips"
+        ],
+        "hook": "I love sports and betting on it",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-08-clipping1.mp4",
+        "reason": "Claude skipped: no API credit, and the Claude plan failed too (Claude Code: claude-opus-5-5: Claude Code: You've hit your weekly limit \u00b7 resets 7am (UTC) / sonnet: Claude Code: You've hit your weekly limit \u00b7 resets 7am (UTC) / haiku: Claude Code: You've hit your weekly limit \u00b7 resets 7am (UTC)); heuristic score 21.1",
+        "start": 5.15,
+        "text": "I love sports and betting on it but I could never win consistently. I always lost more than I won. Last year I found and I'm during the MLB season when I was having a really tough time winning and I joined his VIP and tell his peaks and it was the most amazing thing that ever happened to me. His undefeated MLB system is absolutely legit. I was there for the last 80 bets or so and we won every single one. If you want to win betting on sports and on his demand for sure, he's legit.",
+        "title": "I love sports and betting on it but I could never win consistently."
+      },
+      "created": "2026-11-07T22:33:08+00:00",
+      "date": "2026-11-08",
+      "history": [
+        {
+          "at": "2026-11-07T22:35:08+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:35:08+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:35:09+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:35:09+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:35:10+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:35:10+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:35:10+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:35:10+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:35:11+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:35:11+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:35:15+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:35:18+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-07T22:35:21+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-07T22:36:08+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-07T22:36:08+00:00",
+          "from": "clipped",
+          "to": "approved"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-08-clipping1",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "DayTimeZoomInBillboard.mov has no speech - fetching another source",
+      "score": 45.7,
+      "slot": 1,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/DiegoReviewForAnon.mov",
+      "status": "approved",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-07T22:36:08+00:00"
     },
     "bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0": {
       "bounty_id": "bnty_GLQ2nZ3EtqTUW",
@@ -582,6 +1859,17 @@
     "summary:2026-10-23": "2026-10-23T13:25:14+00:00",
     "summary:2026-10-24": "2026-10-24T12:41:01+00:00",
     "summary:2026-10-25": "2026-10-25T13:11:41+00:00",
-    "summary:2026-10-26": "2026-10-26T15:11:33+00:00"
+    "summary:2026-10-26": "2026-10-26T15:11:33+00:00",
+    "summary:2026-10-27": "2026-10-27T14:30:42+00:00",
+    "summary:2026-10-28": "2026-10-28T15:06:37+00:00",
+    "summary:2026-10-29": "2026-10-29T15:13:48+00:00",
+    "summary:2026-10-30": "2026-10-30T15:02:50+00:00",
+    "summary:2026-10-31": "2026-10-31T14:31:36+00:00",
+    "summary:2026-11-01": "2026-11-01T11:31:17+00:00",
+    "summary:2026-11-02": "2026-11-02T12:53:57+00:00",
+    "summary:2026-11-03": "2026-11-03T11:56:04+00:00",
+    "summary:2026-11-04": "2026-11-04T12:09:33+00:00",
+    "summary:2026-11-05": "2026-11-05T12:19:34+00:00",
+    "summary:2026-11-07": "2026-11-07T20:16:09+00:00"
   }
 }
