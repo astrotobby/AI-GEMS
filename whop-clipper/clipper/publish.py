@@ -135,6 +135,9 @@ def _yt_creds(target: dict) -> tuple[str, str, str] | None:
             _WORKING[key] = (cid, sec, refresh)
             break
         else:
+            log.warning("youtube %s: refresh token shape: length=%d, starts with '1//': %s (a Google refresh token is ~103 "
+                        "characters and starts with 1//; anything else was pasted into the wrong secret)",
+                        slug, len(refresh), refresh.startswith("1//"))
             log.warning("youtube %s: no client/secret combination was accepted with this refresh token "
                         "(invalid_client = wrong client id/secret pair; invalid_grant = the token was issued by "
                         "a different client or was revoked)", slug)
