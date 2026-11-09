@@ -2103,6 +2103,7 @@
         "approved: tiktok:kijanadigital: no connected tiktok account named 'kijanadigital' (found: [])",
         "approved: tiktok:kijanadigital: no connected tiktok account named 'kijanadigital' (found: [])",
         "approved: tiktok:kijanadigital: no connected tiktok account named 'kijanadigital' (found: [])",
+        "approved: tiktok:kijanadigital: no connected tiktok account named 'kijanadigital' (found: [])",
         "approved: tiktok:kijanadigital: no connected tiktok account named 'kijanadigital' (found: [])"
       ],
       "history": [
@@ -2120,6 +2121,11 @@
           "at": "2026-11-08T15:13:57+00:00",
           "from": "clipped",
           "to": "approved"
+        },
+        {
+          "at": "2026-11-09T09:18:52+00:00",
+          "from": "approved",
+          "to": "failed"
         }
       ],
       "id": "bnty_lyJ5DBAjGJ6gF-2026-11-08-ugc0",
@@ -2128,9 +2134,9 @@
       "score": 54.6,
       "slot": 0,
       "source": "",
-      "status": "approved",
+      "status": "failed",
       "title": "Create TikTok Slideshow for LIFEMAXX.APP, Reach 1,000 Views",
-      "updated": "2026-11-08T15:13:57+00:00"
+      "updated": "2026-11-09T09:18:52+00:00"
     }
   },
   "seen": {
