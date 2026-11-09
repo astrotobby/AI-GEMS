@@ -1,6 +1,6 @@
 """One-time helper: mint a YouTube refresh token for one channel (run on your own computer).
 
-    python whop-clipper/get_youtube_token.py <CLIENT_ID> <CLIENT_SECRET>
+    python whop-clipper/get_youtube_token.py      (it asks for the client ID and secret)
 
 A browser opens; sign in and pick the channel you want (e.g. "Astro Tobby"), approve, and the
 refresh token is printed. Save it as the GitHub secret YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY
@@ -22,9 +22,11 @@ SCOPES = "https://www.googleapis.com/auth/youtube.upload https://www.googleapis.
 
 
 def main() -> None:
-    if len(sys.argv) != 3:
-        sys.exit(__doc__)
-    cid, secret = sys.argv[1:3]
+    if len(sys.argv) == 3:
+        cid, secret = sys.argv[1:3]
+    else:  # no arguments: just ask (nothing to edit or quote)
+        cid = input("Google OAuth client ID: ").strip()
+        secret = input("Google OAuth client secret: ").strip()
     redirect = f"http://localhost:{PORT}/"
     url = "https://accounts.google.com/o/oauth2/v2/auth?" + urllib.parse.urlencode({
         "client_id": cid, "redirect_uri": redirect, "response_type": "code", "scope": SCOPES,
