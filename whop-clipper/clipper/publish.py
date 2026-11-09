@@ -1,7 +1,12 @@
 """Post clips and read their view counts through Composio (YouTube Shorts, Instagram Reels)."""
 from __future__ import annotations
 
+import json as _json
+import os
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 from typing import Any
 
@@ -26,6 +31,58 @@ def find(obj: Any, *keys: str) -> Any:
             if hit is not None:
                 return hit
     return None
+
+
+# --- Direct YouTube Data API (own Google OAuth app => own daily quota, not Composio's shared one) ---
+def yt_direct_enabled() -> bool:
+    return all(os.environ.get(k) for k in ("YOUTUBE_CLIENT_ID", "YOUTUBE_CLIENT_SECRET", "YOUTUBE_REFRESH_TOKEN"))
+
+
+def _yt_access_token() -> str:
+    body = urllib.parse.urlencode({
+        "client_id": os.environ["YOUTUBE_CLIENT_ID"], "client_secret": os.environ["YOUTUBE_CLIENT_SECRET"],
+        "refresh_token": os.environ["YOUTUBE_REFRESH_TOKEN"], "grant_type": "refresh_token"}).encode()
+    try:
+        with urllib.request.urlopen(urllib.request.Request("https://oauth2.googleapis.com/token", data=body), timeout=60) as r:
+            return _json.load(r)["access_token"]
+    except urllib.error.HTTPError as e:
+        raise PublishError(f"YouTube token refresh failed: {e.read().decode()[:300]}")
+
+
+def _yt_direct_upload(video: Path, title: str, description: str, tags: list[str], privacy: str, category: str) -> str:
+    token = _yt_access_token()
+    meta = {"snippet": {"title": title[:100], "description": description[:4900], "tags": tags[:30], "categoryId": category},
+            "status": {"privacyStatus": privacy, "selfDeclaredMadeForKids": False}}
+    size = video.stat().st_size
+    init = urllib.request.Request(
+        "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
+        data=_json.dumps(meta).encode(), method="POST",
+        headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json; charset=UTF-8",
+                 "X-Upload-Content-Type": "video/mp4", "X-Upload-Content-Length": str(size)})
+    try:
+        with urllib.request.urlopen(init, timeout=120) as r:
+            loc = r.headers["Location"]
+        put = urllib.request.Request(loc, data=video.read_bytes(), method="PUT",
+                                     headers={"Authorization": f"Bearer {token}", "Content-Type": "video/mp4"})
+        with urllib.request.urlopen(put, timeout=900) as r:
+            vid = _json.load(r).get("id")
+    except urllib.error.HTTPError as e:
+        raise PublishError(f"YouTube direct upload failed ({e.code}): {e.read().decode()[:400]}")
+    if not vid:
+        raise PublishError("YouTube direct upload returned no video id")
+    return vid
+
+
+def _yt_direct_views(vid: str) -> int:
+    token = _yt_access_token()
+    req = urllib.request.Request(f"https://www.googleapis.com/youtube/v3/videos?part=statistics&id={vid}",
+                                 headers={"Authorization": f"Bearer {token}"})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            items = _json.load(r).get("items") or []
+    except urllib.error.HTTPError as e:
+        raise PublishError(f"YouTube views failed ({e.code}): {e.read().decode()[:300]}")
+    return int(((items[0] if items else {}).get("statistics") or {}).get("viewCount") or 0)
 
 
 class Composio:
@@ -115,6 +172,8 @@ def resolve(c: Composio, target: dict) -> dict:
     TikTok username, so config.toml can say "Astro Tobby" instead of an opaque ca_... id."""
     if target.get("account_id"):
         return target
+    if target.get("platform") == "youtube" and yt_direct_enabled():
+        return target  # direct API: uses the single channel the refresh token belongs to
     want = (target.get("channel") or target.get("username") or "").strip().lower()
     if not want:
         return target  # Composio's default account for the toolkit
@@ -151,6 +210,9 @@ def hashtags(tags: list[str]) -> str:
 def youtube(c: Composio, target: dict, video: Path, title: str, caption: str, tags: list[str],
             privacy: str, category: str) -> str:
     t = title if "#shorts" in title.lower() else f"{title[:88]} #Shorts"
+    if yt_direct_enabled() and not target.get("account_id"):
+        return "https://youtube.com/shorts/" + _yt_direct_upload(
+            video, t, f"{caption}\n\n{hashtags(tags)}", tags, privacy, category)
     data = c.run("YOUTUBE_MULTIPART_UPLOAD_VIDEO", {
         "title": t[:100],
         "description": f"{caption}\n\n{hashtags(tags)}",
@@ -261,6 +323,8 @@ def views(c: Composio, target: dict, url: str) -> int:
     target = resolve(c, dict(target))
     if target["platform"] == "youtube":
         vid = url.rstrip("/").split("/")[-1]
+        if yt_direct_enabled() and not target.get("account_id"):
+            return _yt_direct_views(vid)
         data = c.run("YOUTUBE_GET_VIDEO_DETAILS_BATCH", {"id": [vid], "parts": ["statistics"]},
                      target.get("account_id"))
         return int(find(data, "viewCount") or 0)
