@@ -1,12 +1,17 @@
 name: YouTube auth
-# One-time per channel: sends a sign-in link + code to Telegram, you approve on your phone, and the
-# credentials are kept in the clipper's run cache (work/yt_tokens). Nothing secret is printed.
+# One-time per channel. Run 1 (code empty): sends a Google sign-in link to Telegram. Run 2: paste the
+# localhost address you end up on into "code"; credentials are kept in the clipper's run cache
+# (work/yt_tokens). Nothing secret is printed.
 on:
   workflow_dispatch:
     inputs:
       channel:
         description: "YouTube channel title to connect"
         default: "Astro Tobby"
+      code:
+        description: "step 2 only: paste the full http://localhost/?code=... address your browser ended on (leave empty for step 1)"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -43,9 +48,10 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           CHANNEL: ${{ inputs.channel }}
-        run: python yt_auth.py "$CHANNEL"
+          CODE: ${{ inputs.code }}
+        run: python yt_auth.py "$CHANNEL" "$CODE"
       - uses: actions/cache/save@v4
-        if: success()
+        if: success() && inputs.code != ''
         with:
           path: |
             whop-clipper/work
