@@ -644,3 +644,30 @@ def test_youtube_creds_token_file_then_env_with_misnamed_secrets(tmp_path, monke
     (tmp_path / "ASTRO_TOBBY.json").write_text(json.dumps({"client_id": "c2", "client_secret": "s2", "refresh_token": "rt-file"}))
     assert publish._yt_creds(t) == ("c2", "s2", "rt-file")
     assert publish.yt_direct_enabled({"platform": "youtube", "channel": "DIJITOL NOMAD"}) is False
+
+
+def test_youtube_creds_accept_pasted_client_json_and_pick_the_pair_google_accepts(monkeypatch, tmp_path):
+    import json
+    from clipper import publish
+    for k in ("YOUTUBE_CLIENT_ID", "YOUTUBE_CLIENT_SECRET", "YOUTUBE_REFRESH_TOKEN", "YOUTUBECLIENT_ID",
+              "YOUTUBECLIENT_SECTRET", "CLIENT_ID", "CLIENT_SECRET"):
+        monkeypatch.delenv(k, raising=False)
+    monkeypatch.setattr(publish, "TOKEN_DIR", tmp_path)
+    monkeypatch.setattr(publish, "_WORKING", {})
+    t = {"platform": "youtube", "channel": "Astro Tobby"}
+    monkeypatch.setenv("YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY", "rt-abcdefghijkl")
+    # whole client JSON pasted as CLIENT_ID, an old mismatching CLIENT_SECRET beside it
+    monkeypatch.setenv("CLIENT_ID", json.dumps({"installed": {"client_id": "new-id", "client_secret": "new-sec"}}))
+    monkeypatch.setenv("CLIENT_SECRET", "old-sec")
+    tried = []
+
+    def fake_access(creds):
+        tried.append(creds[:2])
+        if creds[:2] != ("new-id", "new-sec"):
+            raise publish.PublishError("invalid_client")
+        return "tok"
+
+    monkeypatch.setattr(publish, "_yt_access_token", fake_access)
+    assert publish._yt_creds(t) == ("new-id", "new-sec", "rt-abcdefghijkl")
+    assert publish._yt_creds(t) == ("new-id", "new-sec", "rt-abcdefghijkl")
+    assert len(tried) == 1  # cached after the first probe

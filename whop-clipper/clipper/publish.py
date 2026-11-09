@@ -41,9 +41,41 @@ def _slug(target: dict) -> str:
     return "".join(ch if ch.isalnum() else "_" for ch in (target.get("channel") or "").upper()).strip("_")
 
 
-def _env_first(*names: str) -> str:
-    """First non-empty env var. Tolerates the secret names people actually type."""
-    return next((os.environ[n] for n in names if os.environ.get(n)), "")
+def _client_from_env() -> list[tuple[str, str]]:
+    """Candidate (client_id, client_secret) pairs from whatever secrets exist, however they were named.
+
+    A value that is a pasted Google client JSON ({"installed": {...}} / {"web": {...}}) supplies a
+    complete pair by itself; plain ids and secrets are then combined, so a mismatched or misnamed
+    set still works as long as one combination is the pair that issued the refresh token.
+    """
+    ids: list[str] = []
+    secrets_: list[str] = []
+    pairs: list[tuple[str, str]] = []
+    names = [("YOUTUBE_CLIENT_ID", 0), ("CLIENT_ID", 0), ("YOUTUBECLIENT_ID", 0),
+             ("YOUTUBE_CLIENT_SECRET", 1), ("CLIENT_SECRET", 1), ("YOUTUBECLIENT_SECRET", 1), ("YOUTUBECLIENT_SECTRET", 1)]
+    for name, kind in names:
+        v = (os.environ.get(name) or "").strip()
+        if not v:
+            continue
+        if v.startswith("{"):
+            try:
+                c = _json.loads(v)
+                c = c.get("installed") or c.get("web") or c
+                if c.get("client_id") and c.get("client_secret"):
+                    pairs.append((c["client_id"], c["client_secret"]))
+                    ids.append(c["client_id"])
+                    secrets_.append(c["client_secret"])
+            except ValueError:
+                pass
+            continue
+        (secrets_ if kind else ids).append(v)
+    for i in ids:
+        for sec in secrets_:
+            pairs.append((i, sec))
+    return list(dict.fromkeys(pairs))
+
+
+_WORKING: dict[str, tuple[str, str, str]] = {}
 
 
 def _yt_creds(target: dict) -> tuple[str, str, str] | None:
@@ -51,7 +83,8 @@ def _yt_creds(target: dict) -> tuple[str, str, str] | None:
 
     1. work/yt_tokens/<CHANNEL>.json - written by the "YouTube auth" workflow together with the
        OAuth client that issued the token (a refresh token only works with its own client);
-    2. YOUTUBE_REFRESH_TOKEN_<CHANNEL> (else YOUTUBE_REFRESH_TOKEN) + the client id/secret secrets.
+    2. YOUTUBE_REFRESH_TOKEN_<CHANNEL> (else YOUTUBE_REFRESH_TOKEN) + the client secrets found in the
+       environment; when several id/secret combinations exist, the first one Google accepts is used.
     """
     slug = _slug(target)
     f = TOKEN_DIR / f"{slug}.json"
@@ -63,9 +96,23 @@ def _yt_creds(target: dict) -> tuple[str, str, str] | None:
         except ValueError:
             pass
     refresh = (slug and os.environ.get(f"YOUTUBE_REFRESH_TOKEN_{slug}")) or os.environ.get("YOUTUBE_REFRESH_TOKEN", "")
-    cid = _env_first("YOUTUBE_CLIENT_ID", "YOUTUBECLIENT_ID", "CLIENT_ID")
-    sec = _env_first("YOUTUBE_CLIENT_SECRET", "YOUTUBECLIENT_SECRET", "YOUTUBECLIENT_SECTRET", "CLIENT_SECRET")
-    return (cid, sec, refresh) if cid and sec and refresh else None
+    pairs = _client_from_env()
+    if not refresh or not pairs:
+        return None
+    if len(pairs) == 1:
+        return (*pairs[0], refresh)
+    key = slug + ":" + refresh[:12]
+    if key not in _WORKING:
+        for cid, sec in pairs:
+            try:
+                _yt_access_token((cid, sec, refresh))
+            except PublishError:
+                continue
+            _WORKING[key] = (cid, sec, refresh)
+            break
+        else:
+            return (*pairs[0], refresh)  # none accepted: let the caller surface Google's error
+    return _WORKING[key]
 
 
 def yt_direct_enabled(target: dict) -> bool:
