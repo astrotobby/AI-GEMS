@@ -3,12 +3,18 @@ from __future__ import annotations
 
 import json as _json
 import os
+import re
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
 from typing import Any
+
+
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class PublishError(RuntimeError):
@@ -50,16 +56,17 @@ def _env_refresh(slug: str) -> str:
                 os.environ.get("YOUTUBE_REFRESH_TOKEN", "").strip())
 
 
-def _client_from_env() -> list[tuple[str, str]]:
-    """Candidate (client_id, client_secret) pairs from whatever secrets exist, however they were named.
+def _client_from_env() -> list[tuple[str, str, str]]:
+    """Candidate (client_id, client_secret, label) triples from whatever secrets exist, however named.
 
     A value that is a pasted Google client JSON ({"installed": {...}} / {"web": {...}}) supplies a
     complete pair by itself; plain ids and secrets are then combined, so a mismatched or misnamed
-    set still works as long as one combination is the pair that issued the refresh token.
+    set still works as long as one combination is the pair that issued the refresh token. The label
+    names the secrets involved (never their values) so a failure can be diagnosed from the log.
     """
-    ids: list[str] = []
-    secrets_: list[str] = []
-    pairs: list[tuple[str, str]] = []
+    ids: list[tuple[str, str]] = []
+    secrets_: list[tuple[str, str]] = []
+    out: list[tuple[str, str, str]] = []
     names = [("YOUTUBE_CLIENT_ID", 0), ("CLIENT_ID", 0), ("YOUTUBECLIENT_ID", 0),
              ("YOUTUBE_CLIENT_SECRET", 1), ("CLIENT_SECRET", 1), ("YOUTUBECLIENT_SECRET", 1), ("YOUTUBECLIENT_SECTRET", 1)]
     for name, kind in names:
@@ -71,17 +78,22 @@ def _client_from_env() -> list[tuple[str, str]]:
                 c = _json.loads(v)
                 c = c.get("installed") or c.get("web") or c
                 if c.get("client_id") and c.get("client_secret"):
-                    pairs.append((c["client_id"], c["client_secret"]))
-                    ids.append(c["client_id"])
-                    secrets_.append(c["client_secret"])
+                    out.append((c["client_id"], c["client_secret"], f"{name}(json)"))
+                    ids.append((c["client_id"], f"{name}(json)"))
+                    secrets_.append((c["client_secret"], f"{name}(json)"))
             except ValueError:
                 pass
             continue
-        (secrets_ if kind else ids).append(v)
-    for i in ids:
-        for sec in secrets_:
-            pairs.append((i, sec))
-    return list(dict.fromkeys(pairs))
+        (secrets_ if kind else ids).append((v, name))
+    for i, iname in ids:
+        for sec, sname in secrets_:
+            out.append((i, sec, f"id={iname} secret={sname}"))
+    seen, uniq = set(), []
+    for t in out:
+        if t[:2] not in seen:
+            seen.add(t[:2])
+            uniq.append(t)
+    return uniq
 
 
 _WORKING: dict[str, tuple[str, str, str]] = {}
@@ -109,18 +121,24 @@ def _yt_creds(target: dict) -> tuple[str, str, str] | None:
     if not refresh or not pairs:
         return None
     if len(pairs) == 1:
-        return (*pairs[0], refresh)
+        return (pairs[0][0], pairs[0][1], refresh)
     key = slug + ":" + refresh[:12]
     if key not in _WORKING:
-        for cid, sec in pairs:
+        for cid, sec, label in pairs:
             try:
                 _yt_access_token((cid, sec, refresh))
-            except PublishError:
+            except PublishError as e:
+                m = re.search(r'"error":\s*"([^"]+)"', str(e))
+                log.warning("youtube %s: %s -> %s", slug, label, m.group(1) if m else "rejected")
                 continue
+            log.info("youtube %s: using %s", slug, label)
             _WORKING[key] = (cid, sec, refresh)
             break
         else:
-            return (*pairs[0], refresh)  # none accepted: let the caller surface Google's error
+            log.warning("youtube %s: no client/secret combination was accepted with this refresh token "
+                        "(invalid_client = wrong client id/secret pair; invalid_grant = the token was issued by "
+                        "a different client or was revoked)", slug)
+            return (pairs[0][0], pairs[0][1], refresh)  # let the caller surface Google's error
     return _WORKING[key]
 
 

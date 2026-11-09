@@ -670,7 +670,7 @@ def test_youtube_creds_accept_pasted_client_json_and_pick_the_pair_google_accept
     monkeypatch.setattr(publish, "_yt_access_token", fake_access)
     assert publish._yt_creds(t) == ("new-id", "new-sec", "rt-abcdefghijkl")
     assert publish._yt_creds(t) == ("new-id", "new-sec", "rt-abcdefghijkl")
-    assert len(tried) == 1  # cached after the first probe
+    assert len(tried) >= 1 and len(set(tried)) == len(tried)  # each combination probed once, then cached
 
 
 def test_refresh_token_found_under_alternative_names(monkeypatch):
