@@ -47,13 +47,69 @@ def _slug(target: dict) -> str:
     return "".join(ch if ch.isalnum() else "_" for ch in (target.get("channel") or "").upper()).strip("_")
 
 
-def _env_refresh(slug: str) -> str:
-    """The channel's refresh token under any of the names people use, else the shared YOUTUBE_REFRESH_TOKEN."""
+def _norm(x: str) -> str:
+    return "".join(ch for ch in str(x).upper() if ch.isalnum())
+
+
+_TOKEN_RE = re.compile(r"1//[0-9A-Za-z_\-]{40,}")
+
+
+def _extract_token(raw: str, slug: str) -> tuple[str, tuple[str, str] | None]:
+    """The refresh token for `slug` out of a secret value, plus the OAuth client stored beside it.
+
+    A plain token is returned as is. If the secret holds pasted JSON (e.g. the whole tokens file),
+    the entry whose "channel" matches the slug is used; with no channel information it is only
+    accepted when the text contains exactly one token, so one channel's clips can never be uploaded
+    to the other channel.
+    """
+    raw = raw.strip()
+    if not raw:
+        return "", None
+    if not raw.startswith(("{", "[")) and len(raw) < 400 and not any(c.isspace() for c in raw):  # a plain token
+        return raw, None
+    client = None
+    try:
+        data = _json.loads(raw)
+    except ValueError:
+        data = None
+    if data is not None:
+        top = data if isinstance(data, dict) else {}
+        if top.get("client_id") and top.get("client_secret"):
+            client = (top["client_id"], top["client_secret"])
+        entries = []
+
+        def walk(o):
+            if isinstance(o, dict):
+                if isinstance(o.get("refresh_token"), str):
+                    entries.append((o.get("channel") or o.get("name") or "", o["refresh_token"].strip()))
+                for v in o.values():
+                    walk(v)
+            elif isinstance(o, list):
+                for v in o:
+                    walk(v)
+
+        walk(data)
+        want = _norm(slug)
+        for ch, tok in entries:
+            if want and ch and _norm(ch) == want:
+                return tok, client
+        if len(entries) == 1:
+            return entries[0][1], client
+        return "", client
+    found = list(dict.fromkeys(_TOKEN_RE.findall(raw)))
+    return (found[0], None) if len(found) == 1 else ("", None)
+
+
+def _env_refresh(slug: str) -> tuple[str, tuple[str, str] | None]:
+    """The channel's refresh token (and any client stored beside it) from the secret names people use."""
     flat = slug.replace("_", "")
     names = [f"YOUTUBE_REFRESH_TOKEN_{slug}", f"REFRESH_TOKEN_{slug}", f"REFRESHTOKEN_{flat}",
              f"YOUTUBE_REFRESHTOKEN_{flat}"] if slug else []
-    return next((os.environ[n].strip() for n in names if os.environ.get(n, "").strip()),
-                os.environ.get("YOUTUBE_REFRESH_TOKEN", "").strip())
+    for n in names + ["YOUTUBE_REFRESH_TOKEN"]:
+        tok, client = _extract_token(os.environ.get(n, ""), slug)
+        if tok:
+            return tok, client
+    return "", None
 
 
 def _client_from_env() -> list[tuple[str, str, str]]:
@@ -116,8 +172,10 @@ def _yt_creds(target: dict) -> tuple[str, str, str] | None:
                 return d["client_id"], d["client_secret"], d["refresh_token"]
         except ValueError:
             pass
-    refresh = _env_refresh(slug)
+    refresh, stored_client = _env_refresh(slug)
     pairs = _client_from_env()
+    if stored_client:  # the client that issued it, when the secret carried one
+        pairs.insert(0, (*stored_client, "stored beside the refresh token"))
     if not refresh or not pairs:
         return None
     if len(pairs) == 1:

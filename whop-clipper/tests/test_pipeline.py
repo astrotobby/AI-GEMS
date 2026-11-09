@@ -673,12 +673,24 @@ def test_youtube_creds_accept_pasted_client_json_and_pick_the_pair_google_accept
     assert len(tried) >= 1 and len(set(tried)) == len(tried)  # each combination probed once, then cached
 
 
-def test_refresh_token_found_under_alternative_names(monkeypatch):
+def test_refresh_token_found_under_alternative_names_and_inside_pasted_json(monkeypatch):
+    import json
     from clipper import publish
-    for k in ("YOUTUBE_REFRESH_TOKEN", "YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD", "REFRESH_TOKEN_DIJITOL_NOMAD", "REFRESHTOKEN_DIJITOLNOMAD"):
+    names = ("YOUTUBE_REFRESH_TOKEN", "YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD", "REFRESH_TOKEN_DIJITOL_NOMAD",
+             "REFRESHTOKEN_DIJITOLNOMAD", "YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY")
+    for k in names:
         monkeypatch.delenv(k, raising=False)
-    assert publish._env_refresh("DIJITOL_NOMAD") == ""
-    monkeypatch.setenv("REFRESHTOKEN_DIJITOLNOMAD", " 1//abc \n")
-    assert publish._env_refresh("DIJITOL_NOMAD") == "1//abc"
-    monkeypatch.setenv("YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD", "1//exact")
-    assert publish._env_refresh("DIJITOL_NOMAD") == "1//exact"
+    assert publish._env_refresh("DIJITOL_NOMAD") == ("", None)
+    monkeypatch.setenv("REFRESHTOKEN_DIJITOLNOMAD", " 1//" + "a" * 60 + " " + chr(10))
+    assert publish._env_refresh("DIJITOL_NOMAD")[0] == "1//" + "a" * 60
+    # the whole tokens file pasted: each channel gets its own token, never the other's
+    blob = json.dumps({"client_id": "cid", "client_secret": "sec", "accounts": [
+        {"channel": "Astro Tobby ", "refresh_token": "1//" + "A" * 60},
+        {"channel": "DIJITOL NOMAD ", "refresh_token": "1//" + "D" * 60}]}, indent=2)
+    monkeypatch.setenv("YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY", blob)
+    monkeypatch.setenv("YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD", blob)
+    assert publish._env_refresh("ASTRO_TOBBY") == ("1//" + "A" * 60, ("cid", "sec"))
+    assert publish._env_refresh("DIJITOL_NOMAD") == ("1//" + "D" * 60, ("cid", "sec"))
+    # two tokens and no channel names: refuse to guess
+    monkeypatch.setenv("YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY", "x 1//" + "A" * 60 + " y 1//" + "B" * 60)
+    assert publish._env_refresh("ASTRO_TOBBY")[0] == ""
