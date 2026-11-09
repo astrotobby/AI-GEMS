@@ -80,6 +80,8 @@ jobs:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY: ${{ secrets.YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY }}
+          YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD: ${{ secrets.YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD }}
           CLIPPER_MODE: ${{ vars.CLIPPER_MODE }}
           YTDLP_COOKIES: ${{ runner.temp }}/cookies.txt
           CMD: ${{ github.event_name == 'push' && 'check' || github.event.inputs.command || 'run' }}
