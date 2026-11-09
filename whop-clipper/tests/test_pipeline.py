@@ -694,3 +694,28 @@ def test_refresh_token_found_under_alternative_names_and_inside_pasted_json(monk
     # two tokens and no channel names: refuse to guess
     monkeypatch.setenv("YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY", "x 1//" + "A" * 60 + " y 1//" + "B" * 60)
     assert publish._env_refresh("ASTRO_TOBBY")[0] == ""
+
+
+def test_youtube_never_falls_back_to_composio(monkeypatch, tmp_path):
+    from clipper import publish
+    for k in ("YOUTUBE_CLIENT_ID", "YOUTUBE_CLIENT_SECRET", "YOUTUBE_REFRESH_TOKEN", "YOUTUBECLIENT_ID",
+              "YOUTUBECLIENT_SECTRET", "CLIENT_ID", "CLIENT_SECRET", "YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY"):
+        monkeypatch.delenv(k, raising=False)
+    monkeypatch.setattr(publish, "TOKEN_DIR", tmp_path)
+
+    class NoComposio:
+        def run(self, *a, **k):
+            raise AssertionError("Composio must not be used for YouTube")
+
+        def accounts(self, *a, **k):
+            raise AssertionError("Composio must not be used for YouTube")
+
+    t = {"platform": "youtube", "channel": "Astro Tobby", "account_id": "ca_should_be_ignored"}
+    assert publish.resolve(NoComposio(), dict(t))["platform"] == "youtube"
+    clip = tmp_path / "c.mp4"
+    clip.write_bytes(b"x")
+    import pytest
+    with pytest.raises(publish.PublishError, match="Composio is deliberately not used"):
+        publish.youtube(NoComposio(), t, clip, "title", "caption", ["a"], "public", "24")
+    with pytest.raises(publish.PublishError, match="no usable direct credentials"):
+        publish.views(NoComposio(), t, "https://youtube.com/shorts/abc123def45")

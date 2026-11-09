@@ -68,8 +68,7 @@ def composio(cfg: Settings) -> list[str]:
         try:
             r = publish.resolve(c, dict(t))
             if t["platform"] == "youtube":
-                data = c.run("YOUTUBE_GET_CHANNEL_STATISTICS", {"mine": True, "part": "snippet"}, r.get("account_id"))
-                who = publish.find(data, "title")
+                who = publish.yt_channel_title(r)  # direct Google API, no Composio
             elif t["platform"] == "tiktok":
                 who = "@" + publish.tiktok_username(c, r.get("account_id"))
                 opts = publish.find(c.run("TIKTOK_QUERY_CREATOR_INFO", {}, r.get("account_id")),

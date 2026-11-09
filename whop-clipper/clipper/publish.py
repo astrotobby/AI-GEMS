@@ -349,10 +349,10 @@ def target_key(target: dict) -> str:
 def resolve(c: Composio, target: dict) -> dict:
     """Find the Composio connected account behind a target by YouTube channel title or Instagram /
     TikTok username, so config.toml can say "Astro Tobby" instead of an opaque ca_... id."""
+    if target.get("platform") == "youtube":
+        return target  # YouTube is direct-API only (your own Google app); never looked up in Composio
     if target.get("account_id"):
         return target
-    if target.get("platform") == "youtube" and yt_direct_enabled(target):
-        return target  # direct API: uses the single channel the refresh token belongs to
     want = (target.get("channel") or target.get("username") or "").strip().lower()
     if not want:
         return target  # Composio's default account for the toolkit
@@ -386,24 +386,37 @@ def hashtags(tags: list[str]) -> str:
     return " ".join(f"#{t}" for t in tags)
 
 
+def yt_not_configured(target: dict) -> "PublishError":
+    return PublishError(
+        f"YouTube channel {target.get('channel') or '?'!r}: no usable direct credentials. Set the secrets "
+        f"YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET and YOUTUBE_REFRESH_TOKEN_{_slug(target) or '<CHANNEL>'} "
+        "(Composio is deliberately not used for YouTube).")
+
+
 def youtube(c: Composio, target: dict, video: Path, title: str, caption: str, tags: list[str],
             privacy: str, category: str) -> str:
+    """Upload through the YouTube Data API with your own Google OAuth app. No Composio fallback."""
     t = title if "#shorts" in title.lower() else f"{title[:88]} #Shorts"
-    if yt_direct_enabled(target) and not target.get("account_id"):
-        return "https://youtube.com/shorts/" + _yt_direct_upload(
-            _yt_creds(target), video, t, f"{caption}\n\n{hashtags(tags)}", tags, privacy, category)
-    data = c.run("YOUTUBE_MULTIPART_UPLOAD_VIDEO", {
-        "title": t[:100],
-        "description": f"{caption}\n\n{hashtags(tags)}",
-        "tags": tags,
-        "categoryId": category,
-        "privacyStatus": privacy,
-        "videoFile": str(video),
-    }, target.get("account_id"))
-    vid = find(data, "id", "videoId", "video_id")
-    if not isinstance(vid, str):
-        raise PublishError(f"YouTube upload returned no video id: {str(data)[:300]}")
-    return f"https://youtube.com/shorts/{vid}"
+    creds = _yt_creds(target)
+    if not creds:
+        raise yt_not_configured(target)
+    return "https://youtube.com/shorts/" + _yt_direct_upload(
+        creds, video, t, caption + chr(10) * 2 + hashtags(tags), tags, privacy, category)
+
+
+def yt_channel_title(target: dict) -> str:
+    """The channel the stored credentials belong to (used by `check`)."""
+    creds = _yt_creds(target)
+    if not creds:
+        raise yt_not_configured(target)
+    req = urllib.request.Request("https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true",
+                                 headers={"Authorization": "Bearer " + _yt_access_token(creds)})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            items = _json.load(r).get("items") or []
+    except urllib.error.HTTPError as e:
+        raise PublishError(f"YouTube channel lookup failed ({e.code}): {e.read().decode()[:200]}")
+    return str((items[0]["snippet"]["title"]) if items else "(no channel)").strip()
 
 
 def ig_user_id(c: Composio, target: dict) -> str:
@@ -502,11 +515,10 @@ def views(c: Composio, target: dict, url: str) -> int:
     target = resolve(c, dict(target))
     if target["platform"] == "youtube":
         vid = url.rstrip("/").split("/")[-1]
-        if yt_direct_enabled(target) and not target.get("account_id"):
-            return _yt_direct_views(_yt_creds(target), vid)
-        data = c.run("YOUTUBE_GET_VIDEO_DETAILS_BATCH", {"id": [vid], "parts": ["statistics"]},
-                     target.get("account_id"))
-        return int(find(data, "viewCount") or 0)
+        creds = _yt_creds(target)
+        if not creds:
+            raise yt_not_configured(target)
+        return _yt_direct_views(creds, vid)
     if target["platform"] == "instagram":
         listing = c.run("INSTAGRAM_GET_IG_USER_MEDIA", {
             "ig_user_id": target.get("ig_user_id") or "me", "fields": "id,permalink", "limit": 50,
