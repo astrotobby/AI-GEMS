@@ -69,7 +69,9 @@ def telegram(text: str) -> bool:
     tok, chat = os.environ.get("TELEGRAM_BOT_TOKEN", ""), os.environ.get("TELEGRAM_CHAT_ID", "")
     if not (tok and chat):
         return False
-    code, _ = post(f"https://api.telegram.org/bot{tok}/sendMessage", {"chat_id": chat, "text": text})
+    code, r = post(f"https://api.telegram.org/bot{tok}/sendMessage", {"chat_id": chat, "text": text})
+    if code != 200:  # say why (e.g. wrong chat id, or you never pressed Start on the bot); no secrets involved
+        print(f"Telegram refused the message: {code} {r.get('description', '')}")
     return code == 200
 
 
