@@ -51,6 +51,7 @@ def _norm(x: str) -> str:
     return "".join(ch for ch in str(x).upper() if ch.isalnum())
 
 
+_WARNED: set = set()
 _TOKEN_RE = re.compile(r"1//[0-9A-Za-z_\-]{40,}")
 
 
@@ -106,9 +107,17 @@ def _env_refresh(slug: str) -> tuple[str, tuple[str, str] | None]:
     names = [f"YOUTUBE_REFRESH_TOKEN_{slug}", f"REFRESH_TOKEN_{slug}", f"REFRESHTOKEN_{flat}",
              f"YOUTUBE_REFRESHTOKEN_{flat}"] if slug else []
     for n in names + ["YOUTUBE_REFRESH_TOKEN"]:
-        tok, client = _extract_token(os.environ.get(n, ""), slug)
+        raw = os.environ.get(n, "")
+        tok, client = _extract_token(raw, slug)
         if tok:
             return tok, client
+        if raw.strip() and (n, slug) not in _WARNED:
+            _WARNED.add((n, slug))
+            log.warning("youtube %s: secret %s is set but holds no usable refresh token for this channel (length=%d, "
+                        "looks like %s, tokens found=%d). It should be ONLY the ~103-character token starting 1// "
+                        "- or JSON with one entry per channel name.", slug, n, len(raw.strip()),
+                        "JSON" if raw.lstrip().startswith(("{", "[")) else "plain text",
+                        len(_TOKEN_RE.findall(raw)))
     return "", None
 
 
