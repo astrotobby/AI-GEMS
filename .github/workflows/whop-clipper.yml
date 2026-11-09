@@ -77,8 +77,13 @@ jobs:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
           TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
-          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID || secrets.YOUTUBECLIENT_ID || secrets.CLIENT_ID }}
-          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET || secrets.YOUTUBECLIENT_SECTRET || secrets.CLIENT_SECRET }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          # misnamed copies are passed separately; publish.py tries every id/secret combination
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          YOUTUBECLIENT_ID: ${{ secrets.YOUTUBECLIENT_ID }}
+          YOUTUBECLIENT_SECTRET: ${{ secrets.YOUTUBECLIENT_SECTRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY: ${{ secrets.YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY }}
           YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD: ${{ secrets.YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD }}
