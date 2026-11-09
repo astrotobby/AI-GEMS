@@ -34,19 +34,48 @@ def find(obj: Any, *keys: str) -> Any:
 
 
 # --- Direct YouTube Data API (own Google OAuth app => own daily quota, not Composio's shared one) ---
-def _yt_refresh_token(target: dict) -> str:
-    """Per-channel token YOUTUBE_REFRESH_TOKEN_<CHANNEL> (e.g. _ASTRO_TOBBY, _DIJITOL_NOMAD), else YOUTUBE_REFRESH_TOKEN."""
-    slug = "".join(ch if ch.isalnum() else "_" for ch in (target.get("channel") or "").upper()).strip("_")
-    return (slug and os.environ.get(f"YOUTUBE_REFRESH_TOKEN_{slug}")) or os.environ.get("YOUTUBE_REFRESH_TOKEN", "")
+TOKEN_DIR = Path("work/yt_tokens")  # minted by `yt_auth.py` (workflow "YouTube auth"); persisted by the run cache
+
+
+def _slug(target: dict) -> str:
+    return "".join(ch if ch.isalnum() else "_" for ch in (target.get("channel") or "").upper()).strip("_")
+
+
+def _env_first(*names: str) -> str:
+    """First non-empty env var. Tolerates the secret names people actually type."""
+    return next((os.environ[n] for n in names if os.environ.get(n)), "")
+
+
+def _yt_creds(target: dict) -> tuple[str, str, str] | None:
+    """(client_id, client_secret, refresh_token) for a channel, or None when not configured.
+
+    1. work/yt_tokens/<CHANNEL>.json - written by the "YouTube auth" workflow together with the
+       OAuth client that issued the token (a refresh token only works with its own client);
+    2. YOUTUBE_REFRESH_TOKEN_<CHANNEL> (else YOUTUBE_REFRESH_TOKEN) + the client id/secret secrets.
+    """
+    slug = _slug(target)
+    f = TOKEN_DIR / f"{slug}.json"
+    if slug and f.exists():
+        try:
+            d = _json.loads(f.read_text())
+            if d.get("client_id") and d.get("client_secret") and d.get("refresh_token"):
+                return d["client_id"], d["client_secret"], d["refresh_token"]
+        except ValueError:
+            pass
+    refresh = (slug and os.environ.get(f"YOUTUBE_REFRESH_TOKEN_{slug}")) or os.environ.get("YOUTUBE_REFRESH_TOKEN", "")
+    cid = _env_first("YOUTUBE_CLIENT_ID", "YOUTUBECLIENT_ID", "CLIENT_ID")
+    sec = _env_first("YOUTUBE_CLIENT_SECRET", "YOUTUBECLIENT_SECRET", "YOUTUBECLIENT_SECTRET", "CLIENT_SECRET")
+    return (cid, sec, refresh) if cid and sec and refresh else None
 
 
 def yt_direct_enabled(target: dict) -> bool:
-    return bool(os.environ.get("YOUTUBE_CLIENT_ID") and os.environ.get("YOUTUBE_CLIENT_SECRET") and _yt_refresh_token(target))
+    return _yt_creds(target) is not None
 
 
-def _yt_access_token(refresh: str) -> str:
+def _yt_access_token(creds: tuple[str, str, str]) -> str:
+    cid, secret, refresh = creds
     body = urllib.parse.urlencode({
-        "client_id": os.environ["YOUTUBE_CLIENT_ID"], "client_secret": os.environ["YOUTUBE_CLIENT_SECRET"],
+        "client_id": cid, "client_secret": secret,
         "refresh_token": refresh, "grant_type": "refresh_token"}).encode()
     try:
         with urllib.request.urlopen(urllib.request.Request("https://oauth2.googleapis.com/token", data=body), timeout=60) as r:
@@ -55,8 +84,8 @@ def _yt_access_token(refresh: str) -> str:
         raise PublishError(f"YouTube token refresh failed: {e.read().decode()[:300]}")
 
 
-def _yt_direct_upload(refresh: str, video: Path, title: str, description: str, tags: list[str], privacy: str, category: str) -> str:
-    token = _yt_access_token(refresh)
+def _yt_direct_upload(creds: tuple[str, str, str], video: Path, title: str, description: str, tags: list[str], privacy: str, category: str) -> str:
+    token = _yt_access_token(creds)
     meta = {"snippet": {"title": title[:100], "description": description[:4900], "tags": tags[:30], "categoryId": category},
             "status": {"privacyStatus": privacy, "selfDeclaredMadeForKids": False}}
     size = video.stat().st_size
@@ -79,8 +108,8 @@ def _yt_direct_upload(refresh: str, video: Path, title: str, description: str, t
     return vid
 
 
-def _yt_direct_views(refresh: str, vid: str) -> int:
-    token = _yt_access_token(refresh)
+def _yt_direct_views(creds: tuple[str, str, str], vid: str) -> int:
+    token = _yt_access_token(creds)
     req = urllib.request.Request(f"https://www.googleapis.com/youtube/v3/videos?part=statistics&id={vid}",
                                  headers={"Authorization": f"Bearer {token}"})
     try:
@@ -218,7 +247,7 @@ def youtube(c: Composio, target: dict, video: Path, title: str, caption: str, ta
     t = title if "#shorts" in title.lower() else f"{title[:88]} #Shorts"
     if yt_direct_enabled(target) and not target.get("account_id"):
         return "https://youtube.com/shorts/" + _yt_direct_upload(
-            _yt_refresh_token(target), video, t, f"{caption}\n\n{hashtags(tags)}", tags, privacy, category)
+            _yt_creds(target), video, t, f"{caption}\n\n{hashtags(tags)}", tags, privacy, category)
     data = c.run("YOUTUBE_MULTIPART_UPLOAD_VIDEO", {
         "title": t[:100],
         "description": f"{caption}\n\n{hashtags(tags)}",
@@ -330,7 +359,7 @@ def views(c: Composio, target: dict, url: str) -> int:
     if target["platform"] == "youtube":
         vid = url.rstrip("/").split("/")[-1]
         if yt_direct_enabled(target) and not target.get("account_id"):
-            return _yt_direct_views(_yt_refresh_token(target), vid)
+            return _yt_direct_views(_yt_creds(target), vid)
         data = c.run("YOUTUBE_GET_VIDEO_DETAILS_BATCH", {"id": [vid], "parts": ["statistics"]},
                      target.get("account_id"))
         return int(find(data, "viewCount") or 0)

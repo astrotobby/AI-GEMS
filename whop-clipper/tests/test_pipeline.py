@@ -623,3 +623,24 @@ def test_connect_registers_your_own_app_when_the_project_has_none():
     assert made["toolkit"] == {"slug": "tiktok"} and made["linked"] == "ac_tiktok"
     assert made["cfg"]["type"] == "use_custom_auth"
     assert made["cfg"]["credentials"] == {"client_id": "key", "client_secret": "secret", "scopes": "video.publish"}
+
+
+def test_youtube_creds_token_file_then_env_with_misnamed_secrets(tmp_path, monkeypatch):
+    import json
+    from clipper import publish
+    for k in ("YOUTUBE_CLIENT_ID", "YOUTUBE_CLIENT_SECRET", "YOUTUBE_REFRESH_TOKEN", "YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY",
+              "YOUTUBECLIENT_ID", "YOUTUBECLIENT_SECTRET", "CLIENT_ID", "CLIENT_SECRET"):
+        monkeypatch.delenv(k, raising=False)
+    monkeypatch.setattr(publish, "TOKEN_DIR", tmp_path)
+    t = {"platform": "youtube", "channel": "Astro Tobby"}
+    assert publish._yt_creds(t) is None and not publish.yt_direct_enabled(t)
+    # misnamed client secrets are still picked up, but a refresh token is required
+    monkeypatch.setenv("CLIENT_ID", "cid")
+    monkeypatch.setenv("YOUTUBECLIENT_SECTRET", "sec")
+    assert publish._yt_creds(t) is None
+    monkeypatch.setenv("YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY", "rt-env")
+    assert publish._yt_creds(t) == ("cid", "sec", "rt-env")
+    # a token minted by the auth workflow wins and carries its own client
+    (tmp_path / "ASTRO_TOBBY.json").write_text(json.dumps({"client_id": "c2", "client_secret": "s2", "refresh_token": "rt-file"}))
+    assert publish._yt_creds(t) == ("c2", "s2", "rt-file")
+    assert publish.yt_direct_enabled({"platform": "youtube", "channel": "DIJITOL NOMAD"}) is False

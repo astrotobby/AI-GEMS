@@ -1,0 +1,53 @@
+name: YouTube auth
+# One-time per channel: sends a sign-in link + code to Telegram, you approve on your phone, and the
+# credentials are kept in the clipper's run cache (work/yt_tokens). Nothing secret is printed.
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: "YouTube channel title to connect"
+        default: "Astro Tobby"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: whop-clipper
+  cancel-in-progress: false
+
+jobs:
+  auth:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: whop-clipper
+    steps:
+      - uses: actions/checkout@v4
+      # start from the clipper's cache so saving a new one keeps everything it already holds
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            whop-clipper/work
+            ~/.cache/huggingface
+          key: clipper-auth-restore
+          restore-keys: clipper-
+      - name: Sign in
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          YOUTUBECLIENT_ID: ${{ secrets.YOUTUBECLIENT_ID }}
+          YOUTUBECLIENT_SECTRET: ${{ secrets.YOUTUBECLIENT_SECTRET }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          CHANNEL: ${{ inputs.channel }}
+        run: python yt_auth.py "$CHANNEL"
+      - uses: actions/cache/save@v4
+        if: success()
+        with:
+          path: |
+            whop-clipper/work
+            ~/.cache/huggingface
+          key: clipper-auth-${{ github.run_id }}
