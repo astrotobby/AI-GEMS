@@ -44,9 +44,8 @@ def candidates(channel: str) -> list[tuple[str, str, str]]:
                                                    env("YOUTUBECLIENT_SECTRET", "") or env("YOUTUBECLIENT_SECRET", "")),
         "YOUTUBE_CLIENT_ID/YOUTUBE_CLIENT_SECRET": (env("YOUTUBE_CLIENT_ID", ""), env("YOUTUBE_CLIENT_SECRET", "")),
     }
-    order = list(pairs)
-    if "nomad" in channel.lower():
-        order = [order[1], order[0], order[2]]
+    # the correctly named pair first (it is the one that works for any Google account), then the rest
+    order = ["YOUTUBE_CLIENT_ID/YOUTUBE_CLIENT_SECRET", "CLIENT_ID/CLIENT_SECRET", "YOUTUBECLIENT_ID/YOUTUBECLIENT_SECTRET"]
     return [(k, *pairs[k]) for k in order if all(pairs[k])]
 
 
