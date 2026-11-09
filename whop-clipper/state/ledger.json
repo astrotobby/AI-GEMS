@@ -1973,6 +1973,197 @@
       "title": "Clip Content into Short Video (1k view minimum)",
       "updated": "2026-11-09T03:29:18+00:00"
     },
+    "bnty_4nQb37p7bvjna-2026-11-10-clipping0": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "Everyone said the season's over after the Dodgers' big deadline trade. The sharps went the other way \ud83d\udc40\nFollow @ANON_BETTING (IG) / @AnonPicks (TikTok) for more.",
+        "end": 58.9,
+        "hashtags": [
+          "sportsbetting",
+          "MLB",
+          "Dodgers",
+          "WorldSeries",
+          "sharpmoney",
+          "AnonBetting"
+        ],
+        "hook": "Sharps are fading the Dodgers",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-10-clipping0.mp4",
+        "reason": "claude: This clip runs from 1.0s to 58.6s (57.6s). It opens on a hook that starts a fight: everyone is upset about the Dodgers' deadline trade, but sharp bettors did something different. It stands on its own because it explains the news, how the odds moved, why the sportsbooks inflated the price and why sharps bet on the other teams. It ends on the speaker's point that \"sharp bettors have been taking advantage.\" It's cut as one continuous stretch, so his meaning stays the same, and it fits under 60 seconds. The copy doesn't name the traded player, because the transcript garbles the name, and it doesn't present the +140 odds as current.",
+        "start": 0.89,
+        "text": "While everyone has been crying about the Dodgers landing tariff school before the trade deadline Here's what the sharps have been doing for the past 12 hours They've been slamming and hammering money on all the contenders Outside of the Dodgers and I'll tell you why the line moved about 30 40 points in favor of the Dodgers to win The world series after this trade was announced I believe their line as of making this video at this time is currently plus 140 odds to win the entire world series And ",
+        "title": "Everyone's crying about the Dodgers trade\u2026 here's what sharp bettors did instead"
+      },
+      "created": "2026-11-09T23:50:59+00:00",
+      "date": "2026-11-10",
+      "history": [
+        {
+          "at": "2026-11-09T23:51:17+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-09T23:51:17+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-09T23:51:18+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-09T23:51:18+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-09T23:51:19+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-09T23:51:19+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-09T23:51:20+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-09T23:51:20+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-09T23:51:26+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-09T23:53:03+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-09T23:53:03+00:00",
+          "from": "clipped",
+          "to": "approved"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-10-clipping0",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 48.2,
+      "slot": 0,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/DodgersTradeForTarikSkubal.MOV",
+      "status": "approved",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-09T23:53:03+00:00"
+    },
+    "bnty_4nQb37p7bvjna-2026-11-10-clipping1": {
+      "bad_sources": [
+        "100kCashCasinoSlots.mov",
+        "AnonIGPhoneNBAGame.mov",
+        "AnonMaskAPWatchMoney.mov",
+        "AnonMaskInPorsche.mov"
+      ],
+      "bounty_id": "bnty_4nQb37p7bvjna",
+      "clip": {
+        "caption": "Taking betting advice from a sportsbook is like taking relationship advice from your ex \ud83d\udc80\nIf it looks helpful, that's the red flag. Agree or disagree? \ud83d\udc47\n\ud83c\udfa5 @ANON_BETTING (IG) / @AnonPicks (TikTok)",
+        "end": 55.47,
+        "hashtags": [
+          "sportsbetting",
+          "bettingtips",
+          "sportsbook",
+          "gambling",
+          "anonbetting"
+        ],
+        "hook": "Never take betting advice from sportsbooks",
+        "path": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/clips/bnty_4nQb37p7bvjna-2026-11-10-clipping1.mp4",
+        "reason": "claude: This runs from 0.3s to 55.2s (about 55 seconds). It opens on the strongest line, \"Don't ever take betting advice from sports books,\" followed right away by the ex-relationship comparison, so there's no slow intro. The middle explains the Pinnacle tweet and the backlash. The speaker says \"check out this post right here,\" so the editor should put a screenshot of the tweet on screen there. The clip ends on a clear payoff: \"biggest red flag... PSYOP... run the other way... ignore the information.\" That keeps the speaker's meaning intact, and the clip makes sense without any outside context.",
+        "start": 0.12,
+        "text": "Don't ever take betting advice from sports books. It's like taking relationship advice from your ex. Who would do that? See, check out this post right here. Pinnacle decided to tweet this about betting public money splits, all that good stuff. And I immediately responded to this and I said, do not take advice from sports books. The sports books are not gonna give you information or advice to help you take money out of their pockets. And obviously it got some backlash. People had some things to s",
+        "title": "Don't Take Betting Advice From Sportsbooks (It's Like Asking Your Ex) #sportsbetting"
+      },
+      "created": "2026-11-09T23:51:00+00:00",
+      "date": "2026-11-10",
+      "history": [
+        {
+          "at": "2026-11-09T23:53:04+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-09T23:53:04+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-09T23:53:05+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-09T23:53:05+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-09T23:53:05+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-09T23:53:05+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-09T23:53:06+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-09T23:53:06+00:00",
+          "from": "sourced",
+          "to": "planned"
+        },
+        {
+          "at": "2026-11-09T23:53:11+00:00",
+          "from": "planned",
+          "to": "sourced"
+        },
+        {
+          "at": "2026-11-09T23:54:51+00:00",
+          "from": "sourced",
+          "to": "clipped"
+        },
+        {
+          "at": "2026-11-09T23:54:51+00:00",
+          "from": "clipped",
+          "to": "approved"
+        }
+      ],
+      "id": "bnty_4nQb37p7bvjna-2026-11-10-clipping1",
+      "kind": "clipping",
+      "posts": {},
+      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "score": 48.2,
+      "slot": 1,
+      "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/DontTakeBettingAdviceFromSportsbooks.MOV",
+      "status": "approved",
+      "title": "Clip Content into Short Video (1k view minimum)",
+      "updated": "2026-11-09T23:54:51+00:00"
+    },
     "bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0": {
       "bounty_id": "bnty_GLQ2nZ3EtqTUW",
       "clip": {
