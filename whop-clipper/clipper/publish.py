@@ -41,6 +41,15 @@ def _slug(target: dict) -> str:
     return "".join(ch if ch.isalnum() else "_" for ch in (target.get("channel") or "").upper()).strip("_")
 
 
+def _env_refresh(slug: str) -> str:
+    """The channel's refresh token under any of the names people use, else the shared YOUTUBE_REFRESH_TOKEN."""
+    flat = slug.replace("_", "")
+    names = [f"YOUTUBE_REFRESH_TOKEN_{slug}", f"REFRESH_TOKEN_{slug}", f"REFRESHTOKEN_{flat}",
+             f"YOUTUBE_REFRESHTOKEN_{flat}"] if slug else []
+    return next((os.environ[n].strip() for n in names if os.environ.get(n, "").strip()),
+                os.environ.get("YOUTUBE_REFRESH_TOKEN", "").strip())
+
+
 def _client_from_env() -> list[tuple[str, str]]:
     """Candidate (client_id, client_secret) pairs from whatever secrets exist, however they were named.
 
@@ -95,7 +104,7 @@ def _yt_creds(target: dict) -> tuple[str, str, str] | None:
                 return d["client_id"], d["client_secret"], d["refresh_token"]
         except ValueError:
             pass
-    refresh = (slug and os.environ.get(f"YOUTUBE_REFRESH_TOKEN_{slug}")) or os.environ.get("YOUTUBE_REFRESH_TOKEN", "")
+    refresh = _env_refresh(slug)
     pairs = _client_from_env()
     if not refresh or not pairs:
         return None

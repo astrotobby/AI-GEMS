@@ -671,3 +671,14 @@ def test_youtube_creds_accept_pasted_client_json_and_pick_the_pair_google_accept
     assert publish._yt_creds(t) == ("new-id", "new-sec", "rt-abcdefghijkl")
     assert publish._yt_creds(t) == ("new-id", "new-sec", "rt-abcdefghijkl")
     assert len(tried) == 1  # cached after the first probe
+
+
+def test_refresh_token_found_under_alternative_names(monkeypatch):
+    from clipper import publish
+    for k in ("YOUTUBE_REFRESH_TOKEN", "YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD", "REFRESH_TOKEN_DIJITOL_NOMAD", "REFRESHTOKEN_DIJITOLNOMAD"):
+        monkeypatch.delenv(k, raising=False)
+    assert publish._env_refresh("DIJITOL_NOMAD") == ""
+    monkeypatch.setenv("REFRESHTOKEN_DIJITOLNOMAD", " 1//abc \n")
+    assert publish._env_refresh("DIJITOL_NOMAD") == "1//abc"
+    monkeypatch.setenv("YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD", "1//exact")
+    assert publish._env_refresh("DIJITOL_NOMAD") == "1//exact"
