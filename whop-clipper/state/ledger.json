@@ -766,7 +766,7 @@
             "platform": "youtube"
           },
           "url": "https://youtube.com/shorts/dFbaGUwxhgQ",
-          "views": 52
+          "views": 53
         }
       },
       "published_at": "2026-11-04T08:45:24.145874+00:00",
@@ -1528,7 +1528,7 @@
             "platform": "youtube"
           },
           "url": "https://youtube.com/shorts/KzN053MesmI",
-          "views": 13
+          "views": 15
         }
       },
       "published_at": "2026-11-07T19:36:12.806121+00:00",
@@ -1670,7 +1670,7 @@
             "platform": "youtube"
           },
           "url": "https://youtube.com/shorts/LpljyKJRKw8",
-          "views": 8
+          "views": 162
         }
       },
       "published_at": "2026-11-08T19:54:33.724273+00:00",
@@ -1823,7 +1823,7 @@
             "platform": "youtube"
           },
           "url": "https://youtube.com/shorts/EyAUC57mnAY",
-          "views": 0
+          "views": 3
         }
       },
       "published_at": "2026-11-08T19:55:31.097739+00:00",
@@ -2025,6 +2025,9 @@
       },
       "created": "2026-11-09T23:50:59+00:00",
       "date": "2026-11-10",
+      "errors": [
+        "approved: campaigns.json is 18h old - the Whop connector task has stopped updating it"
+      ],
       "history": [
         {
           "at": "2026-11-09T23:51:17+00:00",
@@ -2120,6 +2123,9 @@
       },
       "created": "2026-11-09T23:51:00+00:00",
       "date": "2026-11-10",
+      "errors": [
+        "approved: campaigns.json is 18h old - the Whop connector task has stopped updating it"
+      ],
       "history": [
         {
           "at": "2026-11-09T23:53:04+00:00",
