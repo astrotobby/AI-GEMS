@@ -766,7 +766,7 @@
             "platform": "youtube"
           },
           "url": "https://youtube.com/shorts/dFbaGUwxhgQ",
-          "views": 51
+          "views": 52
         }
       },
       "published_at": "2026-11-04T08:45:24.145874+00:00",
@@ -1528,7 +1528,7 @@
             "platform": "youtube"
           },
           "url": "https://youtube.com/shorts/KzN053MesmI",
-          "views": 0
+          "views": 13
         }
       },
       "published_at": "2026-11-07T19:36:12.806121+00:00",
@@ -1659,6 +1659,18 @@
           },
           "url": "https://www.instagram.com/reel/DffjaK7Gasr/",
           "views": 120
+        },
+        "youtube:Astro Tobby": {
+          "at": "2026-11-10T09:28:58.042527+00:00",
+          "target": {
+            "channel": "Astro Tobby",
+            "kinds": [
+              "clipping"
+            ],
+            "platform": "youtube"
+          },
+          "url": "https://youtube.com/shorts/LpljyKJRKw8",
+          "views": 0
         }
       },
       "published_at": "2026-11-08T19:54:33.724273+00:00",
@@ -1800,6 +1812,18 @@
           },
           "url": "https://www.instagram.com/reel/DffjjFXkqDf/",
           "views": 2
+        },
+        "youtube:Astro Tobby": {
+          "at": "2026-11-10T09:29:01.713002+00:00",
+          "target": {
+            "channel": "Astro Tobby",
+            "kinds": [
+              "clipping"
+            ],
+            "platform": "youtube"
+          },
+          "url": "https://youtube.com/shorts/EyAUC57mnAY",
+          "views": 0
         }
       },
       "published_at": "2026-11-08T19:55:31.097739+00:00",
