@@ -32,6 +32,24 @@ def whop(cfg: Settings) -> str:
     return f"{len(bounties)}+ open bounties visible from {cfg.country}; submissions endpoint OK ({len(mine)} recent)"
 
 
+def youtube(cfg: Settings) -> list[str]:
+    """Each YouTube target: the stored credentials must work and belong to the configured channel.
+    Uses the YouTube Data API directly, so it is checked even when Composio is unavailable."""
+    out = []
+    for t in cfg.targets:
+        if t["platform"] != "youtube":
+            continue
+        label = f"Youtube ({'/'.join(t.get('kinds', ['all']))})"
+        try:
+            creds = publish._yt_creds(t)
+            if not creds:
+                raise publish.yt_not_configured(t)
+            out.append(_line(True, label, f"posting as {publish.yt_verify_channel(t, creds)} [your own Google app]"))
+        except Exception as e:
+            out.append(_line(False, label, str(e)[:300]))
+    return out
+
+
 def composio(cfg: Settings) -> list[str]:
     c = publish.Composio(cfg.composio_api_key, cfg.composio_user_id)
     out = []
@@ -63,13 +81,13 @@ def composio(cfg: Settings) -> list[str]:
         out.append(f"   (could not list connections: {str(e)[:150]})")
 
     # every configured target must resolve to a real connected account
-    for t in cfg.targets or [{"platform": "youtube"}, {"platform": "instagram"}]:
+    for t in cfg.targets or [{"platform": "instagram"}]:
+        if t["platform"] == "youtube":
+            continue  # checked by youtube() above - never through Composio
         label = f"{t['platform'].title()} ({'/'.join(t.get('kinds', ['all']))})"
         try:
             r = publish.resolve(c, dict(t))
-            if t["platform"] == "youtube":
-                who = publish.yt_channel_title(r)  # direct Google API, no Composio
-            elif t["platform"] == "tiktok":
+            if t["platform"] == "tiktok":
                 who = "@" + publish.tiktok_username(c, r.get("account_id"))
                 opts = publish.find(c.run("TIKTOK_QUERY_CREATOR_INFO", {}, r.get("account_id")),
                                     "privacy_level_options") or []
@@ -132,6 +150,7 @@ def run(cfg: Settings) -> bool:
             ok &= not required
 
     attempt("Whop", whop)
+    attempt("YouTube", youtube)
     attempt("Composio", composio)
     if cfg.anthropic_api_key or cfg.claude_oauth_token:
         try:

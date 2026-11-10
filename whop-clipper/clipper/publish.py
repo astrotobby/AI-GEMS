@@ -1,4 +1,5 @@
-"""Post clips and read their view counts through Composio (YouTube Shorts, Instagram Reels)."""
+"""Post clips and read their view counts: YouTube Shorts through the YouTube Data API with your own
+Google OAuth app, Instagram Reels and TikTok through Composio."""
 from __future__ import annotations
 
 import json as _json
@@ -19,6 +20,14 @@ log = logging.getLogger(__name__)
 
 class PublishError(RuntimeError):
     pass
+
+
+class UploadedNotPublic(PublishError):
+    """The video is on the channel but YouTube did not make it public. It must not be uploaded again."""
+
+    def __init__(self, msg: str, url: str):
+        super().__init__(msg)
+        self.url = url
 
 
 def find(obj: Any, *keys: str) -> Any:
@@ -101,16 +110,20 @@ def _extract_token(raw: str, slug: str) -> tuple[str, tuple[str, str] | None]:
     return (found[0], None) if len(found) == 1 else ("", None)
 
 
-def _env_refresh(slug: str) -> tuple[str, tuple[str, str] | None]:
-    """The channel's refresh token (and any client stored beside it) from the secret names people use."""
+def _env_refresh_all(slug: str) -> list[tuple[str, tuple[str, str] | None]]:
+    """Every refresh token for the channel (with any client stored beside it) found under the secret
+    names people use, most specific name first. A stale secret must not hide a good one."""
     flat = slug.replace("_", "")
     names = [f"YOUTUBE_REFRESH_TOKEN_{slug}", f"REFRESH_TOKEN_{slug}", f"REFRESHTOKEN_{flat}",
              f"YOUTUBE_REFRESHTOKEN_{flat}"] if slug else []
+    out: list[tuple[str, tuple[str, str] | None]] = []
     for n in names + ["YOUTUBE_REFRESH_TOKEN"]:
         raw = os.environ.get(n, "")
         tok, client = _extract_token(raw, slug)
         if tok:
-            return tok, client
+            if tok not in [t for t, _ in out]:
+                out.append((tok, client))
+            continue
         if raw.strip() and (n, slug) not in _WARNED:
             _WARNED.add((n, slug))
             log.warning("youtube %s: secret %s is set but holds no usable refresh token for this channel (length=%d, "
@@ -118,7 +131,13 @@ def _env_refresh(slug: str) -> tuple[str, tuple[str, str] | None]:
                         "- or JSON with one entry per channel name.", slug, n, len(raw.strip()),
                         "JSON" if raw.lstrip().startswith(("{", "[")) else "plain text",
                         len(_TOKEN_RE.findall(raw)))
-    return "", None
+    return out
+
+
+def _env_refresh(slug: str) -> tuple[str, tuple[str, str] | None]:
+    """The first refresh token found for the channel (and any client stored beside it)."""
+    found = _env_refresh_all(slug)
+    return found[0] if found else ("", None)
 
 
 def _client_from_env() -> list[tuple[str, str, str]]:
@@ -181,17 +200,22 @@ def _yt_creds(target: dict) -> tuple[str, str, str] | None:
                 return d["client_id"], d["client_secret"], d["refresh_token"]
         except ValueError:
             pass
-    refresh, stored_client = _env_refresh(slug)
-    pairs = _client_from_env()
-    if stored_client:  # the client that issued it, when the secret carried one
-        pairs.insert(0, (*stored_client, "stored beside the refresh token"))
-    if not refresh or not pairs:
-        return None
-    if len(pairs) == 1:
-        return (pairs[0][0], pairs[0][1], refresh)
-    key = slug + ":" + refresh[:12]
-    if key not in _WORKING:
+    env_pairs = _client_from_env()
+    combos: list[tuple[str, str, str, str]] = []  # (client id, client secret, refresh token, label)
+    for n, (refresh, stored_client) in enumerate(_env_refresh_all(slug), 1):
+        pairs = list(env_pairs)
+        if stored_client:  # the client that issued it, when the secret carried one
+            pairs.insert(0, (*stored_client, "stored beside the refresh token"))
         for cid, sec, label in pairs:
+            if (cid, sec, refresh) not in [c[:3] for c in combos]:
+                combos.append((cid, sec, refresh, f"token #{n} with {label}"))
+    if not combos:
+        return None
+    if len(combos) == 1:
+        return combos[0][:3]
+    key = slug + ":" + "|".join(dict.fromkeys(c[2][:12] for c in combos))
+    if key not in _WORKING:
+        for cid, sec, refresh, label in combos:
             try:
                 _yt_access_token((cid, sec, refresh))
             except PublishError as e:
@@ -202,13 +226,15 @@ def _yt_creds(target: dict) -> tuple[str, str, str] | None:
             _WORKING[key] = (cid, sec, refresh)
             break
         else:
-            log.warning("youtube %s: refresh token shape: length=%d, starts with '1//': %s (a Google refresh token is ~103 "
-                        "characters and starts with 1//; anything else was pasted into the wrong secret)",
-                        slug, len(refresh), refresh.startswith("1//"))
-            log.warning("youtube %s: no client/secret combination was accepted with this refresh token "
+            for refresh in dict.fromkeys(c[2] for c in combos):
+                log.warning("youtube %s: refresh token shape: length=%d, starts with '1//': %s (a Google refresh token "
+                            "is ~103 characters and starts with 1//; anything else was pasted into the wrong secret)",
+                            slug, len(refresh), refresh.startswith("1//"))
+            log.warning("youtube %s: no client/secret combination was accepted with any refresh token "
                         "(invalid_client = wrong client id/secret pair; invalid_grant = the token was issued by "
-                        "a different client or was revoked)", slug)
-            return (pairs[0][0], pairs[0][1], refresh)  # let the caller surface Google's error
+                        "a different client, was revoked, or expired - tokens of an OAuth app left in 'Testing' "
+                        "expire after 7 days)", slug)
+            return combos[0][:3]  # let the caller surface Google's error
     return _WORKING[key]
 
 
@@ -228,7 +254,9 @@ def _yt_access_token(creds: tuple[str, str, str]) -> str:
         raise PublishError(f"YouTube token refresh failed: {e.read().decode()[:300]}")
 
 
-def _yt_direct_upload(creds: tuple[str, str, str], video: Path, title: str, description: str, tags: list[str], privacy: str, category: str) -> str:
+def _yt_direct_upload(creds: tuple[str, str, str], video: Path, title: str, description: str, tags: list[str],
+                      privacy: str, category: str) -> tuple[str, str]:
+    """Upload and return (video id, the privacy status YouTube actually gave it)."""
     token = _yt_access_token(creds)
     meta = {"snippet": {"title": title[:100], "description": description[:4900], "tags": tags[:30], "categoryId": category},
             "status": {"privacyStatus": privacy, "selfDeclaredMadeForKids": False}}
@@ -244,12 +272,13 @@ def _yt_direct_upload(creds: tuple[str, str, str], video: Path, title: str, desc
         put = urllib.request.Request(loc, data=video.read_bytes(), method="PUT",
                                      headers={"Authorization": f"Bearer {token}", "Content-Type": "video/mp4"})
         with urllib.request.urlopen(put, timeout=900) as r:
-            vid = _json.load(r).get("id")
+            res = _json.load(r)
     except urllib.error.HTTPError as e:
         raise PublishError(f"YouTube direct upload failed ({e.code}): {e.read().decode()[:400]}")
+    vid = res.get("id")
     if not vid:
         raise PublishError("YouTube direct upload returned no video id")
-    return vid
+    return vid, str((res.get("status") or {}).get("privacyStatus") or privacy)
 
 
 def _yt_direct_views(creds: tuple[str, str, str], vid: str) -> int:
@@ -400,8 +429,33 @@ def youtube(c: Composio, target: dict, video: Path, title: str, caption: str, ta
     creds = _yt_creds(target)
     if not creds:
         raise yt_not_configured(target)
-    return "https://youtube.com/shorts/" + _yt_direct_upload(
-        creds, video, t, caption + chr(10) * 2 + hashtags(tags), tags, privacy, category)
+    yt_verify_channel(target, creds)  # a token pasted into the wrong secret must never post to the other channel
+    vid, got = _yt_direct_upload(creds, video, t, caption + chr(10) * 2 + hashtags(tags), tags, privacy, category)
+    url = "https://youtube.com/shorts/" + vid
+    if privacy == "public" and got != "public":
+        raise UploadedNotPublic(
+            f"uploaded as {url} but YouTube set it to '{got}', not public. A Google Cloud project that has not "
+            "passed the YouTube API audit has its API uploads locked to private: make this video public by hand "
+            "in YouTube Studio, and request the audit (YouTube API Services - Audit and Quota Extension Form) "
+            "so later uploads are public.", url)
+    return url
+
+
+_CHANNEL_OK: dict[tuple, str] = {}
+
+
+def yt_verify_channel(target: dict, creds: tuple[str, str, str]) -> str:
+    """The title of the channel the credentials post to; raises unless it is the configured channel."""
+    want = (target.get("channel") or "").strip()
+    key = (want, creds)
+    if key not in _CHANNEL_OK:
+        got = _yt_channel_title(creds)
+        if want and _norm(got) != _norm(want):
+            raise PublishError(f"the YouTube credentials for {want!r} belong to the channel {got!r} - nothing "
+                               f"uploaded. Sign in again and pick {want!r} (YouTube auth workflow), or fix the secret "
+                               f"YOUTUBE_REFRESH_TOKEN_{_slug(target)}.")
+        _CHANNEL_OK[key] = got
+    return _CHANNEL_OK[key]
 
 
 def yt_channel_title(target: dict) -> str:
@@ -409,6 +463,10 @@ def yt_channel_title(target: dict) -> str:
     creds = _yt_creds(target)
     if not creds:
         raise yt_not_configured(target)
+    return _yt_channel_title(creds)
+
+
+def _yt_channel_title(creds: tuple[str, str, str]) -> str:
     req = urllib.request.Request("https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true",
                                  headers={"Authorization": "Bearer " + _yt_access_token(creds)})
     try:

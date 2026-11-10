@@ -24,8 +24,9 @@ job, so runs resume where they stopped and nothing is ever posted or submitted t
 | ~23:15 | Telegram summary: what went live, and why anything is missing |
 
 Routing: **clipping → YouTube Astro Tobby (@astrotobyc)**, **UGC → YouTube DIJITOL NOMAD**, everything
-→ **Instagram @astr_osignal** (only on platforms each campaign accepts). Accounts are matched by
-name among your Composio connections, see `[[targets]]` in `config.toml`.
+→ **Instagram @astr_osignal** (only on platforms each campaign accepts). YouTube channels are matched
+by title against your own Google sign-in, Instagram/TikTok by name among your Composio connections,
+see `[[targets]]` in `config.toml`.
 
 If a day comes up short, the only expected reason is **no eligible campaign**: none open to Kenya,
 none accepting YouTube/Instagram, or every one needs a real person on camera, long-form editing or
@@ -46,8 +47,8 @@ skipped.
 | **Source** | Google Drive files/folders via `gdown`; YouTube/Twitch/Kick/etc. via `yt-dlp`. Only footage the campaign links is used. |
 | **Clip** | `faster-whisper` word timestamps → Claude picks the strongest standalone moment and writes title/caption/hashtags (falls back to a free transcript heuristic without an API key) → `ffmpeg` renders 1080×1920, blurred-fill for landscape sources, big word-by-word captions, a hook banner for the first 3 seconds, loudness-normalised audio. |
 | **Review** | `mode = "review"` (default): the clip is sent to Telegram as a video and waits for `approve <job>`. `mode = "auto"`: no stop. |
-| **Post** | Composio: `YOUTUBE_MULTIPART_UPLOAD_VIDEO` (Shorts) and `INSTAGRAM_POST_IG_USER_MEDIA` + `..._PUBLISH` (Reels). Only to platforms the campaign accepts. Re-checks the campaign is still open first. |
-| **Track** | Reads views through Composio until the brief's threshold (e.g. "1,000 views") is met; gives up after 14 days. |
+| **Post** | YouTube Shorts: the YouTube Data API with **your own Google OAuth app** (own daily quota, never Composio). Before each upload the credentials are checked to belong to the configured channel. Instagram Reels / TikTok: Composio. Only to platforms the campaign accepts. Re-checks the campaign is still open first. |
+| **Track** | Reads views (YouTube Data API; Composio for Instagram/TikTok) until the brief's threshold (e.g. "1,000 views") is met; gives up after 14 days. |
 | **Submit** | The job moves to `awaiting_submission`; the Whop connector task submits it as you (links + source timestamps) and marks it `submitted`. In `api` mode it calls `POST /bounty_submissions` itself. |
 
 ### The livestream rule (read this)
@@ -77,17 +78,32 @@ clips in a single submission.
    |---|---|
    | `WHOP_TOKEN` | Not needed in the default connector mode. Only for `whop_via = "api"`: a Whop **user** OAuth token (business API keys can't submit). |
    | `COMPOSIO_API_KEY` | composio.dev → Settings → API keys |
-   | `COMPOSIO_USER_ID` | The Composio user id your YouTube/Instagram are connected under |
+   | `COMPOSIO_USER_ID` | The Composio user id your Instagram/TikTok are connected under |
+   | `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET` | Your Google Cloud OAuth client (type *Desktop app*, YouTube Data API v3 enabled) |
+   | `YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY`, `YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD` | One refresh token per channel: only the ~103-character value starting `1//`. See *YouTube sign-in* below. |
    | `TELEGRAM_BOT_TOKEN` | Your existing bot (BotFather). Your chat id is set as `telegram_chat` in `config.toml` (it isn't a secret). |
    | `ANTHROPIC_API_KEY` | Optional: better moment picking and captions |
    | `CLAUDE_CODE_OAUTH_TOKEN` | Optional: same, paid by your Claude Pro/Max plan instead of API credit. Run `claude setup-token` on your computer and paste the token |
    | `YTDLP_COOKIES_TXT` | Optional: contents of a `cookies.txt` exported from a logged-in browser. YouTube blocks most cloud IPs; Google Drive sources don't need this. |
 
-2. **Targets**: in `config.toml`, fill `account_id` for each `[[targets]]` with the Composio
-   connected-account id (`ca_...`, Composio dashboard → Connected accounts). Connected now:
-   YouTube *Astro Tobby* and *DIJITOL NOMAD*, Instagram *@astr_osignal* and *@astro_tobby*.
-   TikTok and Facebook aren't connected in Composio yet; connect them there and add a target if
-   you want them (the publisher currently supports YouTube and Instagram).
+2. **Targets**: `[[targets]]` in `config.toml` name each YouTube channel (`channel = "Astro Tobby"`)
+   and Instagram/TikTok account (`username = ...`). Instagram and TikTok must be connected in
+   Composio (`python -m clipper connect instagram`); YouTube needs only the secrets above.
+
+   **YouTube sign-in** (once per channel). Either run `python get_youtube_token.py` on your computer
+   and save the token it prints as `YOUTUBE_REFRESH_TOKEN_<CHANNEL>`, or run the *YouTube auth* workflow
+   (GitHub → Actions), which keeps the credentials in the run cache. Shortcut: a tokens file of the form
+   `{"client_id", "client_secret", "accounts": [{"channel", "refresh_token"}, ...]}` can be pasted whole
+   into the single secret `YOUTUBE_REFRESH_TOKEN`; each channel picks its own entry. Two things in
+   Google Cloud decide whether this keeps working:
+
+   - **OAuth consent screen → Publishing status must be "In production"**. While it says "Testing",
+     every refresh token expires after 7 days and uploads stop with `invalid_grant`.
+   - **API uploads from a project that has not passed YouTube's API audit are locked to private.**
+     The clipper detects this, tells you on Telegram, and never uploads the same clip twice; request the
+     audit ("YouTube API Services - Audit and Quota Extension Form") to get public uploads.
+   - Quota: 10,000 units/day per Google project, 1,600 per upload - about 6 uploads a day shared by
+     both channels when they use the same OAuth client.
 
 3. **Check it**: every push to the feature branch runs `python -m clipper check`, which tests each
    connection without posting (and sends the report to Telegram). Run it any time locally too.

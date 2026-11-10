@@ -49,6 +49,11 @@ class Pipeline:
                                              upload_dirs=[self.cfg.work_dir])
         return self._composio
 
+    def _client(self, target: dict):
+        """The Composio client for a target. YouTube uses your own Google app, so it must keep working
+        when Composio is down, out of quota or not configured at all."""
+        return None if target.get("platform") == "youtube" else self.composio
+
     def job_dir(self, job: dict) -> Path:
         return self.cfg.work_dir / job["bounty_id"]
 
@@ -307,8 +312,11 @@ class Pipeline:
             key = publish.target_key(t)
             if key in job["posts"]:
                 continue  # already live - never double-post
+            if key in job.get("held", {}):  # uploaded, but the platform did not make it public
+                errors.append(f"{key}: uploaded but not public ({job['held'][key]}) - make it public by hand")
+                continue
             try:
-                url = publish.post(self.composio, t, Path(c["path"]), c["title"], c["caption"],
+                url = publish.post(self._client(t), t, Path(c["path"]), c["title"], c["caption"],
                                    c["hashtags"], self.cfg.youtube_privacy, self.cfg.youtube_category_id,
                                    aigc=job.get("kind") == "ugc")
                 job["posts"][key] = {"url": url, "at": datetime.now(timezone.utc).isoformat(), "views": 0,
@@ -316,6 +324,12 @@ class Pipeline:
                 self.ledger.save()
                 if job["status"] == "published":  # a late retry (e.g. after a YouTube quota reset)
                     self.tg.send(f"📤 Also posted: {job['title']}\n{url}")
+            except publish.UploadedNotPublic as e:
+                # the upload exists: remember it so no later run uploads the same clip again
+                job.setdefault("held", {})[key] = e.url
+                self.ledger.save()
+                errors.append(f"{key}: {e}")
+                self.tg.send(f"⚠️ {job['title']}: {key} {e}")
             except Exception as e:
                 errors.append(f"{key}: {e}")
         return errors
@@ -334,7 +348,7 @@ class Pipeline:
             target = post.get("target") or next(
                 (t for t in self.cfg.targets if publish.target_key(t) == key), {"platform": key.split(":")[0]})
             try:
-                post["views"] = publish.views(self.composio, target, post["url"])
+                post["views"] = publish.views(self._client(target), target, post["url"])
             except Exception as e:
                 log.warning("views for %s failed: %s", post["url"], e)
             best = max(best, post.get("views", 0))

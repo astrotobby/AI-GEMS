@@ -719,3 +719,161 @@ def test_youtube_never_falls_back_to_composio(monkeypatch, tmp_path):
         publish.youtube(NoComposio(), t, clip, "title", "caption", ["a"], "public", "24")
     with pytest.raises(publish.PublishError, match="no usable direct credentials"):
         publish.views(NoComposio(), t, "https://youtube.com/shorts/abc123def45")
+
+
+# ---- direct YouTube wiring ---------------------------------------------------------
+YT_ENV = ("YOUTUBE_CLIENT_ID", "YOUTUBE_CLIENT_SECRET", "YOUTUBE_REFRESH_TOKEN", "YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY",
+          "YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD", "REFRESH_TOKEN_ASTRO_TOBBY", "REFRESHTOKEN_ASTROTOBBY",
+          "REFRESHTOKEN_DIJITOLNOMAD", "YOUTUBECLIENT_ID", "YOUTUBECLIENT_SECTRET", "YOUTUBECLIENT_SECRET",
+          "CLIENT_ID", "CLIENT_SECRET")
+
+
+class FakeGoogle:
+    """Stands in for urllib.request.urlopen: the OAuth token endpoint and the YouTube Data API."""
+
+    def __init__(self, channel="Astro Tobby", privacy="public", valid=("cid", "sec", "1//" + "A" * 60)):
+        self.channel, self.privacy, self.valid, self.calls, self.uploaded = channel, privacy, valid, [], []
+
+    class Resp:
+        def __init__(self, body, headers=None):
+            self.body, self.headers, self.status = json.dumps(body).encode(), headers or {}, 200
+
+        def read(self, *a):
+            return self.body
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+    def __call__(self, req, timeout=None):
+        import io
+        import urllib.error
+        import urllib.parse
+        url = req.full_url
+        self.calls.append(url.split("?")[0])
+        if "oauth2.googleapis.com/token" in url:
+            q = urllib.parse.parse_qs(req.data.decode())
+            if (q["client_id"][0], q["client_secret"][0], q["refresh_token"][0]) != self.valid:
+                raise urllib.error.HTTPError(url, 400, "Bad Request", {}, io.BytesIO(b'{"error": "invalid_grant"}'))
+            return self.Resp({"access_token": "at"})
+        assert req.get_header("Authorization") == "Bearer at"
+        if "/channels" in url:
+            return self.Resp({"items": [{"snippet": {"title": self.channel + " "}}]})
+        if "uploadType=resumable" in url:
+            self.meta = json.loads(req.data)
+            return self.Resp({}, {"Location": "https://upload.example/session1"})
+        if url == "https://upload.example/session1":
+            self.uploaded.append(req.data)
+            return self.Resp({"id": "vid123", "status": {"privacyStatus": self.privacy}})
+        if "/videos" in url:
+            return self.Resp({"items": [{"statistics": {"viewCount": "1234"}}]})
+        raise AssertionError(url)
+
+
+@pytest.fixture
+def google(monkeypatch, tmp_path):
+    from clipper import publish
+    for k in YT_ENV:
+        monkeypatch.delenv(k, raising=False)
+    monkeypatch.setattr(publish, "TOKEN_DIR", tmp_path / "none")
+    monkeypatch.setattr(publish, "_WORKING", {})
+    monkeypatch.setattr(publish, "_CHANNEL_OK", {})
+
+    def make(**kw):
+        g = FakeGoogle(**kw)
+        monkeypatch.setattr(publish.urllib.request, "urlopen", g)
+        return g
+    return make
+
+
+def yt_env(monkeypatch, channel="ASTRO_TOBBY"):
+    monkeypatch.setenv("YOUTUBE_CLIENT_ID", "cid")
+    monkeypatch.setenv("YOUTUBE_CLIENT_SECRET", "sec")
+    monkeypatch.setenv(f"YOUTUBE_REFRESH_TOKEN_{channel}", "1//" + "A" * 60)
+
+
+def test_youtube_direct_upload_and_views_end_to_end(google, monkeypatch, tmp_path):
+    from clipper import publish
+    g = google()
+    yt_env(monkeypatch)
+    clip = tmp_path / "c.mp4"
+    clip.write_bytes(b"video-bytes")
+    t = {"platform": "youtube", "channel": "Astro Tobby"}
+    url = publish.post(None, t, clip, "My title", "cap", ["a", "b"], "public", "24")  # no Composio client at all
+    assert url == "https://youtube.com/shorts/vid123" and g.uploaded == [b"video-bytes"]
+    assert g.meta["snippet"]["title"] == "My title #Shorts" and g.meta["status"]["privacyStatus"] == "public"
+    assert "#a #b" in g.meta["snippet"]["description"]
+    assert publish.views(None, t, url) == 1234
+
+
+def test_stale_channel_secret_does_not_hide_the_good_token(google, monkeypatch):
+    from clipper import publish
+    good = "1//" + "A" * 60
+    google(valid=("cid", "sec", good))
+    # an old wrong paste is still in the per-channel secret; the whole tokens file is in the generic one
+    monkeypatch.setenv("YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY", "1//" + "Z" * 60)
+    monkeypatch.setenv("YOUTUBE_CLIENT_ID", "old-id")
+    monkeypatch.setenv("YOUTUBE_CLIENT_SECRET", "old-sec")
+    monkeypatch.setenv("YOUTUBE_REFRESH_TOKEN", json.dumps({"client_id": "cid", "client_secret": "sec", "accounts": [
+        {"channel": "Astro Tobby ", "refresh_token": good}, {"channel": "DIJITOL NOMAD ", "refresh_token": "1//" + "D" * 60}]}))
+    assert publish._yt_creds({"platform": "youtube", "channel": "Astro Tobby"}) == ("cid", "sec", good)
+
+
+def test_youtube_refuses_to_upload_to_the_wrong_channel(google, monkeypatch, tmp_path):
+    from clipper import publish
+    g = google(channel="DIJITOL NOMAD")  # the token saved for Astro Tobby really belongs to the other channel
+    yt_env(monkeypatch)
+    clip = tmp_path / "c.mp4"
+    clip.write_bytes(b"x")
+    with pytest.raises(publish.PublishError, match="belong to the channel 'DIJITOL NOMAD'"):
+        publish.youtube(None, {"platform": "youtube", "channel": "Astro Tobby"}, clip, "t", "c", [], "public", "24")
+    assert not g.uploaded
+
+
+def test_upload_locked_to_private_is_reported_and_never_uploaded_twice(pipe, google, monkeypatch):
+    from clipper import publish
+    b = dict(ANON, description=ANON["description"].replace("livestream", "video"))
+    p = pipe(b)
+    g = google(privacy="private")  # what YouTube does to API uploads from an unaudited Google Cloud project
+    yt_env(monkeypatch)
+
+    def post(c, target, video, title, caption, tags, privacy, category, aigc=False):
+        if target["platform"] == "youtube":
+            assert c is None  # YouTube never needs the Composio client
+            return publish.youtube(c, target, video, title, caption, tags, privacy, category)
+        return "https://instagram.example/1"
+
+    monkeypatch.setattr("clipper.publish.post", post)
+    sent = []
+    monkeypatch.setattr(p.tg, "send", lambda text, **k: sent.append(text) or True)
+    job = clipped_job(p, b)
+    p.advance(job)
+    assert job["held"] == {"youtube:Astro Tobby": "https://youtube.com/shorts/vid123"}
+    assert list(job["posts"]) == ["instagram:astr_osignal"] and len(g.uploaded) == 1
+    assert any("not public" in s and "audit" in s for s in sent)
+    p._post_missing(job)  # later runs retry missing platforms: the held upload must not be repeated
+    assert len(g.uploaded) == 1
+
+
+def test_youtube_posts_when_composio_is_not_configured(pipe):
+    b = dict(ANON, description=ANON["description"].replace("livestream", "video"))
+    p = pipe(b)
+    p._composio = None  # COMPOSIO_API_KEY unset: building the client raises
+    job = clipped_job(p, b)
+    p.advance(job)
+    assert "youtube:Astro Tobby" in job["posts"] and "instagram:astr_osignal" not in job["posts"]
+    assert any("COMPOSIO_API_KEY is not set" in e for e in job["errors"])
+
+
+def test_check_reports_youtube_without_composio(google, monkeypatch, capsys):
+    from clipper import check
+    google(channel="Astro Tobby")
+    yt_env(monkeypatch)
+    cfg = Settings(whop_via="api", targets=[{"platform": "youtube", "channel": "Astro Tobby", "kinds": ["clipping"]},
+                                            {"platform": "youtube", "channel": "DIJITOL NOMAD", "kinds": ["ugc"]}])
+    assert check.run(cfg) is False  # Whop/Composio/Telegram keys are missing
+    out = capsys.readouterr().out
+    assert "✅ Youtube (clipping): posting as Astro Tobby" in out
+    assert "❌ Youtube (ugc): YouTube channel 'DIJITOL NOMAD': no usable direct credentials" in out

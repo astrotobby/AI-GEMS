@@ -54,6 +54,9 @@ def main(argv: list[str] | None = None) -> int:
     c.add_argument("--out", type=Path, default=Path("work/test-clip.mp4"))
 
     a = ap.parse_args(argv)
+    for stream in (sys.stdout, sys.stderr):  # the reports use emoji; a Windows console defaults to cp1252
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
     logging.basicConfig(level=logging.DEBUG if a.verbose else logging.INFO,
                         format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     cfg = config.load(a.config)
