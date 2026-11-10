@@ -1670,7 +1670,7 @@
             "platform": "youtube"
           },
           "url": "https://youtube.com/shorts/LpljyKJRKw8",
-          "views": 162
+          "views": 160
         }
       },
       "published_at": "2026-11-08T19:54:33.724273+00:00",
@@ -2026,6 +2026,7 @@
       "created": "2026-11-09T23:50:59+00:00",
       "date": "2026-11-10",
       "errors": [
+        "approved: campaigns.json is 18h old - the Whop connector task has stopped updating it",
         "approved: campaigns.json is 18h old - the Whop connector task has stopped updating it"
       ],
       "history": [
@@ -2124,6 +2125,7 @@
       "created": "2026-11-09T23:51:00+00:00",
       "date": "2026-11-10",
       "errors": [
+        "approved: campaigns.json is 18h old - the Whop connector task has stopped updating it",
         "approved: campaigns.json is 18h old - the Whop connector task has stopped updating it"
       ],
       "history": [
