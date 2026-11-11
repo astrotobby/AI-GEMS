@@ -1,0 +1,28 @@
+{
+  "name": "roofing-template",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && vite build -c vite.server.config.ts",
+    "deploy": "npm run build",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "setup:plans": "node scripts/create-plans.mjs"
+  },
+  "dependencies": {
+    "@whop/elements": "1.9.0",
+    "@whop/elements-react": "1.9.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "@whop/cli": "0.34.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.0"
+  }
+}
