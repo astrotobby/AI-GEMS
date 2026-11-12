@@ -2032,7 +2032,8 @@
         "approved: campaigns.json is 26h old - the Whop connector task has stopped updating it",
         "approved: campaigns.json is 29h old - the Whop connector task has stopped updating it",
         "approved: campaigns.json is 42h old - the Whop connector task has stopped updating it",
-        "approved: campaigns.json is 43h old - the Whop connector task has stopped updating it"
+        "approved: campaigns.json is 43h old - the Whop connector task has stopped updating it",
+        "approved: campaigns.json is 45h old - the Whop connector task has stopped updating it"
       ],
       "history": [
         {
@@ -2089,6 +2090,11 @@
           "at": "2026-11-09T23:53:03+00:00",
           "from": "clipped",
           "to": "approved"
+        },
+        {
+          "at": "2026-11-12T01:23:17+00:00",
+          "from": "approved",
+          "to": "failed"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-11-10-clipping0",
@@ -2098,9 +2104,9 @@
       "score": 48.2,
       "slot": 0,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/DodgersTradeForTarikSkubal.MOV",
-      "status": "approved",
+      "status": "failed",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-11-09T23:53:03+00:00"
+      "updated": "2026-11-12T01:23:17+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-11-10-clipping1": {
       "bad_sources": [
@@ -2136,7 +2142,8 @@
         "approved: campaigns.json is 26h old - the Whop connector task has stopped updating it",
         "approved: campaigns.json is 29h old - the Whop connector task has stopped updating it",
         "approved: campaigns.json is 42h old - the Whop connector task has stopped updating it",
-        "approved: campaigns.json is 43h old - the Whop connector task has stopped updating it"
+        "approved: campaigns.json is 43h old - the Whop connector task has stopped updating it",
+        "approved: campaigns.json is 45h old - the Whop connector task has stopped updating it"
       ],
       "history": [
         {
@@ -2193,6 +2200,11 @@
           "at": "2026-11-09T23:54:51+00:00",
           "from": "clipped",
           "to": "approved"
+        },
+        {
+          "at": "2026-11-12T01:23:17+00:00",
+          "from": "approved",
+          "to": "failed"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-11-10-clipping1",
@@ -2202,9 +2214,9 @@
       "score": 48.2,
       "slot": 1,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/DontTakeBettingAdviceFromSportsbooks.MOV",
-      "status": "approved",
+      "status": "failed",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-11-09T23:54:51+00:00"
+      "updated": "2026-11-12T01:23:17+00:00"
     },
     "bnty_GLQ2nZ3EtqTUW-2026-10-25-ugc0": {
       "bounty_id": "bnty_GLQ2nZ3EtqTUW",
