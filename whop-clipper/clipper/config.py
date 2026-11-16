@@ -25,6 +25,9 @@ class Settings:
     # (needs a *user* OAuth token).
     whop_via: str = "connector"
     campaigns_max_age_hours: int = 12
+    # UGC Africa as a second campaign source (used when UGC_AFRICA_API_KEY is set)
+    ugc_enabled: bool = True
+    ugc_campaign_types: list[str] = field(default_factory=lambda: ["CLIP_CAMPAIGN"])
 
     # daily schedule: how many videos of each kind per day, and the local go-live times.
     # Each slot gets an even share (2 per kind over 2 slots = 1 clipping + 1 UGC per slot).
@@ -66,12 +69,13 @@ class Settings:
     tiktok_client_key: str = ""     # your approved TikTok developer app (for connect tiktok)
     tiktok_client_secret: str = ""
     elevenlabs_api_key: str = ""
+    ugc_africa_api_key: str = ""
 
 
 SECRET_FIELDS = {
     "whop_token", "composio_api_key", "composio_user_id",
     "anthropic_api_key", "claude_oauth_token", "telegram_bot_token", "telegram_chat_id", "pexels_api_key", "elevenlabs_api_key",
-    "tiktok_client_key", "tiktok_client_secret",
+    "tiktok_client_key", "tiktok_client_secret", "ugc_africa_api_key",
 }
 
 
@@ -111,6 +115,7 @@ def load(path: Path | None = None) -> Settings:
     s.tiktok_client_key = secret("TIKTOK_CLIENT_KEY")
     s.tiktok_client_secret = secret("TIKTOK_CLIENT_SECRET")
     s.elevenlabs_api_key = secret("ELEVENLABS_API_KEY")
+    s.ugc_africa_api_key = secret("UGC_AFRICA_API_KEY")
     if s.telegram_chat:  # an explicit chat id in config.toml wins over the secret
         s.telegram_chat_id = str(s.telegram_chat)
     if os.environ.get("CLIPPER_MODE"):

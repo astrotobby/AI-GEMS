@@ -34,6 +34,7 @@ def main(argv: list[str] | None = None) -> int:
     r = sub.add_parser("run", help="one full cycle: pick campaigns and advance every job")
     r.add_argument("--dry-run", action="store_true", help="clip but never publish or submit")
 
+    sub.add_parser("ugc", help="UGC Africa: open campaigns, clip jobs we can do, your slots and earnings (no side effects)")
     sub.add_parser("status", help="show jobs in the ledger")
     sub.add_parser("pending-clips", help="list clip files the Whop submission needs published (path<TAB>asset name)")
     m = sub.add_parser("merge-ledger", help="fold another copy of the ledger into ours (newest job wins)")
@@ -96,6 +97,21 @@ def main(argv: list[str] | None = None) -> int:
 
     if a.cmd == "run":
         pipe.run()
+        return 0
+
+    if a.cmd == "ugc":
+        u = pipe.ugc
+        every = u.campaigns(cfg.country)
+        kinds: dict = {}
+        for c in every:
+            kinds[c.get("campaignType")] = kinds.get(c.get("campaignType"), 0) + 1
+        print(f"open campaigns for {cfg.country}: {len(every)} {kinds}")
+        for s in pipe.scan(u.discover(cfg.country, cfg.ugc_campaign_types)):
+            print(s.summary())
+            for line in s.blockers:
+                print(f"           x {line}")
+        print("my slots:", [(x.get("id"), x.get("campaignId"), x.get("status")) for x in u.my_slots()])
+        print("earnings:", json.dumps(u.earnings()))
         return 0
 
     if a.cmd == "pending-clips":

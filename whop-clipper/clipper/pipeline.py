@@ -9,7 +9,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from . import brief as brief_mod
-from . import highlights, publish, render, scoring, sources, transcribe, ugc
+from . import highlights, publish, render, scoring, sources, transcribe, ugc, ugcafrica
 from .config import Settings
 from . import ledger as ledger_mod
 from .ledger import Ledger
@@ -34,6 +34,8 @@ class Pipeline:
         self.tg = Telegram(cfg.telegram_bot_token, cfg.telegram_chat_id)
         self._whop: Whop | None = None
         self._composio: publish.Composio | None = None
+        self._ugc: ugcafrica.UgcAfrica | None = None
+        self.source_errors: list[str] = []
 
     # ---- lazy clients (scan/clip work without social credentials) ----------
     @property
@@ -49,6 +51,12 @@ class Pipeline:
                                              upload_dirs=[self.cfg.work_dir])
         return self._composio
 
+    @property
+    def ugc(self) -> ugcafrica.UgcAfrica:
+        if self._ugc is None:
+            self._ugc = ugcafrica.UgcAfrica(self.cfg.ugc_africa_api_key)
+        return self._ugc
+
     def _client(self, target: dict):
         """The Composio client for a target. YouTube uses your own Google app, so it must keep working
         when Composio is down, out of quota or not configured at all."""
@@ -57,8 +65,29 @@ class Pipeline:
     def job_dir(self, job: dict) -> Path:
         return self.cfg.work_dir / job["bounty_id"]
 
-    # ---- Whop data: direct API, or the snapshot the Whop-connector task commits ----
+    # ---- campaign sources: Whop plus (when a key is set) UGC Africa ---------------
     def campaigns(self) -> list[dict]:
+        """Open campaigns from every configured source. One source being down must not stop the other."""
+        sources = [("Whop", self._whop_campaigns)]
+        if self.cfg.ugc_enabled and self.cfg.ugc_africa_api_key:
+            sources.append(("UGC Africa", self._ugc_campaigns))
+        out, errors = [], []
+        for name, fn in sources:
+            try:
+                out += fn()
+            except Exception as e:
+                log.warning("%s campaigns unavailable: %s", name, e)
+                errors.append(f"{name}: {e}")
+        self.source_errors = errors
+        if errors and not out:
+            raise RuntimeError("; ".join(errors))
+        return out
+
+    def _ugc_campaigns(self) -> list[dict]:
+        return self.ugc.discover(self.cfg.country, self.cfg.ugc_campaign_types)
+
+    # ---- Whop data: direct API, or the snapshot the Whop-connector task commits ----
+    def _whop_campaigns(self) -> list[dict]:
         if self.cfg.whop_via == "api":
             return self.whop.open_bounties(self.cfg.country)
         path = self.cfg.campaigns_path
@@ -73,7 +102,7 @@ class Pipeline:
 
     def bounty(self, job: dict, refresh: bool = False) -> dict:
         path = self.job_dir(job) / "bounty.json"
-        if refresh and self.cfg.whop_via != "api":
+        if refresh and (self.cfg.whop_via != "api" or job.get("origin") == "ugcafrica"):
             # a campaign missing from a fresh snapshot is no longer open to us
             snap = {b["id"]: b for b in self.campaigns()}
             data = snap.get(job["bounty_id"]) or dict(json.loads(path.read_text()), status="closed")
@@ -152,11 +181,12 @@ class Pipeline:
                 (d / "bounty.json").write_text(json.dumps(pick.bounty, indent=1))
                 jid = f"{pick.id}-{day.isoformat()}-{kind}{have}"
                 job = self.ledger.add(pick.bounty, jid, pick.score)
-                job.update(kind=kind, date=day.isoformat(), slot=slot)
+                job.update(kind=kind, date=day.isoformat(), slot=slot, origin=pick.bounty.get("source", "whop"))
                 self.ledger.save()
                 new.append(job)
                 have += 1
-                self.tg.send(f"🎯 {kind.upper()} #{have} for today ({self.cfg.slots[slot]}): {pick.bounty['title']}\n"
+                src = "UGC Africa" if pick.bounty.get("source") == "ugcafrica" else "Whop"
+                self.tg.send(f"🎯 {kind.upper()} #{have} for today ({self.cfg.slots[slot]}) [{src}]: {pick.bounty['title']}\n"
                              f"${pick.bounty.get('net_reward_amount')} net, {pick.bounty.get('spots_remaining')} spots"
                              + ("\n⚠️ " + "; ".join(pick.human_steps) if pick.human_steps else ""))
         return new
@@ -252,7 +282,9 @@ class Pipeline:
         render.render(src, words, p.start, p.end, out, hook=p.hook, font=self.cfg.caption_font)
         self.ledger.move(job, "clipped", clip={
             "path": str(out), "start": round(p.start, 2), "end": round(p.end, 2), "title": p.title,
-            "caption": p.caption, "hashtags": p.hashtags, "hook": p.hook, "reason": p.reason,
+            "caption": p.caption, "hook": p.hook,
+            # hashtags the campaign requires (UGC Africa lists them, e.g. #ad) go on every post
+            "hashtags": list(dict.fromkeys(list(p.hashtags) + [str(h).lstrip("#") for h in b.get("required_hashtags", [])])), "reason": p.reason,
             "text": p.source_text[:500],
         })
 
@@ -293,6 +325,14 @@ class Pipeline:
             src_ok = job.get("kind") == "ugc" or (job.get("source") and Path(job["source"]).exists())
             self.ledger.move(job, "sourced" if src_ok else "planned", reason="clip file missing - re-rendering")
             return
+        if job.get("origin") == "ugcafrica" and not job.get("slot_id"):
+            try:  # UGC Africa wants the slot reserved before the post goes live
+                job["slot_id"] = self.ugc.reserve(job["bounty_id"].removeprefix("ugc_"), key=f"reserve-{job['id']}")
+                self.ledger.save()
+            except ugcafrica.NoCapacity:
+                self.ledger.move(job, "skipped", reason="no free slot left on the UGC Africa campaign")
+                self.tg.send(f"⏭️ {job['title']}: UGC Africa has no free slot left - skipped.")
+                return
         errors = self._post_missing(job)
         if not job["posts"]:
             raise RuntimeError("; ".join(errors))
@@ -342,7 +382,8 @@ class Pipeline:
             for err in self._post_missing(job):
                 log.warning("retry post for %s: %s", job["id"], err)
         b = self.bounty(job)
-        need = brief_mod.parse(b["description"], b["title"]).min_views
+        # UGC Africa verifies views itself and pays per 1,000, so there is no threshold to wait for
+        need = 0 if job.get("origin") == "ugcafrica" else brief_mod.parse(b["description"], b["title"]).min_views
         best = 0
         for key, post in job["posts"].items():
             target = post.get("target") or next(
@@ -365,9 +406,27 @@ class Pipeline:
         return (f"Source: {Path(job['source']).name} @ {c['start']:.1f}s-{c['end']:.1f}s. "
                 f"Posts: {', '.join(p['url'] for p in job['posts'].values())}")
 
+    def _submit_ugc(self, job: dict) -> None:
+        """Hand the live post to UGC Africa for the slot reserved before posting."""
+        if not job.get("slot_id"):
+            raise RuntimeError("no reserved UGC Africa slot for this job")
+        b = self.bounty(job)  # a campaign that closed meanwhile still pays for the slot we hold
+        accepted = b.get("ugc_platforms") or []
+        pick = next(((k, p) for k, p in job["posts"].items()
+                     if k.split(":")[0] in ugcafrica.PLATFORM_ENUM and (not accepted or k.split(":")[0] in accepted)), None)
+        if not pick:
+            raise RuntimeError(f"none of our posts is on a platform this campaign accepts ({accepted or 'any'})")
+        key, post = pick
+        self.ugc.submit(job["slot_id"], ugcafrica.PLATFORM_ENUM[key.split(":")[0]], post["url"],
+                        key=f"submit-{job['id']}", ad_disclosure=bool(b.get("ad_disclosure")))
+        self.ledger.move(job, "submitted", submission_id=job["slot_id"], submitted_url=post["url"])
+        self.tg.send(f"✅ Submitted to UGC Africa: {job['title']}\n{post['url']}")
+
     def _submit(self, job: dict) -> None:
         if self.dry_run:
             return
+        if job.get("origin") == "ugcafrica":
+            return self._submit_ugc(job)
         b = self.bounty(job, refresh=True)
         br = brief_mod.parse(b["description"], b["title"])
         urls = [p["url"] for p in job["posts"].values()]
@@ -440,6 +499,11 @@ class Pipeline:
         self._migrate()
         try:
             self.plan(self.scan())
+            for err in self.source_errors:  # one source is down: say so once a day, keep going with the other
+                key = f"warn:{self.today().isoformat()}:{err[:60]}"
+                if key not in self.ledger.data["seen"]:
+                    self.ledger.data["seen"][key] = ledger_mod.now()
+                    self.tg.send(f"⚠️ {err}")
         except Exception as e:
             log.exception("discovery failed")
             self.shortfall = {k: f"campaign list unavailable: {e}" for k in self.cfg.daily_quota}

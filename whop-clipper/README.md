@@ -84,6 +84,7 @@ clips in a single submission.
    | `TELEGRAM_BOT_TOKEN` | Your existing bot (BotFather). Your chat id is set as `telegram_chat` in `config.toml` (it isn't a secret). |
    | `ANTHROPIC_API_KEY` | Optional: better moment picking and captions |
    | `CLAUDE_CODE_OAUTH_TOKEN` | Optional: same, paid by your Claude Pro/Max plan instead of API credit. Run `claude setup-token` on your computer and paste the token |
+   | `UGC_AFRICA_API_KEY` | Optional second campaign source: a `UGSK_live_...` key from developer.ugc.africa -> Console (see *UGC Africa* below) |
    | `YTDLP_COOKIES_TXT` | Optional: contents of a `cookies.txt` exported from a logged-in browser. YouTube blocks most cloud IPs; Google Drive sources don't need this. |
 
 2. **Targets**: `[[targets]]` in `config.toml` name each YouTube channel (`channel = "Astro Tobby"`)
@@ -127,6 +128,25 @@ clips in a single submission.
 
 Start in `review` mode for the first few clips, then set the repo variable
 `CLIPPER_MODE=auto` (or `mode = "auto"` in `config.toml`) once you trust the output.
+
+## UGC Africa (second campaign source)
+
+With `UGC_AFRICA_API_KEY` set, the same pipeline also takes **clip campaigns from [ugc.africa](https://ugc.africa)**
+next to Whop (`python -m clipper ugc` shows what it sees; `check` tests the key). Their creator flow is
+fully API-driven, so these jobs need no human step:
+
+```
+discover (CLIP_CAMPAIGN, raw footage, open to KE) -> score -> download -> clip -> post (YouTube + Instagram)
+   -> reserve a slot just before posting -> submit the post link for the slot -> UGC Africa verifies views and pays per 1,000
+```
+
+- Only `CLIP_CAMPAIGN` + `RAW_FOOTAGE` campaigns are taken (advertiser footage we cut from). Ready-made assets that must be
+  posted unchanged are not clipping jobs; change `ugc_campaign_types` in `config.toml` to widen it.
+- Campaigns carry required hashtags (e.g. `#ad`); they are added to every post and the submission says the disclosure is included.
+- No view threshold and no livestream: the job goes from posted straight to `submitted`. The slot is reserved right before
+  posting and kept if posting fails, so a retry never reserves twice (idempotency keys `reserve-<job>` / `submit-<job>`).
+- If either source is down, the other keeps working and you get one Telegram warning a day.
+- Withdrawing earnings from UGC Africa needs KYC in their app (done by you, not by the pipeline).
 
 ## Ground rules baked in
 

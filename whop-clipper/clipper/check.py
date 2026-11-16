@@ -50,6 +50,17 @@ def youtube(cfg: Settings) -> list[str]:
     return out
 
 
+def ugcafrica(cfg: Settings) -> str:
+    from .ugcafrica import UgcAfrica
+    u = UgcAfrica(cfg.ugc_africa_api_key)
+    everything = u.campaigns(cfg.country)
+    clips = u.discover(cfg.country, cfg.ugc_campaign_types)
+    e = u.earnings()
+    kyc = " - withdrawals need KYC (not done yet)" if e.get("transferBlockedReason") == "KYC_REQUIRED" else ""
+    return (f"key works: {len(everything)} open campaigns for {cfg.country}, {len(clips)} of them clip jobs we can "
+            f"do; earnings ${e.get('pendingBalance', 0)} pending / ${e.get('availableBalance', 0)} available{kyc}")
+
+
 def composio(cfg: Settings) -> list[str]:
     c = publish.Composio(cfg.composio_api_key, cfg.composio_user_id)
     out = []
@@ -152,6 +163,10 @@ def run(cfg: Settings) -> bool:
     attempt("Whop", whop)
     attempt("YouTube", youtube)
     attempt("Composio", composio)
+    if cfg.ugc_africa_api_key:
+        attempt("UGC Africa", ugcafrica, required=False)
+    else:
+        lines.append("➖ UGC Africa: no UGC_AFRICA_API_KEY - Whop is the only campaign source")
     if cfg.anthropic_api_key or cfg.claude_oauth_token:
         try:
             lines.append(_line(True, "Claude", anthropic(cfg)))

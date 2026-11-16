@@ -877,3 +877,176 @@ def test_check_reports_youtube_without_composio(google, monkeypatch, capsys):
     out = capsys.readouterr().out
     assert "✅ Youtube (clipping): posting as Astro Tobby" in out
     assert "❌ Youtube (ugc): YouTube channel 'DIJITOL NOMAD': no usable direct credentials" in out
+
+
+# ---- UGC Africa as a second campaign source ------------------------------------------
+UGC_RAW = {"id": "cmp_1", "title": "Clip the Nairobi podcast", "description": "Cut the best 30 seconds.",
+           "campaignType": "CLIP_CAMPAIGN", "clipSourceMode": "RAW_FOOTAGE", "status": "ACTIVE",
+           "sourceContentUrl": "https://drive.google.com/drive/folders/abc123",
+           "targetPlatforms": ["YOUTUBE_SHORTS", "INSTAGRAM_REELS"], "requiredHashtags": ["#ad", "#nairobi"],
+           "advertiserCpmRate": 3.0, "totalBudget": 500, "slotCount": 10, "slotsFilled": 2, "targetCountries": ["KE"]}
+
+
+class FakeUgc:
+    """Stands in for ugcafrica.UgcAfrica inside the pipeline."""
+
+    def __init__(self, raws=(UGC_RAW,), capacity=True):
+        from clipper import ugcafrica
+        self.raws, self.capacity, self.reserved, self.submitted = list(raws), capacity, [], []
+        self.norm = ugcafrica.normalize
+
+    def discover(self, country="", types=None, clip_modes=("RAW_FOOTAGE",)):
+        return [b for b in (self.norm(c) for c in self.raws) if b]
+
+    def reserve(self, campaign_id, key):
+        from clipper import ugcafrica
+        if not self.capacity:
+            raise ugcafrica.NoCapacity("SLOT_NO_CAPACITY")
+        self.reserved.append((campaign_id, key))
+        return "slot_1"
+
+    def submit(self, slot_id, platform, post_url, key, ad_disclosure=False):
+        self.submitted.append((slot_id, platform, post_url, key, ad_disclosure))
+        return {"ok": True}
+
+
+def ugc_pipe(pipe, **kw):
+    from clipper import ugcafrica
+    p = pipe(ANON, **kw)
+    p.cfg.ugc_africa_api_key = "k"
+    p._ugc = FakeUgc()
+    return p, ugcafrica.normalize(UGC_RAW)
+
+
+def test_ugc_campaign_is_normalised_into_a_scoreable_bounty():
+    from clipper import ugcafrica
+    b = ugcafrica.normalize(UGC_RAW)
+    assert b["id"] == "ugc_cmp_1" and b["source"] == "ugcafrica" and b["spots_remaining"] == 8
+    assert b["status"] == "open" and b["ad_disclosure"] and b["ugc_platforms"] == ["youtube", "instagram"]
+    br = brief.parse(b["description"], b["title"])
+    assert br.source_links == ["https://drive.google.com/drive/folders/abc123"] and set(br.platforms) == {"youtube", "instagram"}
+    s = scoring.score(b, country="KE", goal_types=["clipping"], platforms={"youtube", "instagram"})
+    assert s.eligible and s.automatable and s.kind == "clipping"
+    # ready-made assets and other campaign types are not clip jobs
+    assert ugcafrica.normalize(dict(UGC_RAW, campaignType="STANDARD_VIDEO")) is None
+    assert ugcafrica.normalize(dict(UGC_RAW, clipSourceMode="PRECLIPPED_TEMPLATE")) is None
+    assert ugcafrica.normalize(dict(UGC_RAW, status="PAUSED"))["status"] == "paused"
+
+
+def test_ugc_job_reserves_posts_and_submits_without_waiting_for_views(pipe):
+    p, b = ugc_pipe(pipe)
+    job = clipped_job(p, b)
+    assert job["origin"] == "ugcafrica" and job["source"] == "src/a.mp4"
+    p.advance(job)
+    assert job["status"] == "submitted" and job["slot_id"] == "slot_1"
+    assert p._ugc.reserved == [("cmp_1", f"reserve-{job['id']}")]
+    slot, platform, url, key, ad = p._ugc.submitted[0]
+    assert (slot, platform, key, ad) == ("slot_1", "YOUTUBE_SHORTS", f"submit-{job['id']}", True)
+    assert url.startswith("https://youtube.example/") and sorted(job["posts"]) == ["instagram:astr_osignal", "youtube:Astro Tobby"]
+    assert p.whop.submissions == []  # Whop is never touched for a UGC Africa job
+
+
+def test_failed_posting_keeps_the_slot_and_never_reserves_twice(pipe, monkeypatch):
+    p, b = ugc_pipe(pipe)
+    job = clipped_job(p, b)
+    good = __import__("clipper.publish", fromlist=["post"]).post
+
+    def boom(*a, **k):
+        raise RuntimeError("quota")
+
+    monkeypatch.setattr("clipper.publish.post", boom)
+    p.advance(job)
+    assert job["status"] == "approved" and job["slot_id"] == "slot_1" and not job["posts"]
+    monkeypatch.setattr("clipper.publish.post", good)
+    p.advance(job)
+    assert job["status"] == "submitted" and len(p._ugc.reserved) == 1
+
+
+def test_ugc_campaign_with_no_free_slot_is_skipped_before_posting(pipe):
+    p, b = ugc_pipe(pipe)
+    p._ugc.capacity = False
+    job = clipped_job(p, b)
+    p.advance(job)
+    assert job["status"] == "skipped" and p.posted == [] and "no free slot" in job["history"][-1].get("reason", job.get("reason", ""))
+
+
+def test_ugc_still_works_when_the_whop_snapshot_is_stale(pipe):
+    p, b = ugc_pipe(pipe, whop_via="connector")
+    write_snapshot(p, [ANON], hours_old=30)  # the Whop connector task is down
+    found = p.campaigns()
+    assert [x["id"] for x in found] == ["ugc_cmp_1"] and p.source_errors and "old" in p.source_errors[0]
+    p._ugc.raws = []
+    with pytest.raises(RuntimeError, match="old"):  # nothing from either source: report why
+        p.campaigns()
+
+
+def test_ugc_off_without_a_key(pipe):
+    p = pipe(ANON)
+    assert [b["id"] for b in p.campaigns()] == [ANON["id"]]
+
+
+class FakeSession:
+    """Scripted responses for ugcafrica.UgcAfrica._req."""
+
+    def __init__(self, script):
+        self.script, self.calls, self.headers = list(script), [], {}
+
+    def request(self, method, url, params=None, json=None, headers=None, timeout=None):
+        import json as _json
+        self.calls.append((method, url.split("api.ugc.africa")[1], params, json, headers))
+        status, body = self.script.pop(0)
+
+        class R:
+            status_code, ok = status, status < 400
+            content = b"x"
+            text = _json.dumps(body)
+
+            def json(self_):
+                return body
+        return R()
+
+
+def ugc_client(script):
+    from clipper import ugcafrica
+    u = ugcafrica.UgcAfrica("UGSK_live_test")
+    u.s = FakeSession(script)
+    return u
+
+
+def test_ugc_client_pages_through_discovery_and_marks_campaigns_we_already_hold():
+    u = ugc_client([(200, [{"id": "s9", "campaignId": "cmp_2"}]),  # slots/mine is read first
+                    (200, {"items": [UGC_RAW], "hasMore": True}),
+                    (200, {"items": [dict(UGC_RAW, id="cmp_2"), UGC_RAW], "hasMore": False})])
+    out = u.discover("KE", ["CLIP_CAMPAIGN"])
+    assert [b["id"] for b in out] == ["ugc_cmp_1", "ugc_cmp_2"]
+    assert [b["viewer_accepted_submissions_count"] for b in out] == [0, 1]
+    assert u.s.calls[1][2] == {"page": 1, "limit": 50, "sort": "NEW", "country": "KE", "campaignType": "CLIP_CAMPAIGN"}
+
+
+def test_ugc_client_reserve_sends_idempotency_key_and_survives_a_replay():
+    u = ugc_client([(201, {"id": "slot_7"})])
+    assert u.reserve("cmp_1", "reserve-j1") == "slot_7"
+    method, path, _, body, headers = u.s.calls[0]
+    assert (method, path) == ("POST", "/actions-gateway/campaigns/cmp_1/slots/reserve")
+    assert headers == {"Idempotency-Key": "reserve-j1"} and body == {"idempotencyKey": "reserve-j1"}
+    # a replay (409) falls back to the slot we already hold on that campaign
+    u = ugc_client([(409, {"message": "Idempotency replay"}), (200, [{"id": "slot_7", "campaignId": "cmp_1", "status": "RESERVED"}])])
+    assert u.reserve("cmp_1", "reserve-j1") == "slot_7"
+    from clipper import ugcafrica
+    u = ugc_client([(409, {"code": "SLOT_NO_CAPACITY", "message": "no capacity"})])
+    with pytest.raises(ugcafrica.NoCapacity):
+        u.reserve("cmp_1", "reserve-j2")
+
+
+def test_check_reports_ugc_africa_without_posting(monkeypatch, capsys):
+    from clipper import check, ugcafrica
+    monkeypatch.setattr(ugcafrica.UgcAfrica, "campaigns", lambda self, country="", types=None, limit=50: [UGC_RAW] if not types else [UGC_RAW])
+    monkeypatch.setattr(ugcafrica.UgcAfrica, "my_slots", lambda self: [])
+    monkeypatch.setattr(ugcafrica.UgcAfrica, "earnings", lambda self: {"pendingBalance": 0, "availableBalance": 0,
+                                                                       "transferBlockedReason": "KYC_REQUIRED"})
+    cfg = Settings(whop_via="api", ugc_africa_api_key="UGSK_live_test")
+    check.run(cfg)
+    out = capsys.readouterr().out
+    assert "✅ UGC Africa: key works: 1 open campaigns for KE, 1 of them clip jobs" in out and "KYC" in out
+    check.run(Settings(whop_via="api"))
+    assert "➖ UGC Africa: no UGC_AFRICA_API_KEY" in capsys.readouterr().out
