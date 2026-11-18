@@ -50,6 +50,9 @@ jobs:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
       OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+      # NVIDIA Build developer-preview TTS is exposed only to manual dry-runs.
+      NVIDIA_API_KEY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'true' && secrets.NVIDIA_API_KEY || '' }}
+      NVIDIA_TTS_ENABLED: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'true' && 'true' || 'false' }}
       OPENCODE_FALLBACK_MODELS: ${{ vars.OPENCODE_FALLBACK_MODELS || 'opencode/big-pickle,opencode/deepseek-v4.1-flash-free,opencode/nemotron-3.5-lightning-free' }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
