@@ -1,0 +1,196 @@
+name: Daily long-form YouTube
+
+on:
+  schedule:
+    - cron: "0 4 * * *"   # Astrotobby -> 10:00 EAT
+    - cron: "0 6 * * *"   # Digital Nomad -> 12:00 EAT
+    - cron: "0 9 * * *"   # Astrotobby -> 15:00 EAT
+    - cron: "0 12 * * *"  # Digital Nomad -> 18:00 EAT
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: "YouTube destination"
+        type: choice
+        required: true
+        default: astrotobby
+        options: [astrotobby, digital_nomad]
+      slot:
+        description: "Kenya publication time"
+        type: choice
+        required: true
+        default: "10:00"
+        options: ["10:00", "12:00", "15:00", "18:00"]
+      target_date:
+        description: "Optional Kenya date (YYYY-MM-DD); blank means next future matching slot"
+        type: string
+        required: false
+      dry_run:
+        description: "Research, script, render and validate but DO NOT upload"
+        type: boolean
+        required: true
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: longform-${{ github.event_name == 'schedule' && github.event.schedule || format('{0}-{1}', github.event.inputs.channel, github.event.inputs.slot) }}
+  cancel-in-progress: false
+
+jobs:
+  render-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    env:
+      LONGFORM_STATE_DIR: ${{ github.workspace }}/whop-clipper/state/longform
+      LONGFORM_MODEL: ${{ vars.LONGFORM_MODEL || 'claude-sonnet-5-5' }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+      ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
+      PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+      PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+      YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY: ${{ secrets.YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY }}
+      YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD: ${{ secrets.YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD }}
+      REFRESHTOKEN_DIJITOLNOMAD: ${{ secrets.REFRESHTOKEN_DIJITOLNOMAD }}
+      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+      YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+      YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+      CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      YOUTUBECLIENT_ID: ${{ secrets.YOUTUBECLIENT_ID }}
+      YOUTUBECLIENT_SECTRET: ${{ secrets.YOUTUBECLIENT_SECTRET }}
+    steps:
+      - name: Checkout AI-GEMS (credential and scheduler repository)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout astro-blog production pipeline
+        run: git clone --depth 1 --branch main https://github.com/astrotobby/astro-blog.git astro-blog
+
+      - name: Restore verified channel OAuth cache
+        uses: actions/cache/restore@v4
+        with:
+          path: whop-clipper/work
+          key: clipper-longform-restore
+          restore-keys: |
+            clipper-
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: astro-blog/requirements-longform.txt
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+
+      - name: Install long-form Python dependencies
+        run: python -m pip install --disable-pip-version-check -r astro-blog/requirements-longform.txt
+
+      - name: Resolve the channel and publication slot
+        id: slot
+        shell: bash
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then
+            case "$GITHUB_EVENT_SCHEDULE" in
+              "0 4 * * *") CHANNEL="astrotobby"; SLOT="10:00" ;;
+              "0 6 * * *") CHANNEL="digital_nomad"; SLOT="12:00" ;;
+              "0 9 * * *") CHANNEL="astrotobby"; SLOT="15:00" ;;
+              "0 12 * * *") CHANNEL="digital_nomad"; SLOT="18:00" ;;
+              *) echo "Unknown scheduled trigger: $GITHUB_EVENT_SCHEDULE" >&2; exit 1 ;;
+            esac
+            TARGET_DATE="$(TZ=Africa/Nairobi date +%F)"
+            DRY_RUN="false"
+          else
+            CHANNEL="${{ github.event.inputs.channel }}"
+            SLOT="${{ github.event.inputs.slot }}"
+            TARGET_DATE="${{ github.event.inputs.target_date }}"
+            DRY_RUN="${{ github.event.inputs.dry_run }}"
+          fi
+          echo "channel=$CHANNEL" >> "$GITHUB_OUTPUT"
+          echo "slot=$SLOT" >> "$GITHUB_OUTPUT"
+          echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
+          echo "dry_run=$DRY_RUN" >> "$GITHUB_OUTPUT"
+          echo "Selected $CHANNEL / $SLOT EAT / target date ${TARGET_DATE:-next future slot} / dry-run=$DRY_RUN"
+
+      - name: Verify expected account routing before research
+        working-directory: whop-clipper
+        env:
+          CHANNEL: ${{ steps.slot.outputs.channel }}
+        run: |
+          python - <<'PY'
+          import os, tomllib
+          from pathlib import Path
+          channel = os.environ["CHANNEL"]
+          expected = {"astrotobby": ("Astro Tobby", "goodlucktobby@gmail.com"),
+                      "digital_nomad": ("DIJITOL NOMAD", "chanzera3@gmail.com")}
+          name, account = expected[channel]
+          cfg = tomllib.loads(Path("config.toml").read_text(encoding="utf-8"))
+          targets = [t for t in cfg.get("targets", []) if t.get("platform") == "youtube"]
+          assert any((t.get("channel") or "").casefold() == name.casefold() for t in targets), \
+              f"Missing YouTube target: {name}"
+          print(f"Destination configured: {name}; owner mapping: {account}")
+          PY
+          test -d work/yt_tokens || echo "OAuth cache directory absent; publisher will try channel-specific secrets."
+
+      - name: Run end-to-end long-form pipeline
+        working-directory: whop-clipper
+        env:
+          CHANNEL: ${{ steps.slot.outputs.channel }}
+          SLOT: ${{ steps.slot.outputs.slot }}
+          TARGET_DATE: ${{ steps.slot.outputs.target_date }}
+          DRY_RUN: ${{ steps.slot.outputs.dry_run }}
+        shell: bash
+        run: |
+          ARGS=(--channel "$CHANNEL" --slot "$SLOT")
+          if [ -n "$TARGET_DATE" ]; then ARGS+=(--target-date "$TARGET_DATE"); fi
+          if [ "$DRY_RUN" = "true" ]; then ARGS+=(--dry-run); fi
+          python ../astro-blog/scripts/longform_pipeline.py "${ARGS[@]}" | tee "$RUNNER_TEMP/longform-result.json"
+
+      - name: Save updated YouTube OAuth cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: whop-clipper/work
+          key: clipper-${{ github.run_id }}
+
+      - name: Preserve rendered video and job result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: longform-${{ steps.slot.outputs.channel || 'manual' }}-${{ github.run_id }}
+          path: |
+            astro-blog/.pipeline/out/video_16x9.mp4
+            astro-blog/.pipeline/out/longform_*.json
+            whop-clipper/state/longform/ledger.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Write workflow summary
+        if: always()
+        env:
+          CHANNEL: ${{ steps.slot.outputs.channel }}
+          SLOT: ${{ steps.slot.outputs.slot }}
+          TARGET_DATE: ${{ steps.slot.outputs.target_date }}
+          DRY_RUN: ${{ steps.slot.outputs.dry_run }}
+        run: |
+          {
+            echo "## Long-form YouTube job"
+            echo ""
+            echo "- Channel: `$CHANNEL`"
+            echo "- Publication slot: `$SLOT` Kenya time"
+            echo "- Target date: `${TARGET_DATE:-next future slot}`"
+            echo "- Dry run: `$DRY_RUN`"
+            echo ""
+            if [ -f "$RUNNER_TEMP/longform-result.json" ]; then
+              echo '```json'
+              cat "$RUNNER_TEMP/longform-result.json"
+              echo '```'
+            else
+              echo "Pipeline did not produce a result JSON. Check the failed step logs."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
