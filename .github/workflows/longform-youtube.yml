@@ -2,10 +2,10 @@ name: Daily long-form YouTube
 
 on:
   schedule:
-    - cron: "0 3 * * *"   # Astrotobby -> 10:00 EAT
-    - cron: "0 5 * * *"   # Digital Nomad -> 12:00 EAT
-    - cron: "0 8 * * *"   # Astrotobby -> 15:00 EAT
-    - cron: "0 11 * * *"  # Digital Nomad -> 18:00 EAT
+    - cron: "0 3 * * *"   # 06:00 EAT start -> Astrotobby 10:00 EAT release
+    - cron: "0 5 * * *"   # 08:00 EAT start -> Digital Nomad 12:00 EAT release
+    - cron: "0 8 * * *"   # 11:00 EAT start -> Astrotobby 15:00 EAT release
+    - cron: "0 11 * * *"  # 14:00 EAT start -> Digital Nomad 18:00 EAT release
   workflow_dispatch:
     inputs:
       channel:
@@ -39,6 +39,9 @@ concurrency:
 
 jobs:
   render-and-publish:
+    # Live schedule starts only after an end-to-end manual dry run is approved.
+    # workflow_dispatch remains available while LONGFORM_LIVE_ENABLED is unset.
+    if: ${{ github.event_name != 'schedule' || vars.LONGFORM_LIVE_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
