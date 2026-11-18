@@ -1,0 +1,47 @@
+name: validate-youtube-channels
+
+# Manual, read-only channel credential check. This workflow never uploads videos.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout AI-GEMS (credential owner)
+        uses: actions/checkout@v4
+
+      - name: Checkout astro-blog pipeline code
+        uses: actions/checkout@v4
+        with:
+          repository: astrotobby/astro-blog
+          ref: main
+          path: astro-blog
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install minimal YouTube API dependencies
+        run: python -m pip install --quiet google-api-python-client google-auth google-auth-httplib2 PyYAML
+
+      - name: Verify the two channel tokens (read-only)
+        working-directory: astro-blog
+        env:
+          # Tokens stay in AI-GEMS GitHub Actions Secrets and are never printed.
+          YOUTUBE_REFRESH_TOKEN_ASTROTOBBYC: ${{ secrets.YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY }}
+          YOUTUBE_REFRESH_TOKEN_DIGITAL_NOMAD: ${{ secrets.YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          YOUTUBECLIENT_ID: ${{ secrets.YOUTUBECLIENT_ID }}
+          YOUTUBECLIENT_SECTRET: ${{ secrets.YOUTUBECLIENT_SECTRET }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+        run: python scripts/validate_youtube_channels.py
