@@ -49,6 +49,8 @@ jobs:
       LONGFORM_MODEL: ${{ vars.LONGFORM_MODEL || 'claude-sonnet-5' }}
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
+      OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+      OPENCODE_FALLBACK_MODELS: ${{ vars.OPENCODE_FALLBACK_MODELS || 'opencode/big-pickle,opencode/deepseek-v4.1-flash-free,opencode/nemotron-3.5-lightning-free' }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
       ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
@@ -84,6 +86,14 @@ jobs:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: astro-blog/requirements-longform.txt
+
+      - name: Install OpenCode CLI for free-model fallback
+        if: env.OPENCODE_API_KEY != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --global @opencode/cli
+          opencode --version
 
       - name: Install FFmpeg
         shell: bash
