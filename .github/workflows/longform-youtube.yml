@@ -49,6 +49,9 @@ jobs:
       LONGFORM_MODEL: ${{ vars.LONGFORM_MODEL || 'claude-sonnet-5' }}
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
+      NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+      NVIDIA_TTS_FUNCTION_ID: ${{ vars.NVIDIA_TTS_FUNCTION_ID || '877104f7-e885-42b9-8de8-f6e4c6303969' }}
+      NVIDIA_TTS_VOICE: ${{ vars.NVIDIA_TTS_VOICE || 'Magpie-Multilingual.EN-US.Jason' }}
       OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
       OPENCODE_FALLBACK_MODELS: ${{ vars.OPENCODE_FALLBACK_MODELS || 'opencode/big-pickle,opencode/deepseek-v4.1-flash-free,opencode/nemotron-3.5-lightning-free' }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
