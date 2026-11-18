@@ -65,7 +65,10 @@ def write_private(path: Path, content: str) -> None:
 
 
 def cleanup() -> None:
-    docker(["rm", "--force", CONTAINER], timeout=30)
+    try:
+        docker(["rm", "--force", CONTAINER], timeout=30)
+    except Exception:
+        pass
     temp_root = os.environ.get("RUNNER_TEMP")
     if temp_root:
         shutil.rmtree(Path(temp_root) / "freellmapi-longform", ignore_errors=True)
