@@ -178,6 +178,9 @@ jobs:
           SLOT: ${{ steps.slot.outputs.slot }}
           TARGET_DATE: ${{ steps.slot.outputs.target_date }}
           DRY_RUN: ${{ steps.slot.outputs.dry_run }}
+          # NVIDIA Build developer-preview TTS is exposed only during manual dry-runs.
+          NVIDIA_API_KEY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'true' && secrets.NVIDIA_API_KEY || '' }}
+          NVIDIA_TTS_ENABLED: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'true' && 'true' || 'false' }}
         shell: bash
         run: |
           set -euo pipefail
