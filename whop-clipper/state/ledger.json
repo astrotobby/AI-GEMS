@@ -873,6 +873,11 @@
           "at": "2026-11-04T12:09:24+00:00",
           "from": "approved",
           "to": "published"
+        },
+        {
+          "at": "2026-11-18T17:16:06+00:00",
+          "from": "published",
+          "to": "failed"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-11-04-clipping1",
@@ -893,13 +898,13 @@
         }
       },
       "published_at": "2026-11-04T12:09:24.887438+00:00",
-      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "reason": "only 141/1000 views after 14 days",
       "score": 48.2,
       "slot": 1,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BettingTheBoardIsCostingYou.MOV",
-      "status": "published",
+      "status": "failed",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-11-04T12:09:24+00:00"
+      "updated": "2026-11-18T17:16:06+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-11-05-clipping0": {
       "bad_sources": [
