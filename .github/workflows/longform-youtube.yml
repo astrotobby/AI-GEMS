@@ -2,10 +2,10 @@ name: Daily long-form YouTube
 
 on:
   schedule:
-    - cron: "0 4 * * *"   # Astrotobby -> 10:00 EAT
-    - cron: "0 6 * * *"   # Digital Nomad -> 12:00 EAT
-    - cron: "0 9 * * *"   # Astrotobby -> 15:00 EAT
-    - cron: "0 12 * * *"  # Digital Nomad -> 18:00 EAT
+    - cron: "0 3 * * *"   # Astrotobby -> 10:00 EAT
+    - cron: "0 5 * * *"   # Digital Nomad -> 12:00 EAT
+    - cron: "0 8 * * *"   # Astrotobby -> 15:00 EAT
+    - cron: "0 11 * * *"  # Digital Nomad -> 18:00 EAT
   workflow_dispatch:
     inputs:
       channel:
@@ -40,10 +40,10 @@ concurrency:
 jobs:
   render-and-publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 170
+    timeout-minutes: 180
     env:
       LONGFORM_STATE_DIR: ${{ github.workspace }}/whop-clipper/state/longform
-      LONGFORM_MODEL: ${{ vars.LONGFORM_MODEL || 'claude-sonnet-5-5' }}
+      LONGFORM_MODEL: ${{ vars.LONGFORM_MODEL || 'claude-sonnet-5' }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
       ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
@@ -66,7 +66,12 @@ jobs:
           fetch-depth: 0
 
       - name: Checkout astro-blog production pipeline
-        run: git clone --depth 1 --branch main https://github.com/astrotobby/astro-blog.git astro-blog
+        uses: actions/checkout@v4
+        with:
+          repository: astrotobby/astro-blog
+          ref: main
+          path: astro-blog
+          persist-credentials: false
 
       - name: Restore verified channel OAuth cache
         uses: actions/cache/restore@v4
@@ -97,10 +102,10 @@ jobs:
         run: |
           if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then
             case "$GITHUB_EVENT_SCHEDULE" in
-              "0 4 * * *") CHANNEL="astrotobby"; SLOT="10:00" ;;
-              "0 6 * * *") CHANNEL="digital_nomad"; SLOT="12:00" ;;
-              "0 9 * * *") CHANNEL="astrotobby"; SLOT="15:00" ;;
-              "0 12 * * *") CHANNEL="digital_nomad"; SLOT="18:00" ;;
+              "0 3 * * *") CHANNEL="astrotobby"; SLOT="10:00" ;;
+              "0 5 * * *") CHANNEL="digital_nomad"; SLOT="12:00" ;;
+              "0 8 * * *") CHANNEL="astrotobby"; SLOT="15:00" ;;
+              "0 11 * * *") CHANNEL="digital_nomad"; SLOT="18:00" ;;
               *) echo "Unknown scheduled trigger: $GITHUB_EVENT_SCHEDULE" >&2; exit 1 ;;
             esac
             TARGET_DATE="$(TZ=Africa/Nairobi date +%F)"
@@ -146,10 +151,11 @@ jobs:
           DRY_RUN: ${{ steps.slot.outputs.dry_run }}
         shell: bash
         run: |
+          set -euo pipefail
           ARGS=(--channel "$CHANNEL" --slot "$SLOT")
           if [ -n "$TARGET_DATE" ]; then ARGS+=(--target-date "$TARGET_DATE"); fi
           if [ "$DRY_RUN" = "true" ]; then ARGS+=(--dry-run); fi
-          python ../astro-blog/scripts/longform_pipeline.py "${ARGS[@]}" | tee "$RUNNER_TEMP/longform-result.json"
+          python ../astro-blog/scripts/longform_pipeline.py "${ARGS[@]}" 2>&1 | tee "$RUNNER_TEMP/longform-result.txt"
 
       - name: Save updated YouTube OAuth cache
         if: always()
@@ -186,9 +192,9 @@ jobs:
             echo "- Target date: `${TARGET_DATE:-next future slot}`"
             echo "- Dry run: `$DRY_RUN`"
             echo ""
-            if [ -f "$RUNNER_TEMP/longform-result.json" ]; then
+            if [ -f "$RUNNER_TEMP/longform-result.txt" ]; then
               echo '```json'
-              cat "$RUNNER_TEMP/longform-result.json"
+              cat "$RUNNER_TEMP/longform-result.txt"
               echo '```'
             else
               echo "Pipeline did not produce a result JSON. Check the failed step logs."
