@@ -159,6 +159,12 @@ jobs:
           print(f"Destination configured: {name}; owner mapping: {account}")
           PY
 
+      - name: Test FreeLLMAPI sidecar bootstrap
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'true' }}
+        run: |
+          python -m py_compile scripts/freellmapi_sidecar.py scripts/test_freellmapi_sidecar.py
+          python -m unittest discover -s scripts -p "test_freellmapi_sidecar.py"
+
       - name: Start optional FreeLLMAPI fallback for manual dry-runs
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'true' }}
         env:
@@ -192,9 +198,6 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-      - name: Stop and remove temporary FreeLLMAPI sidecar
-        if: always()
-        run: python scripts/freellmapi_sidecar.py --cleanup
       - name: Write workflow summary
         if: always()
         env:
@@ -219,3 +222,7 @@ jobs:
               echo "Pipeline did not produce a result JSON. Check the failed step logs."
             fi
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Stop and remove temporary FreeLLMAPI sidecar
+        if: always()
+        run: python scripts/freellmapi_sidecar.py --cleanup
