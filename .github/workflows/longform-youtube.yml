@@ -76,14 +76,6 @@ jobs:
           path: astro-blog
           persist-credentials: false
 
-      - name: Restore verified channel OAuth cache
-        uses: actions/cache/restore@v4
-        with:
-          path: whop-clipper/work
-          key: clipper-longform-restore
-          restore-keys: |
-            clipper-
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -151,7 +143,6 @@ jobs:
               f"Missing YouTube target: {name}"
           print(f"Destination configured: {name}; owner mapping: {account}")
           PY
-          test -d work/yt_tokens || echo "OAuth cache directory absent; publisher will try channel-specific secrets."
 
       - name: Run end-to-end long-form pipeline
         working-directory: whop-clipper
@@ -167,13 +158,6 @@ jobs:
           if [ -n "$TARGET_DATE" ]; then ARGS+=(--target-date "$TARGET_DATE"); fi
           if [ "$DRY_RUN" = "true" ]; then ARGS+=(--dry-run); fi
           python ../astro-blog/scripts/longform_pipeline.py "${ARGS[@]}" 2>&1 | tee "$RUNNER_TEMP/longform-result.txt"
-
-      - name: Save updated YouTube OAuth cache
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: whop-clipper/work
-          key: clipper-${{ github.run_id }}
 
       - name: Preserve rendered video and job result
         if: always()
@@ -198,10 +182,10 @@ jobs:
           {
             echo "## Long-form YouTube job"
             echo ""
-            echo "- Channel: `$CHANNEL`"
-            echo "- Publication slot: `$SLOT` Kenya time"
-            echo "- Target date: `${TARGET_DATE:-next future slot}`"
-            echo "- Dry run: `$DRY_RUN`"
+            echo "- Channel: ${CHANNEL}"
+            echo "- Publication slot: ${SLOT} Kenya time"
+            echo "- Target date: ${TARGET_DATE:-next future slot}"
+            echo "- Dry run: ${DRY_RUN}"
             echo ""
             if [ -f "$RUNNER_TEMP/longform-result.txt" ]; then
               echo '```json'
