@@ -47,8 +47,9 @@ jobs:
     env:
       LONGFORM_STATE_DIR: ${{ github.workspace }}/whop-clipper/state/longform
       LONGFORM_MODEL: ${{ vars.LONGFORM_MODEL || 'claude-sonnet-5' }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
       ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
       ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
       PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
@@ -83,9 +84,6 @@ jobs:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: astro-blog/requirements-longform.txt
-
-      - name: Install Claude Code CLI for subscription-authenticated generation
-        run: npm install --global @anthropic-ai/claude-code
 
       - name: Install FFmpeg
         shell: bash
@@ -133,10 +131,13 @@ jobs:
         working-directory: whop-clipper
         env:
           CHANNEL: ${{ steps.slot.outputs.channel }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python - <<'PY'
           import os, tomllib
           from pathlib import Path
+          if not os.environ.get("GEMINI_API_KEY"):
+              raise SystemExit("Missing GEMINI_API_KEY secret in AI-GEMS. Add the existing Gemini key from astro-blog to this repository's Actions secrets.")
           channel = os.environ["CHANNEL"]
           expected = {"astrotobby": ("Astro Tobby", "goodlucktobby@gmail.com"),
                       "digital_nomad": ("DIJITOL NOMAD", "chanzera3@gmail.com")}
