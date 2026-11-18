@@ -216,7 +216,10 @@ def bootstrap() -> bool:
             "::warning::FreeLLMAPI sidecar unavailable; existing Gemini/OpenCode/"
             f"Anthropic fallbacks remain active ({type(exc).__name__})."
         )
-        docker(["rm", "--force", CONTAINER], timeout=30)
+        try:
+            docker(["rm", "--force", CONTAINER], timeout=30)
+        except Exception:
+            pass
         return False
     finally:
         config_path.unlink(missing_ok=True)
