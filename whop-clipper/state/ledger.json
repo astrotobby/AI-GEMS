@@ -738,6 +738,11 @@
           "at": "2026-11-04T08:45:24+00:00",
           "from": "approved",
           "to": "published"
+        },
+        {
+          "at": "2026-11-18T09:50:41+00:00",
+          "from": "published",
+          "to": "failed"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-11-04-clipping0",
@@ -770,13 +775,13 @@
         }
       },
       "published_at": "2026-11-04T08:45:24.145874+00:00",
-      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "reason": "only 203/1000 views after 14 days",
       "score": 48.2,
       "slot": 0,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/BettingFavoritesBecauseTheyFeelSafe.MOV",
-      "status": "published",
+      "status": "failed",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-11-04T08:45:24+00:00"
+      "updated": "2026-11-18T09:50:41+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-11-04-clipping1": {
       "bad_sources": [
