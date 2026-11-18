@@ -182,10 +182,10 @@ jobs:
           {
             echo "## Long-form YouTube job"
             echo ""
-            echo "- Channel: ${CHANNEL}"
-            echo "- Publication slot: ${SLOT} Kenya time"
-            echo "- Target date: ${TARGET_DATE:-next future slot}"
-            echo "- Dry run: ${DRY_RUN}"
+            printf "%s\\n" "- Channel: ${CHANNEL}"
+            printf "%s\\n" "- Publication slot: ${SLOT} Kenya time"
+            printf "%s\\n" "- Target date: ${TARGET_DATE:-next future slot}"
+            printf "%s\\n" "- Dry run: ${DRY_RUN}"
             echo ""
             if [ -f "$RUNNER_TEMP/longform-result.txt" ]; then
               echo '```json'
