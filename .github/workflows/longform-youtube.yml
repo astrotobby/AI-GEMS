@@ -76,6 +76,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Restore channel-specific YouTube OAuth credentials
+        uses: actions/cache/restore@v4
+        with:
+          path: whop-clipper/work
+          key: longform-yt-${{ github.run_id }}
+          restore-keys: |
+            clipper-auth-
       - name: Checkout astro-blog production pipeline
         uses: actions/checkout@v4
         with:
