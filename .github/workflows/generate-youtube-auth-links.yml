@@ -1,0 +1,61 @@
+name: Generate temporary YouTube re-authorization links
+
+on:
+  push:
+    paths:
+      - ".github/workflows/generate-youtube-auth-links.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  generate-links:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate owner-specific Google sign-in links
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+        run: |
+          python - <<'PY'
+          import os
+          from urllib.parse import urlencode
+          from pathlib import Path
+
+          client_id = os.environ.get("YOUTUBE_CLIENT_ID", "").strip()
+          if not client_id:
+              raise SystemExit("Missing YOUTUBE_CLIENT_ID secret")
+
+          channels = [
+              ("Astro Tobby", "goodlucktobby@gmail.com"),
+              ("DIJITOL NOMAD", "chanzera3@gmail.com"),
+          ]
+          lines = [
+              "# Temporary YouTube re-authorization links",
+              "",
+              "Open each link using the Google account that owns that channel, approve the requested YouTube permission,",
+              "then copy the full localhost callback address from the browser address bar.",
+              "",
+              "Requested scope: https://www.googleapis.com/auth/youtube",
+              "",
+          ]
+          for name, email in channels:
+              query = urlencode({
+                  "client_id": client_id,
+                  "redirect_uri": "http://localhost",
+                  "response_type": "code",
+                  "scope": "https://www.googleapis.com/auth/youtube",
+                  "access_type": "offline",
+                  "prompt": "consent select_account",
+                  "login_hint": email,
+              })
+              lines += [f"## {name}", "", f"https://accounts.google.com/o/oauth2/v2/auth?{query}", ""]
+          Path("youtube-auth-links.tmp.md").write_text("\n".join(lines), encoding="utf-8")
+          PY
+      - name: Store links temporarily for delivery
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add youtube-auth-links.tmp.md
+          git commit -m "auth: temporary channel re-authorization links [skip ci]"
+          git push
