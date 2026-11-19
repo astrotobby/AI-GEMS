@@ -71,7 +71,7 @@ jobs:
 
           expected = {
               "astrotobby": ("Astro Tobby", "UCxndvpcFaVhN1bJxgWIjG_A"),
-              "digital_nomad": ("DIJITOL NOMAD", "UCE_cklDludc6nkU1_4K6JzA"),
+              "digital_nomad": ("DIGITAL NOMAD", "UCE_cklDludc6nkU1_4K6JzA"),
           }
           name, expected_id = expected[channel]
           import tomllib
