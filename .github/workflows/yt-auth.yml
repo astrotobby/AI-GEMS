@@ -17,6 +17,10 @@ on:
         description: "step 2 only: paste the full http://localhost/?code=... address your browser ended on (leave empty for step 1)"
         required: false
         default: ""
+      publish_video_id:
+        description: "Optional: make an existing video public immediately instead of running OAuth"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -43,6 +47,7 @@ jobs:
           key: clipper-auth-restore
           restore-keys: clipper-
       - name: Sign in
+        if: ${{ inputs.publish_video_id == '' }}
         env:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
@@ -54,6 +59,118 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           CHANNEL: ${{ inputs.channel }}
         run: python yt_auth.py "$CHANNEL"
+
+      - name: Publish an existing video publicly now
+        if: \${{ inputs.publish_video_id != '' }}
+        env:
+          CHANNEL: \${{ inputs.channel }}
+          VIDEO_ID: \${{ inputs.publish_video_id }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.parse, urllib.request, urllib.error
+          from pathlib import Path
+
+          channels = {
+              "Astro Tobby": {
+                  "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A",
+                  "token_file": "ASTRO_TOBBY.json",
+              },
+              "DIJITOL NOMAD": {
+                  "channel_id": "UCE_cklDludc6nkU1_4K6JzA",
+                  "token_file": "DIJITOL_NOMAD.json",
+              },
+          }
+
+          channel = os.environ["CHANNEL"]
+          video_id = os.environ["VIDEO_ID"].strip()
+          if channel not in channels:
+              raise SystemExit("Unknown channel")
+          if not video_id or any(ch not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_" for ch in video_id):
+              raise SystemExit("Invalid YouTube video ID")
+
+          target = channels[channel]
+          path = Path("work/yt_tokens") / target["token_file"]
+          if not path.is_file():
+              raise SystemExit(f"Verified OAuth cache file not found: {path}")
+          cached = json.loads(path.read_text(encoding="utf-8"))
+          values = [cached.get(k, "") for k in ("client_id", "client_secret", "refresh_token")]
+          if not all(values):
+              raise SystemExit("Cached OAuth credentials are incomplete")
+          client_id, client_secret, refresh_token = values
+
+          def api(url, method="GET", data=None, headers=None):
+              req = urllib.request.Request(url, data=data, headers=headers or {}, method=method)
+              try:
+                  with urllib.request.urlopen(req, timeout=45) as response:
+                      raw = response.read().decode("utf-8")
+                      return json.loads(raw) if raw else {}
+              except urllib.error.HTTPError as exc:
+                  detail = exc.read().decode("utf-8", "replace")
+                  raise RuntimeError(f"Google/YouTube API HTTP {exc.code}: {detail[:1200]}") from exc
+
+          token = api(
+              "https://oauth2.googleapis.com/token",
+              method="POST",
+              data=urllib.parse.urlencode({
+                  "client_id": client_id,
+                  "client_secret": client_secret,
+                  "refresh_token": refresh_token,
+                  "grant_type": "refresh_token",
+              }).encode(),
+              headers={"Content-Type": "application/x-www-form-urlencoded"},
+          )
+          access = token.get("access_token")
+          if not access:
+              raise SystemExit("Google did not return an access token")
+          headers = {"Authorization": f"Bearer {access}", "Content-Type": "application/json"}
+
+          identity = api(
+              "https://www.googleapis.com/youtube/v3/channels?part=id,snippet&mine=true",
+              headers=headers,
+          ).get("items", [])
+          if not any(row.get("id") == target["channel_id"] for row in identity):
+              raise SystemExit(f"OAuth identity mismatch for {channel}; no video changed")
+
+          encoded = urllib.parse.urlencode({"part": "id,snippet,status", "id": video_id})
+          items = api(f"https://www.googleapis.com/youtube/v3/videos?{encoded}", headers=headers).get("items", [])
+          if not items:
+              raise SystemExit(f"Video {video_id} not found")
+          video = items[0]
+          if (video.get("snippet") or {}).get("channelId") != target["channel_id"]:
+              raise SystemExit("Video belongs to a different channel; no change made")
+
+          previous = video.get("status") or {}
+          if previous.get("privacyStatus") != "public":
+              writable = ("license", "embeddable", "publicStatsViewable", "selfDeclaredMadeForKids", "containsSyntheticMedia")
+              status = {key: previous[key] for key in writable if key in previous}
+              status["privacyStatus"] = "public"
+              api(
+                  "https://www.googleapis.com/youtube/v3/videos?part=status",
+                  method="PUT",
+                  data=json.dumps({"id": video_id, "status": status}).encode(),
+                  headers=headers,
+              )
+
+          verify = api(f"https://www.googleapis.com/youtube/v3/videos?{encoded}", headers=headers).get("items", [])
+          if not verify:
+              raise SystemExit("Could not read back video after update")
+          final_video = verify[0]
+          final_status = final_video.get("status") or {}
+          if (final_video.get("snippet") or {}).get("channelId") != target["channel_id"]:
+              raise SystemExit("Post-update channel mismatch")
+          if final_status.get("privacyStatus") != "public" or final_status.get("publishAt"):
+              raise SystemExit(f"YouTube did not confirm immediate public visibility: {final_status}")
+
+          print(json.dumps({
+              "result": "public_confirmed",
+              "channel": channel,
+              "video_id": video_id,
+              "title": (final_video.get("snippet") or {}).get("title"),
+              "url": f"https://youtu.be/{video_id}",
+              "privacy_status": final_status.get("privacyStatus"),
+          }, indent=2))
+          PY
+
       - uses: actions/cache/save@v4
         if: success() && inputs.code != ''
         with:
