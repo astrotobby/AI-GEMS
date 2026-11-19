@@ -11,7 +11,6 @@ The token is checked (it must belong to the channel you asked for) and stored, w
 client that issued it, in work/yt_tokens/<CHANNEL>.json, which the run cache keeps for the clipper.
 The token itself is never printed. Standard library only.
 """
-import base64
 import json
 import os
 import sys
@@ -23,6 +22,26 @@ from pathlib import Path
 SCOPE = "https://www.googleapis.com/auth/youtube"  # upload + read statistics
 REDIRECT = "http://localhost"
 OUT = Path("work/yt_tokens")
+CHANNELS = {
+    "ASTROTOBBY": ("Astro Tobby", "goodlucktobby@gmail.com"),
+    "DIJITOLNOMAD": ("DIJITOL NOMAD", "chanzera3@gmail.com"),
+}
+
+
+def channel_key(value: str) -> str:
+    return "".join(ch for ch in value.upper() if ch.isalnum())
+
+
+def workflow_input_code() -> str:
+    """Read workflow_dispatch input from the event file, not an env var (which Actions logs)."""
+    path = os.environ.get("GITHUB_EVENT_PATH", "")
+    if not path:
+        return ""
+    try:
+        event = json.loads(Path(path).read_text(encoding="utf-8"))
+        return str((event.get("inputs") or {}).get("code", "")).strip()
+    except (OSError, ValueError, TypeError):
+        return ""
 
 
 def post(url: str, data: dict) -> tuple[int, dict]:
@@ -69,18 +88,24 @@ def telegram(text: str) -> bool:
     tok, chat = os.environ.get("TELEGRAM_BOT_TOKEN", ""), os.environ.get("TELEGRAM_CHAT_ID", "")
     if not (tok and chat):
         return False
-    code, r = post(f"https://api.telegram.org/bot{tok}/sendMessage", {"chat_id": chat, "text": text})
-    if code != 200:  # say why (e.g. wrong chat id, or you never pressed Start on the bot); no secrets involved
-        print(f"Telegram refused the message: {code} {r.get('description', '')}")
-    return code == 200
+    try:
+        code, r = post(f"https://api.telegram.org/bot{tok}/sendMessage", {"chat_id": chat, "text": text})
+        if code != 200:  # Telegram is a notification channel, never an auth prerequisite.
+            print(f"Telegram delivery unavailable: HTTP {code} ({r.get('description', 'request rejected')}).")
+        return code == 200
+    except Exception as e:
+        print(f"Telegram delivery unavailable ({type(e).__name__}); continue using the URL in this workflow log.")
+        return False
 
 
 def main() -> int:
-    channel = (sys.argv[1] if len(sys.argv) > 1 else "").strip()
-    given = (sys.argv[2] if len(sys.argv) > 2 else "").strip()
-    if not channel:
-        print(__doc__)
+    requested_channel = (sys.argv[1] if len(sys.argv) > 1 else "").strip()
+    given = (sys.argv[2] if len(sys.argv) > 2 else "").strip() or workflow_input_code()
+    channel_info = CHANNELS.get(channel_key(requested_channel))
+    if not channel_info:
+        print('Choose exactly one configured channel: "Astro Tobby" or "DIJITOL NOMAD".')
         return 2
+    channel, login_hint = channel_info
     slug = "".join(ch if ch.isalnum() else "_" for ch in channel.upper()).strip("_")
     picked = pick_client(channel)
     if not picked:
@@ -91,14 +116,17 @@ def main() -> int:
     if not given:  # step 1: the sign-in link
         url = "https://accounts.google.com/o/oauth2/v2/auth?" + urllib.parse.urlencode({
             "client_id": cid, "redirect_uri": REDIRECT, "response_type": "code", "scope": SCOPE,
-            "access_type": "offline", "prompt": "consent select_account"})
+            "access_type": "offline", "prompt": "consent select_account", "login_hint": login_hint})
         msg = (f"YouTube sign-in for \"{channel}\":\n1) open this link and sign in as the account that owns the channel, "
                f"choosing \"{channel}\" if asked\n{url}\n2) approve. The next page says it can't connect to localhost - "
                f"that is expected.\n3) copy that page's full address and run the \"YouTube auth\" workflow again, "
                f"pasting it in the \"code\" box. Do it within ~10 minutes.")
         print(f"using client {label}")
-        print("AUTH_URL_BASE64=" + base64.b64encode(url.encode("utf-8")).decode("ascii"))
-        print("Sign-in link sent to Telegram." if telegram(msg) else msg)
+        print(f"Sign-in URL: {url}")
+        if telegram(msg):
+            print("Sign-in link also sent to Telegram.")
+        else:
+            print("Telegram notification unavailable; use the Sign-in URL above.")
         return 0
 
     # step 2: exchange what the browser ended up on
@@ -114,8 +142,9 @@ def main() -> int:
                                  headers={"Authorization": "Bearer " + tok["access_token"]})
     with urllib.request.urlopen(req, timeout=60) as r:
         titles = [i["snippet"]["title"] for i in json.load(r).get("items", [])]
-    if not any(channel.lower() in t.lower().strip() or t.lower().strip() in channel.lower() for t in titles):
-        print(f"signed in as {titles}, not \"{channel}\" - nothing saved. Start again and pick the right channel.")
+    if not any(channel_key(t) == channel_key(channel) for t in titles):
+        safe_titles = [t.strip() for t in titles]
+        print(f"signed in as {safe_titles}, not \"{channel}\" - nothing saved. Start again and choose the Google account that owns {channel}.")
         return 1
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / f"{slug}.json").write_text(json.dumps(
