@@ -67,7 +67,8 @@ jobs:
           VIDEO_ID: ${{ inputs.publish_video_id }}
         run: |
           python - <<'PY'
-          import json, os, urllib.parse, urllib.request, urllib.error
+          import json, os, time, urllib.parse, urllib.request, urllib.error
+          from datetime import datetime, timedelta, timezone
           from pathlib import Path
 
           channels = {
@@ -143,7 +144,13 @@ jobs:
           if previous.get("privacyStatus") != "public":
               writable = ("license", "embeddable", "publicStatsViewable", "selfDeclaredMadeForKids", "containsSyntheticMedia")
               status = {key: previous[key] for key in writable if key in previous}
-              status["privacyStatus"] = "public"
+              # YouTube requires a scheduled video's privacyStatus to remain private
+              # when changing publishAt. A past publishAt is documented to trigger
+              # immediate publication, unlike simply omitting the existing schedule.
+              status["privacyStatus"] = "private"
+              status["publishAt"] = (
+                  datetime.now(timezone.utc) - timedelta(minutes=10)
+              ).replace(microsecond=0).isoformat().replace("+00:00", "Z")
               api(
                   "https://www.googleapis.com/youtube/v3/videos?part=status",
                   method="PUT",
@@ -151,15 +158,21 @@ jobs:
                   headers=headers,
               )
 
-          verify = api(f"https://www.googleapis.com/youtube/v3/videos?{encoded}", headers=headers).get("items", [])
-          if not verify:
-              raise SystemExit("Could not read back video after update")
-          final_video = verify[0]
-          final_status = final_video.get("status") or {}
+          final_video = None
+          final_status = {}
+          for attempt in range(18):
+              verify = api(f"https://www.googleapis.com/youtube/v3/videos?{encoded}", headers=headers).get("items", [])
+              if not verify:
+                  raise SystemExit("Could not read back video after update")
+              final_video = verify[0]
+              final_status = final_video.get("status") or {}
+              if final_status.get("privacyStatus") == "public":
+                  break
+              time.sleep(5)
           if (final_video.get("snippet") or {}).get("channelId") != target["channel_id"]:
               raise SystemExit("Post-update channel mismatch")
-          if final_status.get("privacyStatus") != "public" or final_status.get("publishAt"):
-              raise SystemExit(f"YouTube did not confirm immediate public visibility: {final_status}")
+          if final_status.get("privacyStatus") != "public":
+              raise SystemExit(f"YouTube has not yet confirmed public visibility: {final_status}")
 
           print(json.dumps({
               "result": "public_confirmed",
