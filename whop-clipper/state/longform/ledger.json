@@ -7,7 +7,7 @@
       "channel_title": "Astro Tobby",
       "owner_account": "goodlucktobby@gmail.com",
       "slot": "10:00",
-      "publish_at": "2026-11-20T07:00:00+00:00",
+      "publish_at": "2026-11-20T07:00:00Z",
       "title": "Inside the 2027 Grammy Race, Music Subgenres, and Industry Milestones",
       "topic_title": "This Indian Grammy nominee already has four Recording Academy certificates - Music Ally",
       "lead": {
@@ -97,9 +97,9 @@
         "word_count": 2135,
         "model": "claude-sonnet-5"
       },
-      "status": "uploading",
+      "status": "scheduled",
       "created_at": "2026-11-19T13:06:57.400064+00:00",
-      "updated_at": "2026-11-19T13:40:57.024556+00:00",
+      "updated_at": "2026-11-19T13:41:17.288593+00:00",
       "media": {
         "duration_seconds": 881.92,
         "width": 1920,
@@ -532,7 +532,10 @@
       "rendered_at": "2026-11-19T13:40:53.292190+00:00",
       "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A",
       "validated_at": "2026-11-19T13:40:55.646085+00:00",
-      "upload_started_at": "2026-11-19T13:40:57.024386+00:00"
+      "upload_started_at": "2026-11-19T13:40:57.024386+00:00",
+      "video_id": "tQE-5g0c6_M",
+      "url": "https://youtu.be/tQE-5g0c6_M",
+      "scheduled_at": "2026-11-19T13:41:17.288414+00:00"
     }
   },
   "recent_topics": [
