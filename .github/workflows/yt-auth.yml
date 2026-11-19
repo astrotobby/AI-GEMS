@@ -11,7 +11,7 @@ on:
         required: true
         options:
           - "Astro Tobby"
-          - "DIGITAL NOMAD"
+          - "DIJITAL NOMAD"
         default: "Astro Tobby"
       code:
         description: "step 2 only: paste the full http://localhost/?code=... address your browser ended on (leave empty for step 1)"
