@@ -11,6 +11,7 @@ The token is checked (it must belong to the channel you asked for) and stored, w
 client that issued it, in work/yt_tokens/<CHANNEL>.json, which the run cache keeps for the clipper.
 The token itself is never printed. Standard library only.
 """
+import base64
 import json
 import os
 import sys
@@ -96,6 +97,7 @@ def main() -> int:
                f"that is expected.\n3) copy that page's full address and run the \"YouTube auth\" workflow again, "
                f"pasting it in the \"code\" box. Do it within ~10 minutes.")
         print(f"using client {label}")
+        print("AUTH_URL_BASE64=" + base64.b64encode(url.encode("utf-8")).decode("ascii"))
         print("Sign-in link sent to Telegram." if telegram(msg) else msg)
         return 0
 
