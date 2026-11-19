@@ -42,7 +42,7 @@ kinds = ["clipping"]
 
 [[targets]]
 platform = "youtube"
-channel = "DIJITOL NOMAD"    # @dijitolnomad001 - UGC videos
+channel = "DIGITAL NOMAD"    # @dijitolnomad001 - UGC videos
 kinds = ["ugc"]
 
 [[targets]]
