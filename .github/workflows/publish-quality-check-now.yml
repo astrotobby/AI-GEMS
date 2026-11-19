@@ -20,14 +20,21 @@ jobs:
   publish-now:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout AI-GEMS
+        uses: actions/checkout@v4
+
+      - name: Restore current verified YouTube OAuth token cache
+        uses: actions/cache/restore@v4
+        with:
+          path: whop-clipper/work
+          key: publish-now-${{ github.run_id }}
+          restore-keys: |
+            clipper-auth-
+
       - name: Promote the verified channel video to public
         env:
           CHANNEL: ${{ inputs.channel }}
           VIDEO_ID: ${{ inputs.video_id }}
-          YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY: ${{ secrets.YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY }}
-          YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD: ${{ secrets.YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD }}
-          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
-          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
         run: |
           python - <<'PY'
           import json
@@ -35,17 +42,18 @@ jobs:
           import urllib.parse
           import urllib.request
           import urllib.error
+          from pathlib import Path
 
           CHANNELS = {
               "astrotobby": {
                   "title": "Astro Tobby",
                   "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A",
-                  "token_env": "YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY",
+                  "token_file": "ASTRO_TOBBY.json",
               },
               "digital_nomad": {
                   "title": "DIJITOL NOMAD",
                   "channel_id": "UCE_cklDludc6nkU1_4K6JzA",
-                  "token_env": "YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD",
+                  "token_file": "DIJITOL_NOMAD.json",
               },
           }
 
@@ -67,11 +75,15 @@ jobs:
               raise SystemExit("Invalid YouTube video ID")
 
           target = CHANNELS[channel_key]
-          refresh_token = os.environ.get(target["token_env"], "")
-          client_id = os.environ.get("YOUTUBE_CLIENT_ID", "")
-          client_secret = os.environ.get("YOUTUBE_CLIENT_SECRET", "")
+          token_path = Path("whop-clipper/work/yt_tokens") / target["token_file"]
+          if not token_path.is_file():
+              raise SystemExit(f"Missing cached OAuth token file for {target['title']}: {token_path}")
+          cached = json.loads(token_path.read_text(encoding="utf-8"))
+          refresh_token = cached.get("refresh_token", "")
+          client_id = cached.get("client_id", "")
+          client_secret = cached.get("client_secret", "")
           if not all((refresh_token, client_id, client_secret)):
-              raise SystemExit(f"Missing OAuth credentials for {target['title']}")
+              raise SystemExit(f"Cached OAuth credentials are incomplete for {target['title']}")
 
           token_body = urllib.parse.urlencode({
               "client_id": client_id,
