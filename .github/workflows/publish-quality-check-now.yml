@@ -22,12 +22,12 @@ jobs:
     steps:
       - name: Promote the verified channel video to public
         env:
-          CHANNEL: \${{ inputs.channel }}
-          VIDEO_ID: \${{ inputs.video_id }}
-          YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY: \${{ secrets.YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY }}
-          YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD: \${{ secrets.YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD }}
-          YOUTUBE_CLIENT_ID: \${{ secrets.YOUTUBE_CLIENT_ID }}
-          YOUTUBE_CLIENT_SECRET: \${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          CHANNEL: ${{ inputs.channel }}
+          VIDEO_ID: ${{ inputs.video_id }}
+          YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY: ${{ secrets.YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY }}
+          YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD: ${{ secrets.YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
         run: |
           python - <<'PY'
           import json
