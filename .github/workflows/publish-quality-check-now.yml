@@ -27,9 +27,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: whop-clipper/work
-          key: publish-now-${{ github.run_id }}
-          restore-keys: |
-            clipper-auth-
+          key: clipper-auth-44565759103
 
       - name: Promote the verified channel video to public
         env:
