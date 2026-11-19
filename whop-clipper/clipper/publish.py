@@ -117,9 +117,9 @@ def _env_refresh_all(slug: str) -> list[tuple[str, tuple[str, str] | None]]:
     names = [f"YOUTUBE_REFRESH_TOKEN_{slug}", f"REFRESH_TOKEN_{slug}", f"REFRESHTOKEN_{flat}",
              f"YOUTUBE_REFRESHTOKEN_{flat}"] if slug else []
     # Keep accepting the legacy "DIJITOL" secret names while the public YouTube
-    # display title is DIJITAL NOMAD. New tokens are cached under DIJITAL_NOMAD.json.
-    legacy_names = (["YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD", "REFRESHTOKEN_DIJITOLNOMAD", "YOUTUBE_REFRESH_TOKEN_DIGITAL_NOMAD"]
-                    if slug == "DIJITAL_NOMAD" else [])
+    # project label is DIJITOL NOMAD. Tokens are cached under DIJITOL_NOMAD.json.
+    legacy_names = (["YOUTUBE_REFRESH_TOKEN_DIJITAL_NOMAD", "YOUTUBE_REFRESH_TOKEN_DIGITAL_NOMAD"]
+                    if slug == "DIJITOL_NOMAD" else [])
     out: list[tuple[str, tuple[str, str] | None]] = []
     for n in names + legacy_names + ["YOUTUBE_REFRESH_TOKEN"]:
         raw = os.environ.get(n, "")
@@ -449,16 +449,22 @@ _CHANNEL_OK: dict[tuple, str] = {}
 
 
 def yt_verify_channel(target: dict, creds: tuple[str, str, str]) -> str:
-    """The title of the channel the credentials post to; raises unless it is the configured channel."""
+    """Verify by immutable channel ID when configured; display titles may differ from project labels."""
     want = (target.get("channel") or "").strip()
-    key = (want, creds)
+    expected_id = str(target.get("channel_id") or "").strip()
+    key = (want, expected_id, creds)
     if key not in _CHANNEL_OK:
-        got = _yt_channel_title(creds)
-        if want and _norm(got) != _norm(want):
-            raise PublishError(f"the YouTube credentials for {want!r} belong to the channel {got!r} - nothing "
-                               f"uploaded. Sign in again and pick {want!r} (YouTube auth workflow), or fix the secret "
-                               f"YOUTUBE_REFRESH_TOKEN_{_slug(target)}.")
-        _CHANNEL_OK[key] = got
+        got_id, got_title = _yt_channel_identity(creds)
+        if expected_id:
+            if got_id != expected_id:
+                raise PublishError(
+                    f"YouTube channel ID mismatch for {want!r}: expected {expected_id}, received {got_id or '(empty)'}; "
+                    "upload blocked."
+                )
+        elif want and _norm(got_title) != _norm(want):
+            raise PublishError(f"the YouTube credentials for {want!r} belong to the channel {got_title!r} - nothing "
+                               f"uploaded. Sign in again and choose the correct channel.")
+        _CHANNEL_OK[key] = got_title
     return _CHANNEL_OK[key]
 
 
@@ -470,15 +476,22 @@ def yt_channel_title(target: dict) -> str:
     return _yt_channel_title(creds)
 
 
-def _yt_channel_title(creds: tuple[str, str, str]) -> str:
-    req = urllib.request.Request("https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true",
+def _yt_channel_identity(creds: tuple[str, str, str]) -> tuple[str, str]:
+    req = urllib.request.Request("https://www.googleapis.com/youtube/v3/channels?part=id,snippet&mine=true",
                                  headers={"Authorization": "Bearer " + _yt_access_token(creds)})
     try:
         with urllib.request.urlopen(req, timeout=60) as r:
             items = _json.load(r).get("items") or []
     except urllib.error.HTTPError as e:
         raise PublishError(f"YouTube channel lookup failed ({e.code}): {e.read().decode()[:200]}")
-    return str((items[0]["snippet"]["title"]) if items else "(no channel)").strip()
+    if not items:
+        return "", "(no channel)"
+    item = items[0]
+    return str(item.get("id") or ""), str((item.get("snippet") or {}).get("title") or "").strip()
+
+
+def _yt_channel_title(creds: tuple[str, str, str]) -> str:
+    return _yt_channel_identity(creds)[1]
 
 
 def ig_user_id(c: Composio, target: dict) -> str:
