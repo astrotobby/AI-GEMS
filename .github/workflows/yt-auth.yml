@@ -60,6 +60,15 @@ jobs:
           CHANNEL: ${{ inputs.channel }}
         run: python yt_auth.py "$CHANNEL"
 
+      - name: Upload one-time Google sign-in link
+        if: ${{ success() && inputs.publish_video_id == '' && inputs.code == '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-auth-link-${{ github.run_id }}
+          path: whop-clipper/yt_auth_link.html
+          if-no-files-found: error
+          retention-days: 1
+
       - name: Publish an existing video publicly now
         if: ${{ inputs.publish_video_id != '' }}
         env:
