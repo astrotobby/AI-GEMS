@@ -156,7 +156,7 @@ jobs:
               raise SystemExit("Missing GEMINI_API_KEY secret in AI-GEMS. Add the existing Gemini key from astro-blog to this repository's Actions secrets.")
           channel = os.environ["CHANNEL"]
           expected = {"astrotobby": ("Astro Tobby", "goodlucktobby@gmail.com"),
-                      "digital_nomad": ("DIGITAL NOMAD", "chanzera3@gmail.com")}
+                      "digital_nomad": ("DIJITAL NOMAD", "chanzera3@gmail.com")}
           name, account = expected[channel]
           cfg = tomllib.loads(Path("config.toml").read_text(encoding="utf-8"))
           targets = [t for t in cfg.get("targets", []) if t.get("platform") == "youtube"]
