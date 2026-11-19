@@ -11,6 +11,7 @@ The token is checked (it must belong to the channel you asked for) and stored, w
 client that issued it, in work/yt_tokens/<CHANNEL>.json, which the run cache keeps for the clipper.
 The token itself is never printed. Standard library only.
 """
+import html
 import json
 import os
 import sys
@@ -130,7 +131,27 @@ def main() -> int:
                f"that is expected.\n3) copy that page's full address and run the \"YouTube auth\" workflow again, "
                f"pasting it in the \"code\" box. Do it within ~10 minutes.")
         print(f"using client {label}")
-        print(f"Sign-in URL: {url}")
+        # Keep the one-time authorization URL out of Actions logs, where GitHub
+        # masks the OAuth client ID. The workflow uploads this HTML as a short-lived
+        # artifact visible only to repository users.
+        link_path = Path("yt_auth_link.html")
+        escaped_url = html.escape(url, quote=True)
+        escaped_channel = html.escape(channel)
+        link_path.write_text(
+            "<!doctype html><html lang='en'><meta charset='utf-8'>"
+            "<meta name='viewport' content='width=device-width, initial-scale=1'>"
+            f"<title>YouTube authorization — {escaped_channel}</title>"
+            "<body style='font:16px system-ui;max-width:680px;margin:48px auto;padding:0 20px'>"
+            f"<h1>Authorize {escaped_channel}</h1>"
+            "<p>Open the Google link below, sign in with the account that owns this channel, "
+            "choose the correct YouTube channel if prompted, and approve access.</p>"
+            f"<p><a href='{escaped_url}'>Continue to Google authorization</a></p>"
+            "<p>After approval, copy the complete browser address beginning "
+            "<code>http://localhost/?code=</code>. A connection error at localhost is expected.</p>"
+            "</body></html>",
+            encoding="utf-8",
+        )
+        print("Sign-in link saved in the workflow artifact.")
         if telegram(msg):
             print("Sign-in link also sent to Telegram.")
         else:
