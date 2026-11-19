@@ -61,10 +61,10 @@ jobs:
         run: python yt_auth.py "$CHANNEL"
 
       - name: Publish an existing video publicly now
-        if: \${{ inputs.publish_video_id != '' }}
+        if: ${{ inputs.publish_video_id != '' }}
         env:
-          CHANNEL: \${{ inputs.channel }}
-          VIDEO_ID: \${{ inputs.publish_video_id }}
+          CHANNEL: ${{ inputs.channel }}
+          VIDEO_ID: ${{ inputs.publish_video_id }}
         run: |
           python - <<'PY'
           import json, os, urllib.parse, urllib.request, urllib.error
