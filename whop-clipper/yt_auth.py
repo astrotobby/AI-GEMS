@@ -24,7 +24,7 @@ REDIRECT = "http://localhost"
 OUT = Path("work/yt_tokens")
 CHANNELS = {
     "ASTROTOBBY": ("Astro Tobby", "goodlucktobby@gmail.com"),
-    "DIJITOLNOMAD": ("DIJITOL NOMAD", "chanzera3@gmail.com"),
+    "DIJITOLNOMAD": ("DIGITAL NOMAD", "chanzera3@gmail.com"),
 }
 
 
