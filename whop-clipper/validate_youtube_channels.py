@@ -14,7 +14,7 @@ from clipper import publish
 
 OWNER_BY_CHANNEL = {
     "ASTRO_TOBBY": "goodlucktobby@gmail.com",
-    "DIJITAL_NOMAD": "chanzera3@gmail.com",
+    "DIJITOL_NOMAD": "chanzera3@gmail.com",
 }
 
 
@@ -56,7 +56,12 @@ def main() -> int:
                 raise publish.yt_not_configured(target)
             verified_title = publish.yt_verify_channel(target, creds)
             channel_id, actual_title = channel_identity(creds)
-            if actual_title.strip().casefold() != expected_title.casefold():
+            expected_id = str(target.get("channel_id") or "").strip()
+            if expected_id and channel_id != expected_id:
+                raise RuntimeError(
+                    f"expected YouTube channel ID {expected_id!r}, authenticated channel ID is {channel_id!r}"
+                )
+            if not expected_id and actual_title.strip().casefold() != expected_title.casefold():
                 raise RuntimeError(
                     f"expected channel {expected_title!r}, authenticated channel is {actual_title!r}"
                 )
