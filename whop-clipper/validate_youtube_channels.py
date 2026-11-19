@@ -14,7 +14,7 @@ from clipper import publish
 
 OWNER_BY_CHANNEL = {
     "ASTRO_TOBBY": "goodlucktobby@gmail.com",
-    "DIJITOL_NOMAD": "chanzera3@gmail.com",
+    "DIGITAL_NOMAD": "chanzera3@gmail.com",
 }
 
 
