@@ -6,7 +6,12 @@ on:
   workflow_dispatch:
     inputs:
       channel:
-        description: "YouTube channel title to connect"
+        description: "Select the exact configured YouTube channel"
+        type: choice
+        required: true
+        options:
+          - "Astro Tobby"
+          - "DIJITOL NOMAD"
         default: "Astro Tobby"
       code:
         description: "step 2 only: paste the full http://localhost/?code=... address your browser ended on (leave empty for step 1)"
@@ -48,8 +53,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           CHANNEL: ${{ inputs.channel }}
-          CODE: ${{ inputs.code }}
-        run: python yt_auth.py "$CHANNEL" "$CODE"
+        run: python yt_auth.py "$CHANNEL"
       - uses: actions/cache/save@v4
         if: success() && inputs.code != ''
         with:
