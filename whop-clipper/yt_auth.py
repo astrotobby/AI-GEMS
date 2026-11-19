@@ -23,11 +23,16 @@ SCOPE = "https://www.googleapis.com/auth/youtube"  # upload + read statistics
 REDIRECT = "http://localhost"
 OUT = Path("work/yt_tokens")
 CHANNELS = {
-    "ASTROTOBBY": ("Astro Tobby", "goodlucktobby@gmail.com"),
-    "DIJITALNOMAD": ("DIJITAL NOMAD", "chanzera3@gmail.com"),
-    "DIJITOLNOMAD": ("DIJITAL NOMAD", "chanzera3@gmail.com"),
-    "DIGITALNOMAD": ("DIJITAL NOMAD", "chanzera3@gmail.com"),
-    "DIJITOLNOMAD001": ("DIJITAL NOMAD", "chanzera3@gmail.com"),
+    "ASTROTOBBY": {"label": "Astro Tobby", "login_hint": "goodlucktobby@gmail.com",
+                   "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A"},
+    "DIJITOLNOMAD": {"label": "DIJITOL NOMAD", "login_hint": "chanzera3@gmail.com",
+                     "channel_id": "UCE_cklDludc6nkU1_4K6JzA"},
+    "DIJITALNOMAD": {"label": "DIJITOL NOMAD", "login_hint": "chanzera3@gmail.com",
+                     "channel_id": "UCE_cklDludc6nkU1_4K6JzA"},
+    "DIGITALNOMAD": {"label": "DIJITOL NOMAD", "login_hint": "chanzera3@gmail.com",
+                     "channel_id": "UCE_cklDludc6nkU1_4K6JzA"},
+    "DIJITOLNOMAD001": {"label": "DIJITOL NOMAD", "login_hint": "chanzera3@gmail.com",
+                        "channel_id": "UCE_cklDludc6nkU1_4K6JzA"},
 }
 
 
@@ -106,9 +111,11 @@ def main() -> int:
     given = (sys.argv[2] if len(sys.argv) > 2 else "").strip() or workflow_input_code()
     channel_info = CHANNELS.get(channel_key(requested_channel))
     if not channel_info:
-        print('Choose exactly one configured channel: "Astro Tobby" or "DIJITAL NOMAD".')
+        print('Choose exactly one configured channel: "Astro Tobby" or "DIJITOL NOMAD".')
         return 2
-    channel, login_hint = channel_info
+    channel = channel_info["label"]
+    login_hint = channel_info["login_hint"]
+    expected_channel_id = channel_info["channel_id"]
     slug = "".join(ch if ch.isalnum() else "_" for ch in channel.upper()).strip("_")
     picked = pick_client(channel)
     if not picked:
@@ -141,18 +148,24 @@ def main() -> int:
         print("exchange failed:", tok.get("error"), tok.get("error_description", ""),
               "- the code is single-use and expires in minutes; run step 1 again for a fresh link")
         return 1
-    req = urllib.request.Request("https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true",
+    req = urllib.request.Request("https://www.googleapis.com/youtube/v3/channels?part=id,snippet&mine=true",
                                  headers={"Authorization": "Bearer " + tok["access_token"]})
     with urllib.request.urlopen(req, timeout=60) as r:
-        titles = [i["snippet"]["title"] for i in json.load(r).get("items", [])]
-    if not any(channel_key(t) == channel_key(channel) for t in titles):
-        safe_titles = [t.strip() for t in titles]
-        print(f"signed in as {safe_titles}, not \"{channel}\" - nothing saved. Start again and choose the Google account that owns {channel}.")
+        items = json.load(r).get("items", [])
+    selected = next((item for item in items if item.get("id") == expected_channel_id), None)
+    if not selected:
+        found = [{"title": str((item.get("snippet") or {}).get("title") or "").strip(),
+                  "channel_id": str(item.get("id") or "")} for item in items]
+        print(f"Channel identity mismatch. Expected channel ID {expected_channel_id}; Google returned {found}. "
+              f"Nothing saved. Switch to the YouTube channel associated with {channel}.")
         return 1
+    youtube_title = str((selected.get("snippet") or {}).get("title") or "").strip()
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / f"{slug}.json").write_text(json.dumps(
-        {"client_id": cid, "client_secret": secret, "refresh_token": tok["refresh_token"], "channel": titles[0]}))
-    print(f"OK: saved credentials for {titles[0]!r} (client {label}). The clipper uses them from the next run.")
+        {"client_id": cid, "client_secret": secret, "refresh_token": tok["refresh_token"],
+         "channel": channel, "youtube_title": youtube_title, "channel_id": expected_channel_id}))
+    print(f"OK: saved credentials for {channel!r}; verified YouTube channel ID {expected_channel_id} "
+          f"(YouTube display title: {youtube_title!r}; client {label}). The clipper uses them from the next run.")
     telegram(f"YouTube \"{channel}\" connected. The clipper can upload now.")
     return 0
 
