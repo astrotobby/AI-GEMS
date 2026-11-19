@@ -27,8 +27,6 @@ CHANNELS = {
                    "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A"},
     "DIJITOLNOMAD": {"label": "DIJITOL NOMAD", "login_hint": "chanzera3@gmail.com",
                      "channel_id": "UCE_cklDludc6nkU1_4K6JzA"},
-    "DIJITALNOMAD": {"label": "DIJITOL NOMAD", "login_hint": "chanzera3@gmail.com",
-                     "channel_id": "UCE_cklDludc6nkU1_4K6JzA"},
     "DIGITALNOMAD": {"label": "DIJITOL NOMAD", "login_hint": "chanzera3@gmail.com",
                      "channel_id": "UCE_cklDludc6nkU1_4K6JzA"},
     "DIJITOLNOMAD001": {"label": "DIJITOL NOMAD", "login_hint": "chanzera3@gmail.com",
