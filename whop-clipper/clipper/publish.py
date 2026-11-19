@@ -117,9 +117,9 @@ def _env_refresh_all(slug: str) -> list[tuple[str, tuple[str, str] | None]]:
     names = [f"YOUTUBE_REFRESH_TOKEN_{slug}", f"REFRESH_TOKEN_{slug}", f"REFRESHTOKEN_{flat}",
              f"YOUTUBE_REFRESHTOKEN_{flat}"] if slug else []
     # Keep accepting the legacy "DIJITOL" secret names while the public YouTube
-    # display title is DIGITAL NOMAD. New tokens are cached under DIGITAL_NOMAD.json.
-    legacy_names = (["YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD", "REFRESHTOKEN_DIJITOLNOMAD"]
-                    if slug == "DIGITAL_NOMAD" else [])
+    # display title is DIJITAL NOMAD. New tokens are cached under DIJITAL_NOMAD.json.
+    legacy_names = (["YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD", "REFRESHTOKEN_DIJITOLNOMAD", "YOUTUBE_REFRESH_TOKEN_DIGITAL_NOMAD"]
+                    if slug == "DIJITAL_NOMAD" else [])
     out: list[tuple[str, tuple[str, str] | None]] = []
     for n in names + legacy_names + ["YOUTUBE_REFRESH_TOKEN"]:
         raw = os.environ.get(n, "")
