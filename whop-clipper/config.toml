@@ -42,7 +42,8 @@ kinds = ["clipping"]
 
 [[targets]]
 platform = "youtube"
-channel = "DIJITAL NOMAD"    # @dijitolnomad001 - UGC videos
+channel = "DIJITOL NOMAD"     # @dijitolnomad001 - UGC videos
+channel_id = "UCE_cklDludc6nkU1_4K6JzA"
 kinds = ["ugc"]
 
 [[targets]]
