@@ -1050,7 +1050,7 @@
       "channel_title": "DIJITOL NOMAD",
       "owner_account": "chanzera3@gmail.com",
       "slot": "12:00",
-      "publish_at": "2026-11-20T09:00:00+00:00",
+      "publish_at": "2026-11-20T09:00:00Z",
       "title": "Dutch Watchdog Warns Against AI Smart Glasses Dangerous Errors",
       "topic_title": "Dutch watchdog tells people not to buy AI smart glasses",
       "lead": {
@@ -1098,9 +1098,9 @@
         "word_count": 2110,
         "model": "claude-sonnet-5"
       },
-      "status": "uploading",
+      "status": "scheduled",
       "created_at": "2026-11-19T16:48:51.511792+00:00",
-      "updated_at": "2026-11-19T17:17:41.887685+00:00",
+      "updated_at": "2026-11-19T17:17:52.880545+00:00",
       "media": {
         "duration_seconds": 787.88,
         "width": 1920,
@@ -1533,7 +1533,10 @@
       "rendered_at": "2026-11-19T17:17:37.375416+00:00",
       "channel_id": "UCE_cklDludc6nkU1_4K6JzA",
       "validated_at": "2026-11-19T17:17:40.474197+00:00",
-      "upload_started_at": "2026-11-19T17:17:41.887536+00:00"
+      "upload_started_at": "2026-11-19T17:17:41.887536+00:00",
+      "video_id": "zS6vnIMy9jI",
+      "url": "https://youtu.be/zS6vnIMy9jI",
+      "scheduled_at": "2026-11-19T17:17:52.880398+00:00"
     }
   },
   "recent_topics": [
