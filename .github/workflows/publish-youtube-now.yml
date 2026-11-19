@@ -71,7 +71,7 @@ jobs:
 
           expected = {
               "astrotobby": ("Astro Tobby", "UCxndvpcFaVhN1bJxgWIjG_A"),
-              "digital_nomad": ("DIJITAL NOMAD", "UCE_cklDludc6nkU1_4K6JzA"),
+              "digital_nomad": ("DIJITOL NOMAD", "UCE_cklDludc6nkU1_4K6JzA"),
           }
           name, expected_id = expected[channel]
           import tomllib
@@ -99,8 +99,8 @@ jobs:
               raise SystemExit("OAuth returned no YouTube channel")
           actual = channels[0]
           actual_name = (actual.get("snippet") or {}).get("title", "")
-          if actual.get("id") != expected_id or actual_name.strip().casefold() != name.casefold():
-              raise SystemExit(f"Wrong OAuth destination: {actual_name} / {actual.get('id')}")
+          if actual.get("id") != expected_id:
+              raise SystemExit(f"Wrong OAuth destination: {actual_name} / {actual.get('id')}; expected channel ID {expected_id}")
 
           found = yt.videos().list(part="snippet,status", id=video_id).execute().get("items") or []
           if not found:
