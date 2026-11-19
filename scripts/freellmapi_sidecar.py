@@ -181,7 +181,7 @@ def bootstrap() -> bool:
 
         # Do not hand the model an API key unless this fresh catalog actually
         # contains models. It avoids routing into an empty/free catalog snapshot.
-        models_deadline = time.monotonic() + 180
+        models_deadline = time.monotonic() + 60
         model_count = 0
         while time.monotonic() < models_deadline:
             try:
@@ -193,7 +193,7 @@ def bootstrap() -> bool:
                 pass
             time.sleep(5)
         if model_count < MODEL_COUNT_REQUIRED:
-            raise RuntimeError("FreeLLMAPI catalog did not expose any usable models")
+            raise RuntimeError(f"FreeLLMAPI catalog exposed {model_count} models after 60s; skipping optional sidecar")
 
         print(f"::add-mask::{api_key}")
         with open(github_env, "a", encoding="utf-8") as stream:
