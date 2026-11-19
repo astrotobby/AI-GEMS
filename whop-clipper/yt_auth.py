@@ -24,7 +24,10 @@ REDIRECT = "http://localhost"
 OUT = Path("work/yt_tokens")
 CHANNELS = {
     "ASTROTOBBY": ("Astro Tobby", "goodlucktobby@gmail.com"),
-    "DIJITOLNOMAD": ("DIGITAL NOMAD", "chanzera3@gmail.com"),
+    "DIJITALNOMAD": ("DIJITAL NOMAD", "chanzera3@gmail.com"),
+    "DIJITOLNOMAD": ("DIJITAL NOMAD", "chanzera3@gmail.com"),
+    "DIGITALNOMAD": ("DIJITAL NOMAD", "chanzera3@gmail.com"),
+    "DIJITOLNOMAD001": ("DIJITAL NOMAD", "chanzera3@gmail.com"),
 }
 
 
@@ -103,7 +106,7 @@ def main() -> int:
     given = (sys.argv[2] if len(sys.argv) > 2 else "").strip() or workflow_input_code()
     channel_info = CHANNELS.get(channel_key(requested_channel))
     if not channel_info:
-        print('Choose exactly one configured channel: "Astro Tobby" or "DIJITOL NOMAD".')
+        print('Choose exactly one configured channel: "Astro Tobby" or "DIJITAL NOMAD".')
         return 2
     channel, login_hint = channel_info
     slug = "".join(ch if ch.isalnum() else "_" for ch in channel.upper()).strip("_")
