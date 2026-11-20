@@ -93,8 +93,8 @@ jobs:
           path: astro-blog
           persist-credentials: false
 
-      # These files contain public stock-asset IDs only (no credentials).
-      # Keep the 30-day no-repeat visual history across fresh GitHub runners.
+      # This cache contains non-secret provider IDs and perceptual hashes, not credentials.
+      # Keep visual no-repeat history shared by both channels across fresh cloud runners.
       - name: Restore cross-run visual asset history
         uses: actions/cache/restore@v4
         with:
@@ -107,7 +107,7 @@ jobs:
 
       - name: Seed duplicate-scene exclusions and verify visual history
         working-directory: astro-blog
-        run: python scripts/seed_footage_history.py
+        run: python scripts/seed_footage_history.py --ledger ../whop-clipper/state/longform/ledger.json
 
       - name: Set up Python
         uses: actions/setup-python@v5
