@@ -103,6 +103,9 @@ jobs:
       - name: Install YouTube API client
         run: python -m pip install --disable-pip-version-check google-api-python-client google-auth
 
+      - name: Install YouTube Data API client
+        run: python -m pip install --disable-pip-version-check google-api-python-client google-auth
+
       - name: Upload and verify custom thumbnail
         working-directory: whop-clipper
         env:
