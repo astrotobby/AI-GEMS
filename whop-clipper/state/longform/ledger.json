@@ -2645,17 +2645,532 @@
         "word_count": 2151,
         "model": "claude-sonnet-5"
       },
-      "status": "scheduled",
+      "status": "published",
       "created_at": "2026-11-20T04:38:50.656365+00:00",
       "updated_at": "2026-11-20T05:17:55.624565+00:00",
       "media": {
-        "duration_seconds": 899.17,
+        "duration_seconds": 897.22,
         "width": 1920,
         "height": 1080,
-        "bytes": 323631456
+        "bytes": 321973493
       },
       "voice_provider": "nvidia-magpie",
       "stock_sources": [
+        {
+          "id": "wikimedia-commons:161852416",
+          "provider": "Wikimedia Commons",
+          "creator": "Edshots",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:EDSHOT_PRODUCTION_STUDIO_42.jpg",
+          "title": "EDSHOT PRODUCTION STUDIO 42.jpg",
+          "license": "by",
+          "license_version": "CC BY 4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0",
+          "attribution": "Edshots / CC BY 4.0",
+          "query": "media production studio",
+          "scene": 0,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "0cf987a6d3769c80"
+          ]
+        },
+        {
+          "id": "openverse:003da916-0678-4f10-b97e-7e232afb459f",
+          "provider": "Openverse",
+          "creator": "@yakobusan Jakob Montrasio",
+          "creator_url": "https://www.flickr.com/photos/37803129@N00",
+          "source_url": "https://www.flickr.com/photos/37803129@N00/3099957032",
+          "title": "MK Media: Run Sound!",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"MK Media: Run Sound!\" by @yakobusan Jakob Montrasio is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "television production studio",
+          "scene": 1,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "650d9233cc4e9b99"
+          ]
+        },
+        {
+          "id": "openverse:180781ad-5baa-4e1f-933a-37d532146fb3",
+          "provider": "Openverse",
+          "creator": "Artem Beliaikin",
+          "creator_url": "https://www.flickr.com/photos/157635012@N07",
+          "source_url": "https://www.flickr.com/photos/157635012@N07/48863714157",
+          "title": "Sound mixer",
+          "license": "cc0",
+          "license_version": "1.0",
+          "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "attribution": "\"Sound mixer\" by Artem Beliaikin is marked with CC0 1.0. To view the terms, visit https://creativecommons.org/publicdomain/zero/1.0/.",
+          "query": "music recording studio mixing console",
+          "scene": 2,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "5a6d84361ccbce32"
+          ]
+        },
+        {
+          "id": "openverse:da98320f-74b4-431d-a7be-74d05952097b",
+          "provider": "Openverse",
+          "creator": "polapix",
+          "creator_url": "https://www.flickr.com/photos/93918130@N00",
+          "source_url": "https://www.flickr.com/photos/93918130@N00/5723325246",
+          "title": "Circuit Diagram",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Circuit Diagram\" by polapix is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "computer microchip",
+          "scene": 3,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "339dc5728cc8e5b0"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:195947244",
+          "provider": "Wikimedia Commons",
+          "creator": "Daylight Studio",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Flatiron_studio_in_Manhattan_for_photography,_film,_and_events.png",
+          "title": "Flatiron studio in Manhattan for photography, film, and events.png",
+          "license": "by",
+          "license_version": "CC BY 4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0",
+          "attribution": "Daylight Studio / CC BY 4.0",
+          "query": "media production studio",
+          "scene": 4,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "20f2dcdf071ce186"
+          ]
+        },
+        {
+          "id": "openverse:5e94a459-a776-4494-bed5-dc1d0eb3de70",
+          "provider": "Openverse",
+          "creator": "conceptphoto.info",
+          "creator_url": "https://www.flickr.com/photos/39453974@N04",
+          "source_url": "https://www.flickr.com/photos/39453974@N04/53556147612",
+          "title": "Police action in Frankfurt",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Police action in Frankfurt\" by conceptphoto.info is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "AI video generation",
+          "scene": 5,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "2d29cdad958a6266"
+          ]
+        },
+        {
+          "id": "openverse:cbfaf88c-cb93-461f-a8ab-551ac6cea654",
+          "provider": "Openverse",
+          "creator": "Unknown creator",
+          "creator_url": "",
+          "source_url": "https://www.rawpixel.com/image/5921683/photo-image-background-phone-public-domain",
+          "title": "Free man's hand typing keyboard",
+          "license": "cc0",
+          "license_version": "1.0",
+          "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "attribution": "\"Free man's hand typing keyboard\" is marked with CC0 1.0. To view the terms, visit https://creativecommons.org/publicdomain/zero/1.0/.",
+          "query": "typing keyboard",
+          "scene": 6,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "2b18f6e64a319c1b"
+          ]
+        },
+        {
+          "id": "openverse:c9d2e68d-e832-4646-84d5-b4fbde20420e",
+          "provider": "Openverse",
+          "creator": "USACE NY",
+          "creator_url": "https://www.flickr.com/photos/40704398@N05",
+          "source_url": "https://www.flickr.com/photos/40704398@N05/6684693337",
+          "title": "Supporting Temporary Housing Mission in Prattsville, NY after flooding from Tropical Storm Irene",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Supporting Temporary Housing Mission in Prattsville, NY after flooding from Tropical Storm Irene\" by USACE NY is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "engineers looking at monitors",
+          "scene": 7,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "789fe0209adb3781"
+          ]
+        },
+        {
+          "id": "openverse:482521a6-3f0b-424a-a5d3-4f694a31048a",
+          "provider": "Openverse",
+          "creator": "Rich007",
+          "creator_url": "https://www.flickr.com/photos/36576534@N00",
+          "source_url": "https://www.flickr.com/photos/36576534@N00/1795691766",
+          "title": "Macca and mandolin",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Macca and mandolin\" by Rich007 is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "live concert crowd on stage",
+          "scene": 8,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "442cdacb1cd99635"
+          ]
+        },
+        {
+          "id": "openverse:e63f4eba-2385-4d99-8ebb-b81bbe9e397a",
+          "provider": "Openverse",
+          "creator": "DeclanTM",
+          "creator_url": "https://www.flickr.com/photos/36006949@N00",
+          "source_url": "https://www.flickr.com/photos/36006949@N00/5465451880",
+          "title": "Desk 2",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Desk 2\" by DeclanTM is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "network cables server room",
+          "scene": 9,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "6ee0102c1d1b27bf"
+          ]
+        },
+        {
+          "id": "openverse:d6fc381f-fd80-44ce-b238-ba9c5d058745",
+          "provider": "Openverse",
+          "creator": "Jamiecat *",
+          "creator_url": "https://www.flickr.com/photos/27330325@N08",
+          "source_url": "https://www.flickr.com/photos/27330325@N08/2721561679",
+          "title": "Country Music Festival de Mirande - 14/07/2008",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Country Music Festival de Mirande - 14/07/2008\" by Jamiecat * is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "live concert crowd and stage",
+          "scene": 10,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "2b15d08dc3b310fd"
+          ]
+        },
+        {
+          "id": "openverse:47cb44bd-1cb8-407b-8cc5-cdbce201c8b6",
+          "provider": "Openverse",
+          "creator": "pasukaru76",
+          "creator_url": "https://www.flickr.com/photos/38451115@N04",
+          "source_url": "https://www.flickr.com/photos/38451115@N04/3959355664",
+          "title": "Robot Arm",
+          "license": "cc0",
+          "license_version": "1.0",
+          "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "attribution": "\"Robot Arm\" by pasukaru76 is marked with CC0 1.0. To view the terms, visit https://creativecommons.org/publicdomain/zero/1.0/.",
+          "query": "robotic arm factory",
+          "scene": 11,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "3c9cc360ce993933"
+          ]
+        },
+        {
+          "id": "openverse:105c6cd8-486e-4b6e-9a0c-6e9910085458",
+          "provider": "Openverse",
+          "creator": "John Rabbit",
+          "creator_url": "https://www.flickr.com/photos/35116312@N02",
+          "source_url": "https://www.flickr.com/photos/35116312@N02/8659141481",
+          "title": "it's raining beats at simian mobile disco",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"it's raining beats at simian mobile disco\" by John Rabbit is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "live concert crowd and stage",
+          "scene": 12,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "5bc89b8d9b9b0891"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:99618818",
+          "provider": "Wikimedia Commons",
+          "creator": "Free-Photos from Pixabay",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:ComputerProgrammer.jpg",
+          "title": "ComputerProgrammer.jpg",
+          "license": "cc0",
+          "license_version": "CC0",
+          "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+          "attribution": "Free-Photos from Pixabay / CC0",
+          "query": "programmer typing code",
+          "scene": 13,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "354a98d5c546f2e4"
+          ]
+        },
+        {
+          "id": "openverse:d3a9f802-a674-4bd2-adf0-7cc3e2060d15",
+          "provider": "Openverse",
+          "creator": "vancouverfilmschool",
+          "creator_url": "https://www.flickr.com/photos/38174668@N05",
+          "source_url": "https://www.flickr.com/photos/38174668@N05/4423007590",
+          "title": "Writing for Film & Television - Students in 'The Biz' class",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Writing for Film & Television - Students in 'The Biz' class\" by vancouverfilmschool is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "presentation in conference room",
+          "scene": 14,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "71b62bfb99480cc4"
+          ]
+        },
+        {
+          "id": "openverse:22c84733-820f-4ff1-9798-ddd91d7f14d1",
+          "provider": "Openverse",
+          "creator": "NeoSpire",
+          "creator_url": "https://www.flickr.com/photos/39131599@N06",
+          "source_url": "https://www.flickr.com/photos/39131599@N06/3594831417",
+          "title": "DSCF1829",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"DSCF1829\" by NeoSpire is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "data center server racks",
+          "scene": 15,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "6eadbd559422809e"
+          ]
+        },
+        {
+          "id": "openverse:f44ab4c5-715f-4bf2-be27-191a6a6ea21d",
+          "provider": "Openverse",
+          "creator": "NASA Goddard Space Flight Center",
+          "creator_url": "https://www.flickr.com/photos/35278629@N08",
+          "source_url": "https://www.flickr.com/photos/35278629@N08/14030628013",
+          "title": "OPTIMUS PRIME Winners Visit NASA Goddard",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"OPTIMUS PRIME Winners Visit NASA Goddard\" by NASA Goddard Space Flight Center is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "television production studio",
+          "scene": 16,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "1f0b53952b4a5665"
+          ]
+        },
+        {
+          "id": "openverse:d6c93423-779f-4787-9b87-61f8b0583517",
+          "provider": "Openverse",
+          "creator": "Kristin Hardwick",
+          "creator_url": "https://www.kristinhardwick.com",
+          "source_url": "https://stocksnap.io/photo/hands-table-NCZGRBZZQI",
+          "title": "Hands Table",
+          "license": "cc0",
+          "license_version": "1.0",
+          "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "attribution": "\"Hands Table\" by Kristin Hardwick is marked with CC0 1.0. To view the terms, visit https://creativecommons.org/publicdomain/zero/1.0/.",
+          "query": "woman working on laptop cafe",
+          "scene": 17,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "4d7089c7d3cc6664"
+          ]
+        },
+        {
+          "id": "openverse:72ad7c94-4296-4657-905d-285ad79d2b01",
+          "provider": "Openverse",
+          "creator": "Artem Beliaikin",
+          "creator_url": "https://www.flickr.com/photos/157635012@N07",
+          "source_url": "https://www.flickr.com/photos/157635012@N07/48863714927",
+          "title": "Sound mixer",
+          "license": "cc0",
+          "license_version": "1.0",
+          "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "attribution": "\"Sound mixer\" by Artem Beliaikin is marked with CC0 1.0. To view the terms, visit https://creativecommons.org/publicdomain/zero/1.0/.",
+          "query": "music recording studio mixing console",
+          "scene": 18,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "115c32cb6de572a4"
+          ]
+        },
+        {
+          "id": "openverse:22f6bc9d-fcfb-4afc-b815-cf5ee158865b",
+          "provider": "Openverse",
+          "creator": "timoelliott",
+          "creator_url": "https://www.flickr.com/photos/52908326@N00",
+          "source_url": "https://www.flickr.com/photos/52908326@N00/4840182743",
+          "title": "IMG_9855",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"IMG_9855\" by timoelliott is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "analytics dashboard",
+          "scene": 19,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "7845b0334c65fb92"
+          ]
+        },
+        {
+          "id": "openverse:8f3ebf82-bc91-4ae7-a61c-78f1330287af",
+          "provider": "Openverse",
+          "creator": "MTAPhotos",
+          "creator_url": "https://www.flickr.com/photos/61135621@N03",
+          "source_url": "https://www.flickr.com/photos/61135621@N03/48080657536",
+          "title": "Staten Island Transit Improvements",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Staten Island Transit Improvements\" by MTAPhotos is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "circuit board close up",
+          "scene": 20,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "5e9c9d2480ac9bd6"
+          ]
+        },
+        {
+          "id": "openverse:2f759fe1-404c-4596-87fb-92c611a22232",
+          "provider": "Openverse",
+          "creator": "smaedli",
+          "creator_url": "https://www.flickr.com/photos/75264768@N00",
+          "source_url": "https://www.flickr.com/photos/75264768@N00/5946609335",
+          "title": "Chicago Thunderstorm 5",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Chicago Thunderstorm 5\" by smaedli is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "city skyline night timelapse",
+          "scene": 21,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "4cc411393b363b3b"
+          ]
+        },
+        {
+          "id": "openverse:b296a983-db89-4390-9382-b091ac684e03",
+          "provider": "Openverse",
+          "creator": "US Army Africa",
+          "creator_url": "https://www.flickr.com/photos/36281822@N08",
+          "source_url": "https://www.flickr.com/photos/36281822@N08/5282702324",
+          "title": "USARAF Commander visits Algeria December 2010",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"USARAF Commander visits Algeria December 2010\" by US Army Africa is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "team meeting modern office",
+          "scene": 22,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "71c31fe11f12e00f"
+          ]
+        },
+        {
+          "id": "openverse:ad1eb146-174e-454f-b896-328ac6682d00",
+          "provider": "Openverse",
+          "creator": "alikins",
+          "creator_url": "https://www.flickr.com/photos/12945324@N00",
+          "source_url": "https://www.flickr.com/photos/12945324@N00/8927317816",
+          "title": "64 channel API console at Manifold studio",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"64 channel API console at Manifold studio\" by alikins is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "music recording studio mixing console",
+          "scene": 23,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "1a8277dd40fc01fc"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:27569945",
+          "provider": "Wikimedia Commons",
+          "creator": "tkaravou from Montreal, Canada",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Arcade_Fire_at_Osheaga_2010-07-31_Montreal_crowd.jpg",
+          "title": "Arcade Fire at Osheaga 2010-07-31 Montreal crowd.jpg",
+          "license": "by",
+          "license_version": "CC BY 2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0",
+          "attribution": "tkaravou from Montreal, Canada / CC BY 2.0",
+          "query": "live concert crowd and stage",
+          "scene": 24,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "433ec01bf4c51ae5"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:190017832",
+          "provider": "Wikimedia Commons",
+          "creator": "Shixart1985",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Drummer_performing_on_stage_under_green_lights_during_a_live_music_event_at_night.jpg",
+          "title": "Drummer performing on stage under green lights during a live music event at night.jpg",
+          "license": "by",
+          "license_version": "CC BY 2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0",
+          "attribution": "Shixart1985 / CC BY 2.0",
+          "query": "live concert crowd and stage",
+          "scene": 25,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "7c8017373494e7a6"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:194368691",
+          "provider": "Wikimedia Commons",
+          "creator": "Warren K. Leffler",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:WETA_Studio_1969.jpg",
+          "title": "WETA Studio 1969.jpg",
+          "license": "pdm",
+          "license_version": "Public domain",
+          "license_url": "",
+          "attribution": "Warren K. Leffler / Public domain",
+          "query": "television production studio",
+          "scene": 26,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "52d8327a1bb5662c"
+          ]
+        },
+        {
+          "id": "openverse:7f04dd65-fa4e-42c7-b8e1-5df4b166d8a1",
+          "provider": "Openverse",
+          "creator": "dejankrsmanovic",
+          "creator_url": "https://www.flickr.com/photos/155403590@N07",
+          "source_url": "https://www.flickr.com/photos/155403590@N07/31906778417",
+          "title": "Small Bedroom Studio",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Small Bedroom Studio\" by dejankrsmanovic is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "music recording studio mixing console",
+          "scene": 27,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "411e42ab1fe0e55d"
+          ]
+        }
+      ],
+      "rendered_at": "2026-11-20T05:17:42.957603+00:00",
+      "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A",
+      "validated_at": "2026-11-20T05:17:45.028727+00:00",
+      "upload_started_at": "2026-11-20T05:17:46.532796+00:00",
+      "video_id": "IOmvYMeUYRo",
+      "url": "https://youtu.be/IOmvYMeUYRo",
+      "scheduled_at": "2026-11-20T05:17:55.624381+00:00",
+      "original_video_id": "Tkl8HBpK5m4",
+      "original_url": "https://youtu.be/Tkl8HBpK5m4",
+      "original_stock_sources": [
         {
           "id": "openverse:274e38b4-914d-4b51-9789-e463758bfaa6",
           "provider": "Openverse",
@@ -3077,13 +3592,12 @@
           "variant": "horizontal"
         }
       ],
-      "rendered_at": "2026-11-20T05:17:42.957603+00:00",
-      "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A",
-      "validated_at": "2026-11-20T05:17:45.028727+00:00",
-      "upload_started_at": "2026-11-20T05:17:46.532796+00:00",
-      "video_id": "Tkl8HBpK5m4",
-      "url": "https://youtu.be/Tkl8HBpK5m4",
-      "scheduled_at": "2026-11-20T05:17:55.624381+00:00"
+      "previous_video_id": "Tkl8HBpK5m4",
+      "previous_url": "https://youtu.be/Tkl8HBpK5m4",
+      "replacement_at": "2026-11-20T17:28:45.867154+00:00",
+      "replacement_reason": "duplicate_visual_assets",
+      "replacement_original_privacy": "public",
+      "replacement_thumbnail": true
     },
     "20261121_astrotobby_1000": {
       "job_id": "20261121_astrotobby_1000",
