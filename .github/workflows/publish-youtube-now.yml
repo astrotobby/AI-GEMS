@@ -25,7 +25,9 @@ jobs:
       - name: Restore channel-specific YouTube OAuth credentials
         uses: actions/cache/restore@v4
         with:
-          path: whop-clipper/work
+          path: |
+            whop-clipper/work
+            ~/.cache/huggingface
           key: publish-yt-${{ github.run_id }}
           restore-keys: |
             clipper-auth-
