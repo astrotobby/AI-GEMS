@@ -2064,7 +2064,7 @@
       "channel_title": "Astro Tobby",
       "owner_account": "goodlucktobby@gmail.com",
       "slot": "15:00",
-      "publish_at": "2026-11-20T12:00:00+00:00",
+      "publish_at": "2026-11-20T12:00:00Z",
       "title": "Yamaha's $280M Disguise Acquisition & Massive Black Friday Streaming Deals",
       "topic_title": "The Deals: Yamaha Acquires Visual Technology Company Disguise for $280 Million & More - Billboard",
       "lead": {
@@ -2131,9 +2131,9 @@
         "word_count": 2151,
         "model": "claude-sonnet-5"
       },
-      "status": "uploading",
+      "status": "scheduled",
       "created_at": "2026-11-20T04:38:50.656365+00:00",
-      "updated_at": "2026-11-20T05:17:46.532988+00:00",
+      "updated_at": "2026-11-20T05:17:55.624565+00:00",
       "media": {
         "duration_seconds": 899.17,
         "width": 1920,
@@ -2566,7 +2566,10 @@
       "rendered_at": "2026-11-20T05:17:42.957603+00:00",
       "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A",
       "validated_at": "2026-11-20T05:17:45.028727+00:00",
-      "upload_started_at": "2026-11-20T05:17:46.532796+00:00"
+      "upload_started_at": "2026-11-20T05:17:46.532796+00:00",
+      "video_id": "Tkl8HBpK5m4",
+      "url": "https://youtu.be/Tkl8HBpK5m4",
+      "scheduled_at": "2026-11-20T05:17:55.624381+00:00"
     },
     "20261121_astrotobby_1000": {
       "job_id": "20261121_astrotobby_1000",
