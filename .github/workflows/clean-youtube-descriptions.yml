@@ -1,0 +1,157 @@
+name: Clean YouTube descriptions (brief, no sources)
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: "YouTube channel whose existing video descriptions should be cleaned"
+        type: choice
+        required: true
+        options: [astrotobby, digital_nomad]
+      video_ids:
+        description: "Comma-separated existing YouTube video IDs owned by this channel"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  clean-descriptions:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout AI-GEMS configuration and OAuth cache owner
+        uses: actions/checkout@v4
+
+      - name: Restore channel-specific YouTube OAuth credentials
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            whop-clipper/work
+            ~/.cache/huggingface
+          key: description-clean-\${{ github.run_id }}
+          restore-keys: |
+            clipper-auth-
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install YouTube API client
+        run: python -m pip install --disable-pip-version-check google-api-python-client google-auth
+
+      - name: Remove source lists and shorten descriptions (preserve visibility and schedule)
+        working-directory: whop-clipper
+        env:
+          CHANNEL: \${{ inputs.channel }}
+          VIDEO_IDS: \${{ inputs.video_ids }}
+        run: |
+          python - <<'PY'
+          import os, re, tomllib
+          from pathlib import Path
+          from clipper import publish
+          from google.oauth2.credentials import Credentials
+          from googleapiclient.discovery import build
+
+          channel = os.environ["CHANNEL"]
+          expected = {
+              "astrotobby": ("Astro Tobby", "UCxndvpcFaVhN1bJxgWIjG_A", "24"),
+              "digital_nomad": ("DIJITOL NOMAD", "UCE_cklDludc6nkU1_4K6JzA", "28"),
+          }
+          if channel not in expected:
+              raise SystemExit("Unknown channel")
+          name, expected_id, default_category = expected[channel]
+          ids = [v.strip() for v in os.environ["VIDEO_IDS"].split(",") if v.strip()]
+          if not ids or any(not re.fullmatch(r"[A-Za-z0-9_-]{6,32}", v) for v in ids):
+              raise SystemExit("Provide one or more valid comma-separated YouTube video IDs")
+          if len(ids) != len(set(ids)):
+              raise SystemExit("Duplicate video IDs supplied")
+
+          cfg = tomllib.loads(Path("config.toml").read_text(encoding="utf-8"))
+          target = next((t for t in cfg.get("targets", [])
+                         if t.get("platform") == "youtube" and
+                         (t.get("channel") or "").casefold() == name.casefold()), None)
+          if not target:
+              raise SystemExit(f"Missing configured YouTube target: {name}")
+
+          creds = publish._yt_creds(target)
+          if not creds:
+              raise SystemExit(f"No usable YouTube OAuth credentials for {name}")
+          access = publish._yt_access_token(creds)
+          cid, secret, refresh = creds
+          credentials = Credentials(
+              token=access, refresh_token=refresh,
+              token_uri="https://oauth2.googleapis.com/token",
+              client_id=cid, client_secret=secret,
+          )
+          yt = build("youtube", "v3", credentials=credentials, cache_discovery=False)
+          channels = yt.channels().list(part="id,snippet", mine=True).execute().get("items") or []
+          if not channels or channels[0].get("id") != expected_id:
+              raise SystemExit(f"OAuth channel mismatch; expected {name} ({expected_id})")
+
+          def short_description(raw):
+              text = str(raw or "").replace("\r", "\n")
+              text = re.split(
+                  r"(?im)^\s*(?:sources?(?: and further reading)?|references?|citations?|further reading)\s*:",
+                  text, maxsplit=1
+              )[0]
+              text = re.sub(r"\[([^\]]+)\]\((?:https?://|www\.)[^)]+\)", r"\1", text, flags=re.I)
+              text = re.sub(r"https?://\S+|www\.\S+", "", text, flags=re.I)
+              text = re.sub(r"\[\s*\d{1,3}\s*\]|\(\s*\d{1,3}\s*\)", "", text)
+              text = re.sub(r"(?m)^\s*(?:[-*•]|\d+[.)])\s+.*$", "", text)
+              text = re.sub(r"\s+", " ", text).strip(" \t\n-–—;:,.")
+              sentences = re.split(r"(?<=[.!?])\s+", text)
+              text = " ".join(sentences[:2]).strip()
+              if len(text) > 280:
+                  text = text[:280].rsplit(" ", 1)[0].rstrip(" ,;:-") + "."
+              return text
+
+          for video_id in ids:
+              items = yt.videos().list(part="snippet,status", id=video_id).execute().get("items") or []
+              if not items:
+                  raise SystemExit(f"Video not found or not visible to the authenticated channel: {video_id}")
+              video = items[0]
+              snippet = video.get("snippet") or {}
+              if snippet.get("channelId") != expected_id:
+                  raise SystemExit(f"Safety stop: video {video_id} belongs to a different channel")
+              description = short_description(snippet.get("description", ""))
+              if not description:
+                  description = f"Explore the latest story and the key details behind {snippet.get('title', name)}."
+              update = {
+                  "title": snippet.get("title") or name,
+                  "description": description,
+                  "categoryId": str(snippet.get("categoryId") or default_category),
+              }
+              if snippet.get("tags") is not None:
+                  update["tags"] = snippet["tags"]
+              if snippet.get("defaultLanguage"):
+                  update["defaultLanguage"] = snippet["defaultLanguage"]
+              if snippet.get("defaultAudioLanguage"):
+                  update["defaultAudioLanguage"] = snippet["defaultAudioLanguage"]
+
+              yt.videos().update(
+                  part="snippet",
+                  body={"id": video_id, "snippet": update},
+              ).execute()
+
+              verify = yt.videos().list(part="snippet,status", id=video_id).execute().get("items") or []
+              if not verify:
+                  raise SystemExit(f"Could not verify updated video: {video_id}")
+              final = verify[0]
+              final_snippet = final.get("snippet") or {}
+              final_status = final.get("status") or {}
+              final_desc = final_snippet.get("description") or ""
+              if len(final_desc) > 280 or re.search(r"https?://|www\.|sources and further reading|citations?:", final_desc, re.I):
+                  raise SystemExit(f"Description cleanup verification failed for {video_id}")
+              print({
+                  "result": "description_updated",
+                  "channel": name,
+                  "video_id": video_id,
+                  "title": final_snippet.get("title"),
+                  "description": final_desc,
+                  "description_length": len(final_desc),
+                  "privacy_status_preserved": final_status.get("privacyStatus"),
+                  "publish_at_preserved": final_status.get("publishAt"),
+              })
+          PY
