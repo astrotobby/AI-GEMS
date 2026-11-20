@@ -2,6 +2,12 @@ name: Long-form social dispatcher checks
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/dispatch_due_social.py
+      - .github/workflows/dispatch-published-longform-social.yml
+      - .github/workflows/longform-social-checks.yml
 
 permissions:
   contents: read
