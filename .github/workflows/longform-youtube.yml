@@ -2,10 +2,10 @@ name: Daily long-form YouTube
 
 on:
   schedule:
-    - cron: "0 3 * * *"   # 06:00 EAT start -> Astrotobby 10:00 EAT release
-    - cron: "0 5 * * *"   # 08:00 EAT start -> Digital Nomad 12:00 EAT release
-    - cron: "0 8 * * *"   # 11:00 EAT start -> Astrotobby 15:00 EAT release
-    - cron: "0 11 * * *"  # 14:00 EAT start -> Digital Nomad 18:00 EAT release
+    - cron: "17 3 * * *"  # 06:17 EAT start -> next-day Astro Tobby 10:00 EAT release
+    - cron: "23 5 * * *"  # 08:23 EAT start -> next-day DIJITOL NOMAD 12:00 EAT release
+    - cron: "29 8 * * *"  # 11:29 EAT start -> next-day Astro Tobby 15:00 EAT release
+    - cron: "37 11 * * *" # 14:37 EAT start -> next-day DIJITOL NOMAD 18:00 EAT release
   workflow_dispatch:
     inputs:
       channel:
@@ -125,13 +125,13 @@ jobs:
         run: |
           if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then
             case "$SCHEDULE_CRON" in
-              "0 3 * * *") CHANNEL="astrotobby"; SLOT="10:00" ;;
-              "0 5 * * *") CHANNEL="digital_nomad"; SLOT="12:00" ;;
-              "0 8 * * *") CHANNEL="astrotobby"; SLOT="15:00" ;;
-              "0 11 * * *") CHANNEL="digital_nomad"; SLOT="18:00" ;;
+              "17 3 * * *") CHANNEL="astrotobby"; SLOT="10:00" ;;
+              "23 5 * * *") CHANNEL="digital_nomad"; SLOT="12:00" ;;
+              "29 8 * * *") CHANNEL="astrotobby"; SLOT="15:00" ;;
+              "37 11 * * *") CHANNEL="digital_nomad"; SLOT="18:00" ;;
               *) echo "Unknown scheduled trigger: $GITHUB_EVENT_SCHEDULE" >&2; exit 1 ;;
             esac
-            TARGET_DATE="$(TZ=Africa/Nairobi date +%F)"
+            TARGET_DATE="$(TZ=Africa/Nairobi date -d tomorrow +%F)"
             DRY_RUN="false"
           else
             CHANNEL="${{ github.event.inputs.channel }}"
