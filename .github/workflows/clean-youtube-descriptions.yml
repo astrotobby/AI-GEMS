@@ -29,7 +29,7 @@ jobs:
           path: |
             whop-clipper/work
             ~/.cache/huggingface
-          key: description-clean-\${{ github.run_id }}
+          key: description-clean-${{ github.run_id }}
           restore-keys: |
             clipper-auth-
 
@@ -44,8 +44,8 @@ jobs:
       - name: Remove source lists and shorten descriptions (preserve visibility and schedule)
         working-directory: whop-clipper
         env:
-          CHANNEL: \${{ inputs.channel }}
-          VIDEO_IDS: \${{ inputs.video_ids }}
+          CHANNEL: ${{ inputs.channel }}
+          VIDEO_IDS: ${{ inputs.video_ids }}
         run: |
           python - <<'PY'
           import os, re, tomllib
