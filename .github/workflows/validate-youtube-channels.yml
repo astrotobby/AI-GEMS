@@ -21,7 +21,9 @@ jobs:
       - name: Restore YouTube OAuth token/client cache
         uses: actions/cache/restore@v4
         with:
-          path: whop-clipper/work
+          path: |
+            whop-clipper/work
+            ~/.cache/huggingface
           key: clipper-auth-restore
           restore-keys: |
             clipper-
