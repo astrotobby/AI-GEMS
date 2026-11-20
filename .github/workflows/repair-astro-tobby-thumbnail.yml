@@ -38,29 +38,29 @@ jobs:
           path: |
             whop-clipper/work
             ~/.cache/huggingface
-          key: thumbnail-repair-\${{ github.run_id }}
+          key: thumbnail-repair-${{ github.run_id }}
           restore-keys: |
             clipper-auth-
 
       - name: Download original rendered video
         uses: actions/download-artifact@v4
         with:
-          name: longform-astrotobby-\${{ inputs.source_run_id }}
+          name: longform-astrotobby-${{ inputs.source_run_id }}
           path: source
           repository: astrotobby/AI-GEMS
-          run-id: \${{ inputs.source_run_id }}
+          run-id: ${{ inputs.source_run_id }}
           github-token: ${{ github.token }}
 
       - name: Install FFmpeg
         uses: AnimMouse/setup-ffmpeg@178e0b4a408f06ce40d896c3cd79f50fa6f8b0c3
         with:
           version: release
-          token: \${{ github.token }}
+          token: ${{ github.token }}
 
       - name: Prepare a unique topic-specific thumbnail
         env:
-          FRAME_SECONDS: \${{ inputs.frame_seconds }}
-          THUMBNAIL_LABEL: \${{ inputs.thumbnail_label }}
+          FRAME_SECONDS: ${{ inputs.frame_seconds }}
+          THUMBNAIL_LABEL: ${{ inputs.thumbnail_label }}
         shell: bash
         run: |
           set -euo pipefail
@@ -103,7 +103,7 @@ jobs:
       - name: Upload and verify custom thumbnail
         working-directory: whop-clipper
         env:
-          VIDEO_ID: \${{ inputs.video_id }}
+          VIDEO_ID: ${{ inputs.video_id }}
         run: |
           python - <<'PY'
           import os, tomllib
