@@ -34,7 +34,9 @@ permissions:
   contents: write
 
 concurrency:
-  group: longform-${{ github.event_name == 'schedule' && github.event.schedule || format('{0}-{1}', github.event.inputs.channel, github.event.inputs.slot) }}
+  # All four slots share one visual-history cache. Serialize them so two
+  # fresh runners can never restore the same old history and overwrite each other.
+  group: longform-global-visual-history
   cancel-in-progress: false
 
 jobs:
@@ -132,6 +134,12 @@ jobs:
 
       - name: Install long-form Python dependencies
         run: python -m pip install --disable-pip-version-check -r astro-blog/requirements-longform.txt
+
+      - name: Verify visual no-repeat guard before rendering
+        working-directory: astro-blog
+        run: |
+          python -m py_compile scripts/generate_video.py scripts/build_script.py scripts/seed_footage_history.py
+          python scripts/test_video_pipeline.py VisualDuplicateGuardTests
 
       - name: Resolve the channel and publication slot
         id: slot
