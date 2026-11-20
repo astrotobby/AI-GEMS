@@ -144,8 +144,14 @@ def verify_video_is_public(channel: str, video_id: str) -> bool:
     sys.path.insert(0, str(ROOT / "astro-blog" / "scripts"))
     import longform_pipeline
 
-    yt, _target, _creds, identity = longform_pipeline.yt_service(channel)
-    items = yt.videos().list(part="status,snippet", id=video_id).execute().get("items") or []
+    previous_cwd = Path.cwd()
+    try:
+        # yt_service resolves config.toml and the OAuth cache relative to whop-clipper.
+        os.chdir(ROOT / "whop-clipper")
+        yt, _target, _creds, identity = longform_pipeline.yt_service(channel)
+        items = yt.videos().list(part="status,snippet", id=video_id).execute().get("items") or []
+    finally:
+        os.chdir(previous_cwd)
     if not items:
         log(f"{video_id}: YouTube returned no video record yet")
         return False
