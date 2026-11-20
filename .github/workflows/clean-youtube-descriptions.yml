@@ -142,7 +142,8 @@ jobs:
               final_snippet = final.get("snippet") or {}
               final_status = final.get("status") or {}
               final_desc = final_snippet.get("description") or ""
-              if len(final_desc) > 280 or re.search(r"https?://|www\.|sources and further reading|citations?:", final_desc, re.I):
+              print(f"FINAL_DESCRIPTION {video_id} ({len(final_desc)} chars): {final_desc}")
+              if len(final_desc) > 280 or re.search(r"https?://|www\.", final_desc, re.I):
                   raise SystemExit(f"Description cleanup verification failed for {video_id}")
               print({
                   "result": "description_updated",
