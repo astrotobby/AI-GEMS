@@ -92,10 +92,17 @@ jobs:
 
           def short_description(raw):
               text = str(raw or "").replace("\r", "\n")
-              text = re.split(
-                  r"(?im)^\s*(?:sources?(?: and further reading)?|references?|citations?|further reading)\s*:",
-                  text, maxsplit=1
-              )[0]
+              lower = text.lower()
+              markers = [
+                  "sources and further reading:",
+                  "\nsources:",
+                  "\nreferences:",
+                  "\ncitations:",
+                  "\nfurther reading:",
+              ]
+              positions = [lower.find(marker) for marker in markers if lower.find(marker) >= 0]
+              if positions:
+                  text = text[:min(positions)]
               text = re.sub(r"\[([^\]]+)\]\((?:https?://|www\.)[^)]+\)", r"\1", text, flags=re.I)
               text = re.sub(r"https?://\S+|www\.\S+", "", text, flags=re.I)
               text = re.sub(r"\[\s*\d{1,3}\s*\]|\(\s*\d{1,3}\s*\)", "", text)
