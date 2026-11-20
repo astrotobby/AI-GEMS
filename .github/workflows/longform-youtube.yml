@@ -93,6 +93,22 @@ jobs:
           path: astro-blog
           persist-credentials: false
 
+      # These files contain public stock-asset IDs only (no credentials).
+      # Keep the 30-day no-repeat visual history across fresh GitHub runners.
+      - name: Restore cross-run visual asset history
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            astro-blog/.pipeline/state/footage_history.json
+            astro-blog/.pipeline/state/footage_search_cache.json
+          key: visual-assets-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: |
+            visual-assets-${{ github.ref_name }}-
+
+      - name: Seed duplicate-scene exclusions and verify visual history
+        working-directory: astro-blog
+        run: python scripts/seed_footage_history.py
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -195,6 +211,16 @@ jobs:
           if [ -n "$TARGET_DATE" ]; then ARGS+=(--target-date "$TARGET_DATE"); fi
           if [ "$DRY_RUN" = "true" ]; then ARGS+=(--dry-run); fi
           python ../astro-blog/scripts/longform_pipeline.py "${ARGS[@]}" 2>&1 | tee "$RUNNER_TEMP/longform-result.txt"
+
+      # Save only non-secret visual search/history files; leave OAuth and other state untouched.
+      - name: Persist cross-run visual asset history
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            astro-blog/.pipeline/state/footage_history.json
+            astro-blog/.pipeline/state/footage_search_cache.json
+          key: visual-assets-${{ github.ref_name }}-${{ github.run_id }}
 
       - name: Preserve rendered video and job result
         if: always()
