@@ -1279,6 +1279,11 @@
           "at": "2026-11-06T21:05:04+00:00",
           "from": "approved",
           "to": "published"
+        },
+        {
+          "at": "2026-11-20T22:19:37+00:00",
+          "from": "published",
+          "to": "failed"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-11-06-clipping1",
@@ -1299,13 +1304,13 @@
         }
       },
       "published_at": "2026-11-06T21:05:04.079894+00:00",
-      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "reason": "only 58/1000 views after 14 days",
       "score": 45.7,
       "slot": 1,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/ChadVideoReview.mov",
-      "status": "published",
+      "status": "failed",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-11-06T21:05:04+00:00"
+      "updated": "2026-11-20T22:19:37+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-11-07-clipping0": {
       "bad_sources": [
