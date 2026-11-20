@@ -2131,9 +2131,9 @@
         "word_count": 2151,
         "model": "claude-sonnet-5"
       },
-      "status": "rendered",
+      "status": "validated",
       "created_at": "2026-11-20T04:38:50.656365+00:00",
-      "updated_at": "2026-11-20T05:17:42.957774+00:00",
+      "updated_at": "2026-11-20T05:17:45.028882+00:00",
       "media": {
         "duration_seconds": 899.17,
         "width": 1920,
@@ -2563,7 +2563,9 @@
           "variant": "horizontal"
         }
       ],
-      "rendered_at": "2026-11-20T05:17:42.957603+00:00"
+      "rendered_at": "2026-11-20T05:17:42.957603+00:00",
+      "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A",
+      "validated_at": "2026-11-20T05:17:45.028727+00:00"
     },
     "20261121_astrotobby_1000": {
       "job_id": "20261121_astrotobby_1000",
