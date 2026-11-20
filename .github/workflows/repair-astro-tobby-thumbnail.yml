@@ -100,6 +100,9 @@ jobs:
           print(f"Thumbnail prepared: {result.size[0]}x{result.size[1]}, {size} bytes, label={label!r}")
           PY
 
+      - name: Install YouTube API client
+        run: python -m pip install --disable-pip-version-check google-api-python-client google-auth
+
       - name: Upload and verify custom thumbnail
         working-directory: whop-clipper
         env:
