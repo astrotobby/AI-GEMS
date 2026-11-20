@@ -1544,7 +1544,7 @@
       "channel_title": "DIJITOL NOMAD",
       "owner_account": "chanzera3@gmail.com",
       "slot": "18:00",
-      "publish_at": "2026-11-20T15:00:00+00:00",
+      "publish_at": "2026-11-20T15:00:00Z",
       "title": "GTA 6 Shatters Records With $2 Billion Launch: Inside The Tech And Stats",
       "topic_title": "GTA 6 breaks records as sales top $2bn - industry estimate",
       "lead": {
@@ -1618,9 +1618,9 @@
         "word_count": 2084,
         "model": "claude-sonnet-5"
       },
-      "status": "uploading",
+      "status": "scheduled",
       "created_at": "2026-11-20T03:59:48.245872+00:00",
-      "updated_at": "2026-11-20T04:28:19.676056+00:00",
+      "updated_at": "2026-11-20T04:28:29.426499+00:00",
       "media": {
         "duration_seconds": 832.96,
         "width": 1920,
@@ -2053,7 +2053,10 @@
       "rendered_at": "2026-11-20T04:28:15.914470+00:00",
       "channel_id": "UCE_cklDludc6nkU1_4K6JzA",
       "validated_at": "2026-11-20T04:28:18.008500+00:00",
-      "upload_started_at": "2026-11-20T04:28:19.675927+00:00"
+      "upload_started_at": "2026-11-20T04:28:19.675927+00:00",
+      "video_id": "kzESmzwZCsc",
+      "url": "https://youtu.be/kzESmzwZCsc",
+      "scheduled_at": "2026-11-20T04:28:29.426353+00:00"
     }
   },
   "recent_topics": [
