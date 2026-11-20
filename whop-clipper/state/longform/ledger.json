@@ -3116,7 +3116,7 @@
       "channel_title": "Astro Tobby",
       "owner_account": "goodlucktobby@gmail.com",
       "slot": "15:00",
-      "publish_at": "2026-11-21T12:00:00+00:00",
+      "publish_at": "2026-11-21T12:00:00Z",
       "title": "Australian Brothers Discover Indian Cinema Royalty & More Entertainment News",
       "topic_title": "Australian Brothers Discover They Are Indian Cinema Royalty in WAVES Film Bazaar Documentary ‘Dada & Us’ - Variety",
       "lead": {
@@ -3207,9 +3207,9 @@
         "word_count": 1968,
         "model": "claude-sonnet-5"
       },
-      "status": "uploading",
+      "status": "scheduled",
       "created_at": "2026-11-20T07:13:08.967450+00:00",
-      "updated_at": "2026-11-20T07:41:45.895242+00:00",
+      "updated_at": "2026-11-20T07:41:59.347992+00:00",
       "media": {
         "duration_seconds": 815.73,
         "width": 1920,
@@ -3642,7 +3642,10 @@
       "rendered_at": "2026-11-20T07:41:41.756559+00:00",
       "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A",
       "validated_at": "2026-11-20T07:41:43.997993+00:00",
-      "upload_started_at": "2026-11-20T07:41:45.895093+00:00"
+      "upload_started_at": "2026-11-20T07:41:45.895093+00:00",
+      "video_id": "y8PzJLxDWm8",
+      "url": "https://youtu.be/y8PzJLxDWm8",
+      "scheduled_at": "2026-11-20T07:41:59.347855+00:00"
     },
     "20261121_digital_nomad_1800": {
       "job_id": "20261121_digital_nomad_1800",
