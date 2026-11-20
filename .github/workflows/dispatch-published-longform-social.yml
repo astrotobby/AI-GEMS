@@ -1,0 +1,65 @@
+name: Dispatch published long-form videos to social accounts
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: ai-gems-longform-social-dispatch
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout AI-GEMS
+        uses: actions/checkout@v4
+
+      - name: Checkout astro-blog long-form helpers
+        uses: actions/checkout@v4
+        with:
+          repository: astrotobby/astro-blog
+          ref: main
+          path: astro-blog
+          persist-credentials: false
+
+      - name: Restore channel-specific YouTube OAuth cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            whop-clipper/work
+            ~/.cache/huggingface
+          key: longform-social-auth-${{ github.run_id }}
+          restore-keys: |
+            clipper-auth-
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: astro-blog/requirements-longform.txt
+
+      - name: Install YouTube verification dependencies
+        run: python -m pip install --disable-pip-version-check -r astro-blog/requirements-longform.txt
+
+      - name: Verify due videos and dispatch public media to astro-blog
+        env:
+          YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY: ${{ secrets.YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY }}
+          YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD: ${{ secrets.YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD }}
+          REFRESHTOKEN_DIJITOLNOMAD: ${{ secrets.REFRESHTOKEN_DIJITOLNOMAD }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
+          ASTRO_BLOG_DISPATCH_TOKEN: ${{ secrets.ASTRO_BLOG_DISPATCH_TOKEN }}
+        run: python scripts/dispatch_due_social.py
