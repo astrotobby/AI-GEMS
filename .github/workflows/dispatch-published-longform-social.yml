@@ -1,10 +1,9 @@
 name: Dispatch published long-form videos to social accounts
 
+# Legacy repository_dispatch route retained for manual recovery only. The active
+# scheduled Facebook/Instagram/Rumble publisher is astro-blog/longform-social-bridge.yml.
 on:
-  schedule:
-    - cron: "*/5 * * * *"
   workflow_dispatch:
-
 permissions:
   actions: read
   contents: write
