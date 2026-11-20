@@ -1,0 +1,145 @@
+name: Repair duplicate long-form visuals
+
+on:
+  workflow_dispatch:
+    inputs:
+      job_ids:
+        description: "Comma-separated existing AI-GEMS job IDs to re-render with unique footage"
+        type: string
+        required: true
+        default: "20261120_astrotobby_1000,20261120_astrotobby_1500"
+      keep_original_public:
+        description: "Keep original duplicate videos public (not recommended)"
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: longform-global-visual-history
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      LONGFORM_STATE_DIR: ${{ github.workspace }}/whop-clipper/state/longform
+      NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+      NVIDIA_TTS_FUNCTION_ID: ${{ vars.NVIDIA_TTS_FUNCTION_ID || '877104f7-e885-42b9-8de8-f6e4c6303969' }}
+      NVIDIA_TTS_VOICE: ${{ vars.NVIDIA_TTS_VOICE || 'Magpie-Multilingual.EN-US.Jason' }}
+      ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+      ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
+      PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+      PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+      YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY: ${{ secrets.YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY }}
+      YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD: ${{ secrets.YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD }}
+      REFRESHTOKEN_DIJITOLNOMAD: ${{ secrets.REFRESHTOKEN_DIJITOLNOMAD }}
+      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+      YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+      YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+      CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      YOUTUBECLIENT_ID: ${{ secrets.YOUTUBECLIENT_ID }}
+      YOUTUBECLIENT_SECTRET: ${{ secrets.YOUTUBECLIENT_SECTRET }}
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - name: Checkout AI-GEMS
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore channel-specific YouTube OAuth credentials
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            whop-clipper/work
+            ~/.cache/huggingface
+          key: longform-yt-${{ github.run_id }}
+          restore-keys: |
+            clipper-auth-
+
+      - name: Checkout astro-blog production renderer
+        uses: actions/checkout@v4
+        with:
+          repository: astrotobby/astro-blog
+          ref: main
+          path: astro-blog
+          persist-credentials: false
+
+      - name: Restore cross-channel visual asset history
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            astro-blog/.pipeline/state/footage_history.json
+            astro-blog/.pipeline/state/footage_search_cache.json
+          key: visual-assets-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: |
+            visual-assets-${{ github.ref_name }}-
+
+      - name: Seed all previous assets, including the two duplicate videos
+        working-directory: astro-blog
+        run: python scripts/seed_footage_history.py --ledger ../whop-clipper/state/longform/ledger.json
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: astro-blog/requirements-longform.txt
+
+      - name: Install FFmpeg
+        uses: AnimMouse/setup-ffmpeg@178e0b4a408f06ce40d896c3cd79f50fa6f8b0c3
+        with:
+          version: release
+          token: ${{ github.token }}
+
+      - name: Install long-form dependencies
+        run: python -m pip install --disable-pip-version-check -r astro-blog/requirements-longform.txt
+
+      - name: Verify visual duplicate guard
+        working-directory: astro-blog
+        run: |
+          python -m py_compile scripts/generate_video.py scripts/build_script.py scripts/seed_footage_history.py scripts/repair_longform_visuals.py
+          python -m unittest scripts.test_video_pipeline.VisualDuplicateGuardTests -v
+
+      - name: Render, publish and verify unique replacements
+        working-directory: whop-clipper
+        env:
+          JOB_IDS: ${{ inputs.job_ids }}
+          KEEP_ORIGINAL_PUBLIC: ${{ inputs.keep_original_public }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ARGS=(--job-ids "$JOB_IDS")
+          if [ "$KEEP_ORIGINAL_PUBLIC" = "true" ]; then
+            ARGS+=(--keep-original-public)
+          fi
+          python ../astro-blog/scripts/repair_longform_visuals.py "${ARGS[@]}" 2>&1 | tee "$RUNNER_TEMP/visual-repair-result.txt"
+
+      - name: Persist updated cross-channel visual history
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            astro-blog/.pipeline/state/footage_history.json
+            astro-blog/.pipeline/state/footage_search_cache.json
+          key: visual-assets-${{ github.ref_name }}-${{ github.run_id }}
+
+      - name: Save repair artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: repaired-longform-visuals-${{ github.run_id }}
+          path: |
+            astro-blog/.pipeline/out/video_16x9.mp4
+            astro-blog/.pipeline/out/repair-*-thumbnail.jpg
+            astro-blog/.pipeline/out/longform_repair-*.json
+            whop-clipper/state/longform/ledger.json
+            ${{ runner.temp }}/visual-repair-result.txt
+          if-no-files-found: ignore
+          retention-days: 7
+
