@@ -1,0 +1,38 @@
+name: Long-form social dispatcher checks
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout AI-GEMS
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Checkout astro-blog long-form helpers
+        uses: actions/checkout@v4
+        with:
+          repository: astrotobby/astro-blog
+          ref: main
+          path: astro-blog
+          persist-credentials: false
+
+      - name: Install dispatcher import dependencies
+        run: python -m pip install --disable-pip-version-check requests PyYAML Pillow
+
+      - name: Compile AI-GEMS dispatcher and shared long-form pipeline
+        run: |
+          python -m py_compile scripts/dispatch_due_social.py
+          python -m py_compile astro-blog/scripts/longform_pipeline.py
+          python -m py_compile astro-blog/scripts/longform_social_relay.py
+          python -m py_compile astro-blog/scripts/platforms.py
+          echo "Social relay and dispatcher syntax checks passed."
