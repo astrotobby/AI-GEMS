@@ -1,0 +1,177 @@
+name: Repair Astro Tobby duplicate thumbnails
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: "Original long-form render run ID"
+        type: string
+        required: true
+      video_id:
+        description: "Existing Astro Tobby YouTube video ID"
+        type: string
+        required: true
+      frame_seconds:
+        description: "Frame time to use, after the repeated opening shot"
+        type: number
+        required: true
+      thumbnail_label:
+        description: "Short text printed on the thumbnail"
+        type: string
+        required: true
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  repair-thumbnail:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout AI-GEMS
+        uses: actions/checkout@v4
+
+      - name: Restore Astro Tobby YouTube OAuth credentials
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            whop-clipper/work
+            ~/.cache/huggingface
+          key: thumbnail-repair-\${{ github.run_id }}
+          restore-keys: |
+            clipper-auth-
+
+      - name: Download original rendered video
+        uses: actions/download-artifact@v4
+        with:
+          name: longform-astrotobby-\${{ inputs.source_run_id }}
+          path: source
+          repository: astrotobby/AI-GEMS
+          run-id: \${{ inputs.source_run_id }}
+          github-token: \${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install FFmpeg
+        uses: AnimMouse/setup-ffmpeg@178e0b4a408f06ce40d896c3cd79f50fa6f8b0c3
+        with:
+          version: release
+          token: \${{ github.token }}
+
+      - name: Prepare a unique topic-specific thumbnail
+        env:
+          FRAME_SECONDS: \${{ inputs.frame_seconds }}
+          THUMBNAIL_LABEL: \${{ inputs.thumbnail_label }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          VIDEO="$(find source -type f -name 'video_16x9.mp4' -print -quit)"
+          test -n "$VIDEO"
+          ffmpeg -hide_banner -loglevel error -ss "$FRAME_SECONDS" -i "$VIDEO" \
+            -frames:v 1 -vf "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,setsar=1" \
+            -q:v 2 thumbnail-base.jpg
+          python -m pip install --disable-pip-version-check pillow
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          from PIL import Image, ImageDraw, ImageFont
+
+          base = Image.open("thumbnail-base.jpg").convert("RGB")
+          if base.size != (1280, 720):
+              raise SystemExit(f"Unexpected thumbnail size: {base.size}")
+          overlay = Image.new("RGBA", base.size, (0, 0, 0, 0))
+          draw = ImageDraw.Draw(overlay)
+          draw.rounded_rectangle((38, 548, 1242, 690), radius=22, fill=(0, 0, 0, 185))
+          font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+          font = ImageFont.truetype(font_path, 58)
+          label = " ".join(os.environ["THUMBNAIL_LABEL"].split()).upper()[:42]
+          if not label:
+              raise SystemExit("Thumbnail label is empty")
+          box = draw.textbbox((0, 0), label, font=font, stroke_width=1)
+          width = box[2] - box[0]
+          if width > 1120:
+              font = ImageFont.truetype(font_path, 48)
+          draw.text((70, 580), label, font=font, fill=(255, 255, 255, 255),
+                    stroke_width=1, stroke_fill=(0, 0, 0, 210))
+          result = Image.alpha_composite(base.convert("RGBA"), overlay).convert("RGB")
+          result.save("thumbnail.jpg", "JPEG", quality=88, optimize=True)
+          size = Path("thumbnail.jpg").stat().st_size
+          if size > 2_000_000:
+              raise SystemExit(f"Thumbnail is too large for YouTube: {size} bytes")
+          print(f"Thumbnail prepared: {result.size[0]}x{result.size[1]}, {size} bytes, label={label!r}")
+          PY
+
+      - name: Upload and verify custom thumbnail
+        working-directory: whop-clipper
+        env:
+          VIDEO_ID: \${{ inputs.video_id }}
+        run: |
+          python - <<'PY'
+          import os, tomllib
+          from pathlib import Path
+          from clipper import publish
+          from google.oauth2.credentials import Credentials
+          from googleapiclient.discovery import build
+          from googleapiclient.http import MediaFileUpload
+
+          expected_id = "UCxndvpcFaVhN1bJxgWIjG_A"
+          video_id = os.environ["VIDEO_ID"]
+          if not video_id or len(video_id) != 11:
+              raise SystemExit("Invalid YouTube video ID")
+          cfg = tomllib.loads(Path("config.toml").read_text(encoding="utf-8"))
+          target = next((t for t in cfg.get("targets", [])
+                         if t.get("platform") == "youtube"
+                         and (t.get("channel") or "").casefold() == "astro toby"), None)
+          if not target:
+              target = next((t for t in cfg.get("targets", [])
+                             if t.get("platform") == "youtube"
+                             and (t.get("channel") or "").casefold() == "astro toby".casefold()), None)
+          if not target:
+              raise SystemExit("Astro Tobby YouTube target is missing from config.toml")
+          creds = publish._yt_creds(target)
+          if not creds:
+              raise SystemExit("No usable Astro Tobby YouTube credentials in the restored OAuth cache")
+          access = publish._yt_access_token(creds)
+          credentials = Credentials(
+              token=access,
+              refresh_token=creds[2],
+              token_uri="https://oauth2.googleapis.com/token",
+              client_id=creds[0],
+              client_secret=creds[1],
+          )
+          yt = build("youtube", "v3", credentials=credentials, cache_discovery=False)
+          channels = yt.channels().list(part="id,snippet", mine=True).execute().get("items") or []
+          if not channels or channels[0].get("id") != expected_id:
+              raise SystemExit("OAuth token did not resolve to the Astro Tobby channel")
+          videos = yt.videos().list(part="snippet,status", id=video_id).execute().get("items") or []
+          if not videos:
+              raise SystemExit("Target video was not found on the authenticated channel")
+          video = videos[0]
+          snippet = video.get("snippet") or {}
+          status = video.get("status") or {}
+          if snippet.get("channelId") != expected_id:
+              raise SystemExit("Safety stop: target video belongs to another channel")
+          if not Path("../thumbnail.jpg").exists():
+              raise SystemExit("Prepared thumbnail file is missing")
+          result = yt.thumbnails().set(
+              videoId=video_id,
+              media_body=MediaFileUpload("../thumbnail.jpg", mimetype="image/jpeg", resumable=False),
+          ).execute()
+          verified = yt.videos().list(part="snippet,status", id=video_id).execute().get("items") or []
+          if not verified:
+              raise SystemExit("Thumbnail update could not be verified")
+          final = verified[0]
+          thumbs = (final.get("snippet") or {}).get("thumbnails") or {}
+          chosen = thumbs.get("maxres") or thumbs.get("standard") or thumbs.get("high") or thumbs.get("medium") or thumbs.get("default") or {}
+          if not chosen.get("url"):
+              raise SystemExit("YouTube returned no thumbnail URL after upload")
+          print({
+              "result": "CUSTOM_THUMBNAIL_VERIFIED",
+              "channel": "Astro Tobby",
+              "video_id": video_id,
+              "title": (final.get("snippet") or {}).get("title"),
+              "thumbnail_url": chosen["url"],
+              "privacy_status_unchanged": (final.get("status") or {}).get("privacyStatus") == status.get("privacyStatus"),
+              "publish_at_unchanged": (final.get("status") or {}).get("publishAt") == status.get("publishAt"),
+              "thumbnail_api_response": result,
+          })
+          PY
