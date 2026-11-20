@@ -120,11 +120,11 @@ jobs:
           cfg = tomllib.loads(Path("config.toml").read_text(encoding="utf-8"))
           target = next((t for t in cfg.get("targets", [])
                          if t.get("platform") == "youtube"
-                         and (t.get("channel") or "").casefold() == "astro toby"), None)
+                         and (t.get("channel") or "").casefold() == "astro tobby"), None)
           if not target:
               target = next((t for t in cfg.get("targets", [])
                              if t.get("platform") == "youtube"
-                             and (t.get("channel") or "").casefold() == "astro toby".casefold()), None)
+                             and (t.get("channel") or "").casefold() == "astro tobby".casefold()), None)
           if not target:
               raise SystemExit("Astro Tobby YouTube target is missing from config.toml")
           creds = publish._yt_creds(target)
