@@ -222,6 +222,7 @@ jobs:
 
       - name: Create public handoff asset for Facebook, Instagram and Rumble
         if: success() && steps.slot.outputs.dry_run != 'true'
+        continue-on-error: true
         working-directory: whop-clipper
         env:
           CHANNEL: ${{ steps.slot.outputs.channel }}
@@ -279,6 +280,7 @@ jobs:
 
       - name: Remove expired social handoff releases
         if: always()
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
