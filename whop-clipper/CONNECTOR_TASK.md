@@ -10,7 +10,10 @@ Repository: `astrotobby/AI-GEMS`, default branch `main`, files under `whop-clipp
 
 1. List open bounties workable from Kenya with the Whop connector's bounty-list tool:
    `status=open`, `country=KE`, `first=100`, following `page_info.end_cursor` until
-   `has_next_page` is false.
+   `has_next_page` is false. If the connector call errors, authorization is expired, or pagination
+   cannot complete, **do not claim a refresh succeeded** and do not overwrite the last good snapshot.
+   Report the exact connector error and the last known `fetched_at`; the GitHub workflow now fails
+   visibly when this snapshot is stale instead of appearing healthy.
 2. Write `whop-clipper/state/campaigns.json`:
    ```json
    {"fetched_at": "<UTC ISO-8601 now>", "country": "KE", "data": [ <bounty objects> ]}
@@ -78,7 +81,12 @@ rejected because Actions committed meanwhile, fetch, re-apply only your job chan
 fresh ledger (never revert jobs you did not touch), and push again.
 If nothing changed except `fetched_at`, still commit (the pipeline needs a fresh timestamp).
 
-## 4. Report
+## 4. Verify and report
+
+After the commit/push, re-read the committed snapshot and confirm `fetched_at` is the current UTC
+run time, `country` is `KE`, and the `data` array reflects the completed pagination. Confirm the
+commit reached `main`. If any check fails, explicitly report **REFRESH FAILED** with the exact
+reason and last successful timestamp; never report success just because the file was written locally.
 
 If anything was submitted or skipped, send one short Telegram summary through the clipper's
 own notifier (or say so in the session). Stay silent otherwise.

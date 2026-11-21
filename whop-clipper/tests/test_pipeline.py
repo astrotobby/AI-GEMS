@@ -244,6 +244,18 @@ def test_check_fails_cleanly_without_keys(capsys):
     assert "❌ Whop" in out and "❌ Telegram" in out
 
 
+def test_run_returns_failure_when_campaign_discovery_is_stale(pipe, monkeypatch):
+    p = pipe(ANON)
+
+    def stale_scan():
+        raise RuntimeError("campaigns.json is 269h old - connector refresh stopped")
+
+    monkeypatch.setattr(p, "scan", stale_scan)
+    monkeypatch.setattr(p.tg, "send", lambda *_a, **_k: True)
+    monkeypatch.setattr(p, "daily_summary", lambda: None)
+    assert p.run() is False  # workflow must report the outage, even after ledger/status recovery
+
+
 def test_instagram_me_is_resolved_to_numeric_id():
     from clipper import publish
 

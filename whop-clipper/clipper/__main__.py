@@ -96,8 +96,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if a.cmd == "run":
-        pipe.run()
-        return 0
+        return 0 if pipe.run() else 1
 
     if a.cmd == "ugc":
         u = pipe.ugc

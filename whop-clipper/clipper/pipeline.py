@@ -495,16 +495,21 @@ class Pipeline:
         self.tg.send(text)
         return text
 
-    def run(self) -> None:
+    def run(self) -> bool:
+        """Run one cycle; return False when discovery/source refresh failed so CI cannot go green silently."""
         self._migrate()
+        discovery_failed = False
         try:
             self.plan(self.scan())
+            if self.source_errors:
+                discovery_failed = True  # keep other sources and existing jobs moving, but surface partial outage
             for err in self.source_errors:  # one source is down: say so once a day, keep going with the other
                 key = f"warn:{self.today().isoformat()}:{err[:60]}"
                 if key not in self.ledger.data["seen"]:
                     self.ledger.data["seen"][key] = ledger_mod.now()
                     self.tg.send(f"⚠️ {err}")
         except Exception as e:
+            discovery_failed = True
             log.exception("discovery failed")
             self.shortfall = {k: f"campaign list unavailable: {e}" for k in self.cfg.daily_quota}
             self.tg.send(f"⚠️ Whop campaign list unavailable: {e}")
@@ -516,3 +521,4 @@ class Pipeline:
             self.advance(job)
         self.daily_summary()
         self.ledger.save()
+        return not discovery_failed
