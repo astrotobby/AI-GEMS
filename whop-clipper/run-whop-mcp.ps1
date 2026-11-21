@@ -25,7 +25,7 @@ precise cause and last successful timestamp; never mark work successful on a loc
 "@
 
 try {
-    $prompt | npx.cmd --yes @openai/codex@latest -a never exec -c 'model_provider="openai"' -m gpt-6-luna --sandbox danger-full-access -C $repo - 2>&1 | Tee-Object -FilePath $log
+    $prompt | npx.cmd --yes @openai/codex@0.159.0 -a never exec -c 'model_provider="openai"' -m gpt-6-luna --sandbox danger-full-access -C $repo - 2>&1 | Tee-Object -FilePath $log
     if ($LASTEXITCODE -ne 0) { throw "Codex MCP task exited with code $LASTEXITCODE" }
     "[$(Get-Date -Format o)] MCP task completed." | Add-Content $log
 } catch {
