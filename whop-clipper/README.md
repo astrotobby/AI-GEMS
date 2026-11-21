@@ -67,6 +67,17 @@ Campaigns that are skipped on purpose: engagement farming (likes/follows/DMs), a
 you physically somewhere, long-form edits with scripts/charts, and campaigns asking for many
 clips in a single submission.
 
+## Whop MCP runner (required for submissions)
+
+GitHub Actions handles clip creation, scheduled social publishing and view tracking. Whop campaign
+refresh and bounty submission run through the authenticated Whop MCP in local Codex; the direct
+WHOP_TOKEN secret currently returns 401 and is not used. The Windows task **AstroTobby Whop MCP
+Clipper** is installed for eight daily pre-run times and executes
+`run-whop-mcp.ps1`. It runs only while your Windows user session is logged in and the Codex
+LLM7 proxy at `127.0.0.1:5011` is running. If that proxy is offline, the script logs BLOCKED and
+does not attempt any Whop action. Keep the machine online and start the LLM7 proxy to enable the
+connector worker. Check `whop-clipper/logs/whop-mcp/` for execution results.
+
 ## Setup
 
 1. **Secrets** (GitHub repo → Settings → Secrets and variables → Actions, or a local `.env`):
