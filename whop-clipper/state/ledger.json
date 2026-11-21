@@ -1402,6 +1402,11 @@
           "at": "2026-11-07T19:34:40+00:00",
           "from": "approved",
           "to": "published"
+        },
+        {
+          "at": "2026-11-21T20:59:30+00:00",
+          "from": "published",
+          "to": "failed"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-11-07-clipping0",
@@ -1422,13 +1427,13 @@
         }
       },
       "published_at": "2026-11-07T19:34:40.974201+00:00",
-      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "reason": "only 130/1000 views after 14 days",
       "score": 45.7,
       "slot": 0,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/ChasingLines.mov",
-      "status": "published",
+      "status": "failed",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-11-07T19:34:40+00:00"
+      "updated": "2026-11-21T20:59:30+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-11-07-clipping1": {
       "bad_sources": [
@@ -1520,6 +1525,11 @@
           "at": "2026-11-07T19:36:12+00:00",
           "from": "approved",
           "to": "published"
+        },
+        {
+          "at": "2026-11-21T20:59:33+00:00",
+          "from": "published",
+          "to": "failed"
         }
       ],
       "id": "bnty_4nQb37p7bvjna-2026-11-07-clipping1",
@@ -1552,13 +1562,13 @@
         }
       },
       "published_at": "2026-11-07T19:36:12.806121+00:00",
-      "reason": "AnonMaskInPorsche.mov has no speech - fetching another source",
+      "reason": "only 123/1000 views after 14 days",
       "score": 45.7,
       "slot": 1,
       "source": "/home/runner/work/AI-GEMS/AI-GEMS/whop-clipper/work/bnty_4nQb37p7bvjna/src/CheckingScoresEverywhere.mov",
-      "status": "published",
+      "status": "failed",
       "title": "Clip Content into Short Video (1k view minimum)",
-      "updated": "2026-11-07T19:36:12+00:00"
+      "updated": "2026-11-21T20:59:33+00:00"
     },
     "bnty_4nQb37p7bvjna-2026-11-08-clipping0": {
       "bad_sources": [
@@ -2439,6 +2449,7 @@
     "summary:2026-11-07": "2026-11-07T20:16:09+00:00",
     "summary:2026-11-08": "2026-11-08T20:30:33+00:00",
     "summary:2026-11-14": "2026-11-14T20:01:58+00:00",
-    "summary:2026-11-15": "2026-11-15T20:29:54+00:00"
+    "summary:2026-11-15": "2026-11-15T20:29:54+00:00",
+    "summary:2026-11-21": "2026-11-21T20:59:38+00:00"
   }
 }
