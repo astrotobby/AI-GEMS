@@ -256,6 +256,23 @@ def test_run_returns_failure_when_campaign_discovery_is_stale(pipe, monkeypatch)
     assert p.run() is False  # workflow must report the outage, even after ledger/status recovery
 
 
+def test_connector_submission_includes_public_clip_asset_and_timestamps(pipe):
+    p = pipe(ANON)
+    job = {
+        "id": "campaign-2026-11-21-clipping0",
+        "source": "source.mp4",
+        "clip": {"start": 12.5, "end": 43.0},
+        "posts": {"youtube:Astro Tobby": {"url": "https://youtube.com/shorts/abc123"}},
+    }
+    bounty = {"id": "bty_test"}
+    payload = p._connector_submission(job, bounty, [job["posts"]["youtube:Astro Tobby"]["url"]])
+    assert payload["bounty_id"] == "bty_test"
+    assert payload["clip_url"].endswith("/campaign-2026-11-21-clipping0.mp4")
+    assert payload["clip_filename"] == "campaign-2026-11-21-clipping0.mp4"
+    assert payload["source_start"] == 12.5 and payload["source_end"] == 43.0
+    assert payload["urls"] == ["https://youtube.com/shorts/abc123"]
+
+
 def test_instagram_me_is_resolved_to_numeric_id():
     from clipper import publish
 

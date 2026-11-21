@@ -42,26 +42,23 @@ skipped.
 
 | Stage | How |
 |---|---|
-| **Discover** | Reads `state/campaigns.json`, which the scheduled **Whop connector task** refreshes every 4 hours (see `CONNECTOR_TASK.md`). With `whop_via = "api"` and a Whop *user* token it calls `GET /bounties` directly instead. |
+| **Discover** | With the configured `whop_via = "api"`, the GitHub workflow uses your Whop **user OAuth token** to fetch fresh Kenya-eligible bounties directly every run; no snapshot/connector task dependency. |
 | **Score** | Hard filters: open, spots left, budget left, open to your country, under your per-user limit, a clipping campaign, no physical/on-location work. Then points for net payout, budget health, spots vs. pending queue, provided source footage, short-form, low view threshold; minus for livestream proof or several clips per submission. `python -m clipper scan` shows the reasons. |
 | **Source** | Google Drive files/folders via `gdown`; YouTube/Twitch/Kick/etc. via `yt-dlp`. Only footage the campaign links is used. |
 | **Clip** | `faster-whisper` word timestamps → Claude picks the strongest standalone moment and writes title/caption/hashtags (falls back to a free transcript heuristic without an API key) → `ffmpeg` renders 1080×1920, blurred-fill for landscape sources, big word-by-word captions, a hook banner for the first 3 seconds, loudness-normalised audio. |
-| **Review** | `mode = "review"` (default): the clip is sent to Telegram as a video and waits for `approve <job>`. `mode = "auto"`: no stop. |
+| **Review** | Current config is `mode = "auto"`: clips move straight to scheduled publishing; review mode is optional and disabled. |
 | **Post** | YouTube Shorts: the YouTube Data API with **your own Google OAuth app** (own daily quota, never Composio). Before each upload the credentials are checked to belong to the configured channel. Instagram Reels / TikTok: Composio. Only to platforms the campaign accepts. Re-checks the campaign is still open first. |
 | **Track** | Reads views (YouTube Data API; Composio for Instagram/TikTok) until the brief's threshold (e.g. "1,000 views") is met; gives up after 14 days. |
-| **Submit** | The job moves to `awaiting_submission`; the Whop connector task submits it as you (links + source timestamps) and marks it `submitted`. In `api` mode it calls `POST /bounty_submissions` itself. |
+| **Submit** | Direct Whop user-token API creates the submission, uploads the rendered MP4, attaches it with live post URLs and an idempotency key, and marks the ledger submitted. For proof-livestream campaigns, it polls your existing Whop attempt and submits/attaches automatically after Whop confirms the real stream ended. |
 
 ### The livestream rule (read this)
 
-Right now almost every clipping campaign open to Kenya asks for a **livestream at submission**.
-That is the campaign's anti-bot check: Whop's API cannot start one, and faking one would get the
-account banned. For those campaigns the pipeline does all the work (clip, post, wait for views),
-then stops at `needs_livestream` and sends you a Telegram message. Your part is about 2 minutes:
-open the bounty in the Whop app, stream what the brief asks for (usually your profile, the post
-and its view count), end the stream. The Whop connector task then attaches the post links, the
-clip file (published by the workflow as an asset of the `clips` release) and the source
-timestamps, and submits the attempt. Campaigns without a livestream go all the way through by
-themselves.
+Some campaigns require a **genuine proof livestream** at submission. Whop does not let the
+automation start or fake this stream. The clipper publishes the video, tracks views, then waits
+at `needs_livestream`. You must complete the real proof stream in Whop; after Whop records it
+as ended, the next scheduled run automatically finds your existing attempt, uploads/attaches the
+MP4 and post URLs, and submits it. No manual `done` command or connector task is needed.
+Campaigns without a livestream go fully automatically, including file upload and submission.
 
 Campaigns whose livestream must show you *making* the clip from start to finish are skipped:
 the bot made it, so that stream can't honestly be done.
@@ -76,7 +73,7 @@ clips in a single submission.
 
    | Secret | Where to get it |
    |---|---|
-   | `WHOP_TOKEN` | Not needed in the default connector mode. Only for `whop_via = "api"`: a Whop **user** OAuth token (business API keys can't submit). |
+   | `WHOP_TOKEN` | Required in current `api` mode: a Whop **user** OAuth token (business/account API keys cannot submit worker bounties). Already configured as a GitHub Actions secret; never print or commit its value. |
    | `COMPOSIO_API_KEY` | composio.dev → Settings → API keys |
    | `COMPOSIO_USER_ID` | The Composio user id your Instagram/TikTok are connected under |
    | `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET` | Your Google Cloud OAuth client (type *Desktop app*, YouTube Data API v3 enabled) |

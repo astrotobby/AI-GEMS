@@ -118,8 +118,16 @@ jobs:
           have=$(gh release view clips --json assets -q '.assets[].name')
           while IFS=$'\t' read -r path name; do
             echo "$have" | grep -qxF "$name" && continue
-            cp "$path" "$RUNNER_TEMP/$name" && gh release upload clips "$RUNNER_TEMP/$name" || echo "upload of $name failed"
+            cp "$path" "$RUNNER_TEMP/$name"
+            gh release upload clips "$RUNNER_TEMP/$name"
           done < "$RUNNER_TEMP/clips.tsv"
+          # Verify each submission clip is present in the public release asset list.
+          cut -f2 "$RUNNER_TEMP/clips.tsv" | while IFS= read -r name; do
+            gh release view clips --json assets -q '.assets[].name' | grep -qxF "$name" || {
+              echo "::error::Whop submission clip asset is missing: $name"
+              exit 1
+            }
+          done
 
       - name: Save ledger
         if: always() && github.event_name != 'push'
@@ -127,8 +135,8 @@ jobs:
           [ -f state/ledger.json ] || exit 0
           git config user.name "whop-clipper[bot]"
           git config user.email "whop-clipper@users.noreply.github.com"
-          # The Whop connector task also writes the ledger. Merge its latest copy job-by-job
-          # (newest update wins), then commit on top of the current branch tip.
+          # Merge any concurrent ledger copy job-by-job (newest update wins), then commit
+          # on top of the current branch tip so concurrent runs never overwrite job state.
           git fetch -q origin "$GITHUB_REF_NAME"
           git show "origin/$GITHUB_REF_NAME:whop-clipper/state/ledger.json" > "$RUNNER_TEMP/remote-ledger.json" 2>/dev/null || true
           python -m clipper merge-ledger "$RUNNER_TEMP/remote-ledger.json"

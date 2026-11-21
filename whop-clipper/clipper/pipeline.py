@@ -197,6 +197,10 @@ class Pipeline:
             "planned": self._source, "sourced": self._clip, "clipped": self._gate,
             "approved": self._publish, "published": self._track, "ready_to_submit": self._submit,
         }
+        # Direct user-token mode can resume a claimed livestream attempt and submit it
+        # automatically once Whop confirms the owner's real stream has ended.
+        if self.cfg.whop_via == "api":
+            handlers["needs_livestream"] = self._submit
         if not self.cfg.allow_livestream_campaigns and job["status"] in handlers:
             b = self.bounty(job)
             if brief_mod.parse(b["description"], b["title"]).livestream_required:
@@ -403,8 +407,28 @@ class Pipeline:
 
     def _submission_caption(self, job: dict) -> str:
         c = job["clip"]
-        return (f"Source: {Path(job['source']).name} @ {c['start']:.1f}s-{c['end']:.1f}s. "
+        source = Path(job.get("source") or "UGC brief").name
+        return (f"Source: {source} @ {c.get('start', 0):.1f}s-{c.get('end', 0):.1f}s. "
                 f"Posts: {', '.join(p['url'] for p in job['posts'].values())}")
+
+    def _connector_submission(self, job: dict, bounty: dict, urls: list[str]) -> dict:
+        """Complete idempotent payload consumed by the Whop connector task.
+
+        GitHub publishes clips as assets of the public clips release. The connector
+        downloads this URL and attaches the file to the Whop submission.
+        """
+        clip_name = f"{job['id']}.mp4"
+        clip_url = f"https://github.com/astrotobby/AI-GEMS/releases/download/clips/{clip_name}"
+        c = job.get("clip") or {}
+        return {
+            "bounty_id": bounty["id"],
+            "urls": urls,
+            "caption": self._submission_caption(job),
+            "clip_url": clip_url,
+            "clip_filename": clip_name,
+            "source_start": c.get("start"),
+            "source_end": c.get("end"),
+        }
 
     def _submit_ugc(self, job: dict) -> None:
         """Hand the live post to UGC Africa for the slot reserved before posting."""
@@ -422,6 +446,29 @@ class Pipeline:
         self.ledger.move(job, "submitted", submission_id=job["slot_id"], submitted_url=post["url"])
         self.tg.send(f"✅ Submitted to UGC Africa: {job['title']}\n{post['url']}")
 
+    def _submit_livestream(self, job: dict, bounty: dict, urls: list[str]) -> None:
+        """Resume only the user's existing Whop attempt; never fabricate or create a proof stream."""
+        for attempt in self.whop.my_submissions(bounty["id"]):
+            sid = str(attempt.get("id") or "")
+            if not sid.startswith("btys_") or attempt.get("status") not in ("in_progress", "submitted"):
+                continue
+            detail = self.whop.submission(sid)
+            feed = detail.get("latest_proof_livestream_feed") or {}
+            if not feed.get("ended_at"):
+                continue  # stream is not finished yet; next scheduled cycle checks again
+            clip_path = Path((job.get("clip") or {}).get("path") or "")
+            if not clip_path.is_file():
+                raise RuntimeError(f"rendered clip is missing before livestream submission: {clip_path}")
+            file_id = self.whop.upload_file(clip_path)
+            result = self.whop.submit_attempt(
+                sid, urls, self._submission_caption(job), [file_id], key=f"submit-{job['id']}")
+            self.ledger.move(job, "submitted", submission_id=result.get("id") or sid,
+                            submission=self._connector_submission(job, bounty, urls))
+            self.tg.send(f"✅ Whop livestream proof ended; clip attached and submitted: {job['title']}\n"
+                         + "\n".join(urls))
+            return
+        log.info("livestream submission %s waiting for the owner's Whop stream to end", job["id"])
+
     def _submit(self, job: dict) -> None:
         if self.dry_run:
             return
@@ -430,28 +477,43 @@ class Pipeline:
         b = self.bounty(job, refresh=True)
         br = brief_mod.parse(b["description"], b["title"])
         urls = [p["url"] for p in job["posts"].values()]
+        if br.livestream_required and self.cfg.whop_via == "api":
+            if job.get("status") != "needs_livestream":
+                self.ledger.move(job, "needs_livestream",
+                                 submission=self._connector_submission(job, b, urls))
+                self.tg.send(
+                    f"🔴 Whop requires a genuine proof livestream: {job['title']}\n"
+                    f"Bounty: {bounty_link(b)}\n" + "Posts: " + " | ".join(urls) + "\n"
+                    "Complete the real Whop proof stream. This job will automatically attach the clip "
+                    "and submit the existing attempt after Whop records the stream as ended.")
+            return self._submit_livestream(job, b, urls)
         if br.livestream_required:
-            self.ledger.move(job, "needs_livestream")
+            # Store a complete connector payload. The Whop connector checks the owner's real
+            # livestream, attaches the clip asset and submits after the stream has ended.
+            self.ledger.move(job, "needs_livestream",
+                             submission=self._connector_submission(job, b, urls))
             self.tg.send(
-                f"🔴 Your turn: {job['title']} needs a livestream to submit.\n"
+                f"🔴 Human livestream required before Whop can accept: {job['title']}\n"
                 f"Bounty: {bounty_link(b)}\n"
                 f"Live posts: " + " | ".join(f"{p['url']} ({p.get('views', 0)} views)" for p in job["posts"].values())
                 + f"\nClip file: {job['clip']['path']}\nSubmission notes: {self._submission_caption(job)}\n"
-                "Go live on Whop showing what the brief asks for, attach the links above, then run:\n"
-                f"python -m clipper done {job['id']}")
+                "Please complete the genuine Whop proof livestream. The connector will attach the "
+                "clip and submit automatically after Whop records the stream as ended.")
             return
         if b.get("status") != "open" or (b.get("spots_remaining") or 0) <= 0:
             self.ledger.move(job, "skipped", reason="campaign closed before submission")
             return
         if self.cfg.whop_via != "api":
             # the scheduled Whop-connector task picks this up, submits as you, and marks it submitted
-            self.ledger.move(job, "awaiting_submission", submission={
-                "bounty_id": b["id"], "urls": urls, "caption": self._submission_caption(job)})
+            self.ledger.move(job, "awaiting_submission",
+                             submission=self._connector_submission(job, b, urls))
             self.tg.send(f"📨 Queued for Whop submission: {job['title']}\n" + "\n".join(urls))
             return
-        file_ids = []
-        if "attach" in b["description"].lower():
-            file_ids.append(self.whop.upload_file(Path(job["clip"]["path"])))
+        clip_path = Path((job.get("clip") or {}).get("path") or "")
+        if not clip_path.is_file():
+            raise RuntimeError(f"rendered clip is missing before Whop submission: {clip_path}")
+        # Submit the actual rendered asset as well as its live post URLs.
+        file_ids = [self.whop.upload_file(clip_path)]
         res = self.whop.submit(b["id"], urls, self._submission_caption(job), file_ids, key=f"submit-{job['id']}")
         self.ledger.move(job, "submitted", submission_id=res.get("id"))
         self.tg.send(f"✅ Submitted to Whop: {job['title']}\n" + "\n".join(urls))

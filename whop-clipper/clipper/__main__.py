@@ -147,11 +147,14 @@ def main(argv: list[str] | None = None) -> int:
             pipe.ledger.move(job, "published", resumed_at=now())
             print(f"{a.job_id} -> published (tracking views again)")
             return 0
-        expected = {"approve": "awaiting_approval", "done": "needs_livestream", "skip": None}[a.cmd]
+        if a.cmd == "done":
+            print("No manual status override: the API workflow checks Whop's real livestream end and submits the attempt automatically.")
+            return 0
+        expected = {"approve": "awaiting_approval", "skip": None}[a.cmd]
         if expected and job["status"] != expected:
             print(f"job is '{job['status']}', expected '{expected}'", file=sys.stderr)
             return 1
-        pipe.ledger.move(job, {"approve": "approved", "skip": "skipped", "done": "submitted"}[a.cmd])
+        pipe.ledger.move(job, {"approve": "approved", "skip": "skipped"}[a.cmd])
         print(f"{a.job_id} -> {job['status']}")
         return 0
 

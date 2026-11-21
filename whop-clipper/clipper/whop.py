@@ -52,7 +52,11 @@ class Whop:
         return self._req("GET", f"/bounties/{bounty_id}")
 
     def my_submissions(self, bounty_id: str) -> list[dict]:
-        return self._req("GET", "/bounty_submissions", params={"bounty_id": bounty_id}).get("data", [])
+        return self._req("GET", "/bounty_submissions",
+                         params={"bounty_id": bounty_id, "first": 100}).get("data", [])
+
+    def submission(self, submission_id: str) -> dict:
+        return self._req("GET", f"/bounty_submissions/{submission_id}")
 
     # ---- submission --------------------------------------------------------
     def upload_file(self, path: Path) -> str:
@@ -74,6 +78,15 @@ class Whop:
         body = {
             "bounty_id": bounty_id,
             "deliverable": {"urls": urls[:10], "caption": caption, "file_ids": (file_ids or [])[:10]},
-            "idempotency_key": key or str(uuid.uuid4()),
         }
-        return self._req("POST", "/bounty_submissions", json=body)
+        return self._req("POST", "/bounty_submissions", json=body,
+                         headers={"Idempotency-Key": key or str(uuid.uuid4())})
+
+    def submit_attempt(self, submission_id: str, urls: list[str], caption: str,
+                        file_ids: list[str], key: str) -> dict:
+        """Submit an already claimed proof-livestream attempt after Whop confirms its stream ended."""
+        return self._req(
+            "POST", f"/bounty_submissions/{submission_id}/submit",
+            json={"deliverable": {"urls": urls[:10], "caption": caption, "file_ids": file_ids[:10]}},
+            headers={"Idempotency-Key": key},
+        )

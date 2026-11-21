@@ -11,7 +11,7 @@ min_score = 40
 # Campaigns whose livestream must show you *making* the clip are never picked.
 allow_livestream_campaigns = true
 goal_types = ["clipping", "ugc_content"]
-whop_via = "connector"       # Whop runs through your Whop connector (see CONNECTOR_TASK.md)
+whop_via = "api"             # user OAuth token in GitHub Actions: auto-discover, upload and submit
 telegram_chat = "6295868962" # @astrotobby - where updates and clips for review are sent
 
 [schedule]

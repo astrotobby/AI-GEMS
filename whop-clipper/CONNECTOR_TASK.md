@@ -1,8 +1,12 @@
-# Whop connector task
+# Legacy Whop connector task — superseded by direct API mode
 
-Instructions for the scheduled Claude task that does the Whop half of the clipper with the
-owner's **Whop connector** (signed in as the owner, so it can submit; GitHub Actions can't).
-It runs shortly before each GitHub Actions run and only ever talks to Whop and this repo.
+This connector task is no longer part of the active workflow. The project config now uses
+whop_via = "api", and the scheduled GitHub Actions workflow uses the owner's WHOP_TOKEN user
+OAuth secret to refresh campaigns, upload clips and submit bounty work in the same run.
+
+Do not run this legacy task on a schedule while API mode is active: it could race the ledger or
+attempt duplicate work. The idempotent API path is the sole active Whop publisher/submission
+worker. Retain the instructions below only for manual rollback to connector mode.
 
 Repository: `astrotobby/AI-GEMS`, default branch `main`, files under `whop-clipper/state/`.
 
@@ -23,9 +27,10 @@ Repository: `astrotobby/AI-GEMS`, default branch `main`, files under `whop-clipp
 
 ## 2. Submit queued jobs
 
-Read `whop-clipper/state/ledger.json`. Jobs in `awaiting_submission` and `needs_livestream`
-carry a `submission` object: `bounty_id`, `urls`, `caption`, and `clip_url` (a public download
-of the rendered clip, may be missing or `null` on older jobs).
+Read `whop-clipper/state/ledger.json`. Jobs in awaiting_submission and needs_livestream carry a submission object with bounty_id,
+urls, caption, clip_url, clip_filename and source timestamps. The pipeline now fills these for
+both statuses. For older jobs without clip_url, derive the release asset URL as:
+https://github.com/astrotobby/AI-GEMS/releases/download/clips/<job.id>.mp4
 
 **Attaching the clip.** When `submission.clip_url` is set: download it, create a file with the
 connector's create-file tool (`filename` = `<job.id>.mp4`, `idempotency_key` = `clip-<job.id>`),
@@ -61,8 +66,10 @@ one. These jobs wait until the owner has streamed:
    A stream that is still live: leave it for the next run.
 4. Mark it submitted.
 
-Never create a new submission for a `needs_livestream` job, and never submit one whose
-livestream has not ended: without the owner's real livestream it would be denied.
+Never create a new submission for a needs_livestream job, and never submit one whose
+livestream has not ended: without the owner's real livestream it would be denied. This is the
+only remaining human gate. After the owner completes the genuine stream, attach and submit on
+the next connector run; do not require a local "done" command.
 
 ### Marking a job
 
