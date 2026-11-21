@@ -1,12 +1,14 @@
-# Legacy Whop connector task — superseded by direct API mode
+# Required Whop MCP connector runner
 
-This connector task is no longer part of the active workflow. The project config now uses
-whop_via = "api", and the scheduled GitHub Actions workflow uses the owner's WHOP_TOKEN user
-OAuth secret to refresh campaigns, upload clips and submit bounty work in the same run.
+This is the Whop half of the end-to-end clipper and MUST run automatically before the scheduled
+GitHub Actions clipper cycles. GitHub Actions' saved WHOP_TOKEN returned 401 Authentication
+failed, so direct API mode is disabled. Use the authenticated Whop MCP session in local Codex
+(the official hosted endpoint https://mcp.whop.com/mcp; OAuth was completed) to act as the owner.
 
-Do not run this legacy task on a schedule while API mode is active: it could race the ledger or
-attempt duplicate work. The idempotent API path is the sole active Whop publisher/submission
-worker. Retain the instructions below only for manual rollback to connector mode.
+The runner refreshes the Kenya campaign snapshot, submits only jobs explicitly queued in the ledger,
+attaches the public rendered MP4 and live post links, verifies each result, and commits/pushes the
+campaign snapshot and ledger. Never mark a job submitted without a confirmed Whop response.
+
 
 Repository: `astrotobby/AI-GEMS`, default branch `main`, files under `whop-clipper/state/`.
 
