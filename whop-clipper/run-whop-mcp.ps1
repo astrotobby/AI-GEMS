@@ -5,13 +5,8 @@ $logDir = Join-Path $project "logs\whop-mcp"
 New-Item -ItemType Directory -Force -Path $logDir | Out-Null
 $log = Join-Path $logDir ("connector-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".log")
 
-# Codex is configured to use the local LLM7 OpenAI-compatible proxy. Never silently
-# run a Whop mutation if the agent backend is offline or MCP is unauthenticated.
-if (-not (Test-NetConnection 127.0.0.1 -Port 5011 -InformationLevel Quiet)) {
-    "[$(Get-Date -Format o)] BLOCKED: Codex model proxy 127.0.0.1:5011 is offline. Start LLM7 Proxy; no Whop changes made." |
-        Tee-Object -FilePath $log
-    exit 2
-}
+# Use the current supported Codex CLI and the ChatGPT-account model for Free.
+# The provider override is per-run and leaves the user's global Codex configuration unchanged.
 
 $prompt = @"
 You are the scheduled Whop MCP worker for this owner's clipping automation.
@@ -30,7 +25,7 @@ precise cause and last successful timestamp; never mark work successful on a loc
 "@
 
 try {
-    $prompt | codex exec --sandbox danger-full-access -C $repo - 2>&1 | Tee-Object -FilePath $log
+    $prompt | npx.cmd --yes @openai/codex@latest -a never exec -c 'model_provider="openai"' -m gpt-6-luna --sandbox danger-full-access -C $repo - 2>&1 | Tee-Object -FilePath $log
     if ($LASTEXITCODE -ne 0) { throw "Codex MCP task exited with code $LASTEXITCODE" }
     "[$(Get-Date -Format o)] MCP task completed." | Add-Content $log
 } catch {
