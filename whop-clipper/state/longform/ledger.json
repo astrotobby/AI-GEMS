@@ -3702,13 +3702,528 @@
       "created_at": "2026-11-20T04:39:05.028659+00:00",
       "updated_at": "2026-11-20T05:01:35.625049+00:00",
       "media": {
-        "duration_seconds": 805.38,
+        "duration_seconds": 801.8,
         "width": 1920,
         "height": 1080,
-        "bytes": 292770152
+        "bytes": 299245121
       },
       "voice_provider": "nvidia-magpie",
       "stock_sources": [
+        {
+          "id": "wikimedia-commons:195947243",
+          "provider": "Wikimedia Commons",
+          "creator": "Daylight Studio",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Hudson_Yards_studio_with_an_18%E2%80%9322_ft_cyclorama_wall_and_15-foot_ceilings.png",
+          "title": "Hudson Yards studio with an 18–22 ft cyclorama wall and 15-foot ceilings.png",
+          "license": "by",
+          "license_version": "CC BY 4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0",
+          "attribution": "Daylight Studio / CC BY 4.0",
+          "query": "media production studio",
+          "scene": 0,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "022fe6018f32df66"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:190017842",
+          "provider": "Wikimedia Commons",
+          "creator": "Shixart1985",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Energetic_live_concert_performance_at_an_outdoor_music_festival_in_the_evening_with_vibrant_lights.jpg",
+          "title": "Energetic live concert performance at an outdoor music festival in the evening with vibrant lights.jpg",
+          "license": "by",
+          "license_version": "CC BY 2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0",
+          "attribution": "Shixart1985 / CC BY 2.0",
+          "query": "live concert crowd on stage",
+          "scene": 1,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "40af9ce33595e5a0"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:190017850",
+          "provider": "Wikimedia Commons",
+          "creator": "Shixart1985",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Enjoying_a_live_rock_concert_at_an_outdoor_venue_with_vibrant_lights_and_enthusiastic_fans.jpg",
+          "title": "Enjoying a live rock concert at an outdoor venue with vibrant lights and enthusiastic fans.jpg",
+          "license": "by",
+          "license_version": "CC BY 2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0",
+          "attribution": "Shixart1985 / CC BY 2.0",
+          "query": "live concert crowd and stage",
+          "scene": 2,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "46c43132cece6e39"
+          ]
+        },
+        {
+          "id": "openverse:cb67e216-2f0f-43c7-bec3-2a49ea5a1861",
+          "provider": "Openverse",
+          "creator": "BotheredByBees",
+          "creator_url": "https://www.flickr.com/photos/87273935@N00",
+          "source_url": "https://www.flickr.com/photos/87273935@N00/2389301870",
+          "title": "green circuit board II",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"green circuit board II\" by BotheredByBees is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "computer microchip",
+          "scene": 3,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "0355cc7070fc7c9a"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:25093295",
+          "provider": "Wikimedia Commons",
+          "creator": "Josephenus P. Riley",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Altec_RS124_compressor_(1960s),_Abbey_Road_Studios.jpg",
+          "title": "Altec RS124 compressor (1960s), Abbey Road Studios.jpg",
+          "license": "by",
+          "license_version": "CC BY 2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0",
+          "attribution": "Josephenus P. Riley / CC BY 2.0",
+          "query": "music recording studio mixing console",
+          "scene": 4,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "41ef3ae03663c970"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:115931242",
+          "provider": "Wikimedia Commons",
+          "creator": "Sherm for Disabled And Here",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Airport_travel_-_Sherm_for_Disabled_And_Here.jpg",
+          "title": "Airport travel - Sherm for Disabled And Here.jpg",
+          "license": "by",
+          "license_version": "CC BY 4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0",
+          "attribution": "Sherm for Disabled And Here / CC BY 4.0",
+          "query": "person using smartphone app",
+          "scene": 5,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "5de3e11a91f882d2"
+          ]
+        },
+        {
+          "id": "openverse:3467a3bd-2e84-4750-8f49-ce823d4a8b8d",
+          "provider": "Openverse",
+          "creator": "Karen Roe",
+          "creator_url": "https://www.flickr.com/photos/28752865@N08",
+          "source_url": "https://www.flickr.com/photos/28752865@N08/7544169584",
+          "title": "The Making of Harry Potter 29-05-2012",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"The Making of Harry Potter 29-05-2012\" by Karen Roe is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "film production set with camera crew",
+          "scene": 6,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "19cc669c343199cf"
+          ]
+        },
+        {
+          "id": "openverse:2edec4d5-ffc3-48b2-a4e9-4022ba963341",
+          "provider": "Openverse",
+          "creator": "smaedli",
+          "creator_url": "https://www.flickr.com/photos/75264768@N00",
+          "source_url": "https://www.flickr.com/photos/75264768@N00/7503463626",
+          "title": "Storms over Streeterville (8)",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Storms over Streeterville (8)\" by smaedli is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "city skyline night timelapse",
+          "scene": 7,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "6cec4ba2b4544e96"
+          ]
+        },
+        {
+          "id": "openverse:031557d1-f7df-422b-9f68-ef9c3d120f6c",
+          "provider": "Openverse",
+          "creator": "Presidio of Monterey: DLIFLC & USAG",
+          "creator_url": "https://www.flickr.com/photos/38345529@N05",
+          "source_url": "https://www.flickr.com/photos/38345529@N05/44081570590",
+          "title": "Monterey County Veterans Day Parade",
+          "license": "pdm",
+          "license_version": "1.0",
+          "license_url": "https://creativecommons.org/publicdomain/mark/1.0/",
+          "attribution": "\"Monterey County Veterans Day Parade\" by Presidio of Monterey: DLIFLC & USAG is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/.",
+          "query": "team meeting modern office",
+          "scene": 8,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "6a9c8ee50bc64387"
+          ]
+        },
+        {
+          "id": "openverse:9568e0e7-0556-4e07-8527-ebaf9fc0c5fd",
+          "provider": "Openverse",
+          "creator": "USDAgov",
+          "creator_url": "https://www.flickr.com/photos/41284017@N08",
+          "source_url": "https://www.flickr.com/photos/41284017@N08/7973469510",
+          "title": "20120908-OSEC-DJ-0006",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"20120908-OSEC-DJ-0006\" by USDAgov is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "engineers looking at monitors",
+          "scene": 9,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "4e9257349e6a8d64"
+          ]
+        },
+        {
+          "id": "openverse:779dab76-beb0-4f74-bb46-6b6f1a327cdd",
+          "provider": "Openverse",
+          "creator": "Bernt Rostad",
+          "creator_url": "https://www.flickr.com/photos/67975030@N00",
+          "source_url": "https://www.flickr.com/photos/67975030@N00/8093316127",
+          "title": "Weihenstephan bottling plant",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Weihenstephan bottling plant\" by Bernt Rostad is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "warehouse automation workers",
+          "scene": 10,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "0a7e1ecc7407639c"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:195947246",
+          "provider": "Wikimedia Commons",
+          "creator": "Daylight Studio",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Large_production_studio_with_high_ceilings_and_natural_daylight.png",
+          "title": "Large production studio with high ceilings and natural daylight.png",
+          "license": "by",
+          "license_version": "CC BY 4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0",
+          "attribution": "Daylight Studio / CC BY 4.0",
+          "query": "media production studio",
+          "scene": 11,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "246d4773999299b4"
+          ]
+        },
+        {
+          "id": "openverse:414c0765-d2af-45d5-98e9-34d026c53279",
+          "provider": "Openverse",
+          "creator": "Newcastle Libraries",
+          "creator_url": "https://www.flickr.com/photos/39821974@N06",
+          "source_url": "https://www.flickr.com/photos/39821974@N06/4084105584",
+          "title": "051696:Crown cinema Scotswood Road Newcastle upon Tyne City Engineers 1971",
+          "license": "pdm",
+          "license_version": "1.0",
+          "license_url": "https://creativecommons.org/publicdomain/mark/1.0/",
+          "attribution": "\"051696:Crown cinema Scotswood Road Newcastle upon Tyne City Engineers 1971\" by Newcastle Libraries is marked with Public Domain Mark 1.0. To view the terms, visit https://creativecommons.org/publicdomain/mark/1.0/.",
+          "query": "circuit board close up",
+          "scene": 12,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "7e1f86f23826cb10"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:185702760",
+          "provider": "Wikimedia Commons",
+          "creator": "DonaldXLRobertson",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Donald_XL_Robertson_in_recording_studio_during_Only_God_Can_Judge_Me_album_sessions.jpg",
+          "title": "Donald XL Robertson in recording studio during Only God Can Judge Me album sessions.jpg",
+          "license": "by",
+          "license_version": "CC BY 4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0",
+          "attribution": "DonaldXLRobertson / CC BY 4.0",
+          "query": "music recording studio mixing console",
+          "scene": 13,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "13b1694b169c4dda"
+          ]
+        },
+        {
+          "id": "openverse:3e4913ba-037a-41b4-90e0-2d97495ad5ce",
+          "provider": "Openverse",
+          "creator": "br1dotcom",
+          "creator_url": "https://www.flickr.com/photos/21394564@N04",
+          "source_url": "https://www.flickr.com/photos/21394564@N04/5008545132",
+          "title": "Social Media Week Milano :: Il Festival della rete",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Social Media Week Milano :: Il Festival della rete\" by br1dotcom is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "presentation in conference room",
+          "scene": 14,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "52d7359a6925ca4a"
+          ]
+        },
+        {
+          "id": "openverse:6d63487a-ceef-41fb-ad92-98bde6c3f7b4",
+          "provider": "Openverse",
+          "creator": "bugeaters",
+          "creator_url": "https://www.flickr.com/photos/45778851@N00",
+          "source_url": "https://www.flickr.com/photos/45778851@N00/3026743548",
+          "title": "Ports of possibility",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Ports of possibility\" by bugeaters is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "data center server racks",
+          "scene": 15,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "47e525ab2aa52963"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:7723490",
+          "provider": "Wikimedia Commons",
+          "creator": "David Dawson from Addlestone, UK",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Dray_at_the_console.....jpg",
+          "title": "Dray at the console.....jpg",
+          "license": "by",
+          "license_version": "CC BY 2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0",
+          "attribution": "David Dawson from Addlestone, UK / CC BY 2.0",
+          "query": "music recording studio mixing console",
+          "scene": 16,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "05a57a5a3c89732e"
+          ]
+        },
+        {
+          "id": "openverse:9374c6b8-9026-43cd-ad8d-6cd4a1496594",
+          "provider": "Openverse",
+          "creator": "DeclanTM",
+          "creator_url": "https://www.flickr.com/photos/36006949@N00",
+          "source_url": "https://www.flickr.com/photos/36006949@N00/5465449858",
+          "title": "Desk 3",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Desk 3\" by DeclanTM is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "network cables server room",
+          "scene": 17,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "61c9077ab6b6584c"
+          ]
+        },
+        {
+          "id": "openverse:dc2c18a7-0bd9-443b-b58c-a8e72de4de2a",
+          "provider": "Openverse",
+          "creator": "timoelliott",
+          "creator_url": "https://www.flickr.com/photos/52908326@N00",
+          "source_url": "https://www.flickr.com/photos/52908326@N00/4840185661",
+          "title": "IMG_9870",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"IMG_9870\" by timoelliott is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "analytics dashboard",
+          "scene": 18,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "359a6a96d2c586c9"
+          ]
+        },
+        {
+          "id": "openverse:e10a8a1f-46c3-4d83-85f8-66a48710ee0c",
+          "provider": "Openverse",
+          "creator": "STUART_BURNS1",
+          "creator_url": "https://www.flickr.com/photos/41173345@N03",
+          "source_url": "https://www.flickr.com/photos/41173345@N03/24572756109",
+          "title": "P1070630 A",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"P1070630 A\" by STUART_BURNS1 is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "singer recording vocals in music studio",
+          "scene": 19,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "47c3373c8cc16336"
+          ]
+        },
+        {
+          "id": "openverse:4051d58d-4f2d-4b94-a0ac-9b6f81467850",
+          "provider": "Openverse",
+          "creator": "Unknown creator",
+          "creator_url": "",
+          "source_url": "https://www.rawpixel.com/image/4042546/photo-image-technology-yellow",
+          "title": "Robotic arm machine in the lab",
+          "license": "cc0",
+          "license_version": "1.0",
+          "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "attribution": "\"Robotic arm machine in the lab\" is marked with CC0 1.0. To view the terms, visit https://creativecommons.org/publicdomain/zero/1.0/.",
+          "query": "robotic arm factory",
+          "scene": 20,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "56e62f09d14f0e94"
+          ]
+        },
+        {
+          "id": "openverse:8922e62b-7b7d-48b7-a4de-e469408f0c8d",
+          "provider": "Openverse",
+          "creator": "Unknown creator",
+          "creator_url": "",
+          "source_url": "https://www.rawpixel.com/image/5916691/image-phone-public-domain-hand",
+          "title": "Free woman typing keyboard, office",
+          "license": "cc0",
+          "license_version": "1.0",
+          "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "attribution": "\"Free woman typing keyboard, office\" is marked with CC0 1.0. To view the terms, visit https://creativecommons.org/publicdomain/zero/1.0/.",
+          "query": "typing keyboard",
+          "scene": 21,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "509f1f921ec097e1"
+          ]
+        },
+        {
+          "id": "openverse:ee86afaa-4028-45f1-9d2e-8844b60ef5a1",
+          "provider": "Openverse",
+          "creator": "STUART_BURNS1",
+          "creator_url": "https://www.flickr.com/photos/41173345@N03",
+          "source_url": "https://www.flickr.com/photos/41173345@N03/24914089006",
+          "title": "P1070768",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"P1070768\" by STUART_BURNS1 is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "singer recording vocals in music studio",
+          "scene": 22,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "4ccc3733c0cc1f1d"
+          ]
+        },
+        {
+          "id": "openverse:9b0ea146-45fe-4b42-be39-6d0082988506",
+          "provider": "Openverse",
+          "creator": "Rawpixel Ltd",
+          "creator_url": "https://www.flickr.com/photos/147875007@N03",
+          "source_url": "https://www.flickr.com/photos/147875007@N03/40640189245",
+          "title": "Aerial view of woman using computer laptop and a smartphone on wooden table",
+          "license": "by",
+          "license_version": "2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0/",
+          "attribution": "\"Aerial view of woman using computer laptop and a smartphone on wooden table\" by Rawpixel Ltd is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.",
+          "query": "woman working on laptop cafe",
+          "scene": 23,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "75ab4bda18e1298a"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:190017875",
+          "provider": "Wikimedia Commons",
+          "creator": "Shixart1985",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Live_rock_band_performance_under_stage_lights_during_an_outdoor_festival_in_the_evening.jpg",
+          "title": "Live rock band performance under stage lights during an outdoor festival in the evening.jpg",
+          "license": "by",
+          "license_version": "CC BY 2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0",
+          "attribution": "Shixart1985 / CC BY 2.0",
+          "query": "live concert crowd and stage",
+          "scene": 24,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "02c55e3e3165739c"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:190017879",
+          "provider": "Wikimedia Commons",
+          "creator": "Shixart1985",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Live_rock_concert_featuring_musicians_playing_electric_guitars_on_stage_at_night_with_vibrant_lights_and_an_enthusiastic_crowd_present.jpg",
+          "title": "Live rock concert featuring musicians playing electric guitars on stage at night with vibrant lights and an enthusiastic crowd present.jpg",
+          "license": "by",
+          "license_version": "CC BY 2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0",
+          "attribution": "Shixart1985 / CC BY 2.0",
+          "query": "live concert crowd and stage",
+          "scene": 25,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "58d0c2f6b4b6168e"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:190017864",
+          "provider": "Wikimedia Commons",
+          "creator": "Shixart1985",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Live_band_performance_captivates_crowd_at_local_music_festival_in_the_evening.jpg",
+          "title": "Live band performance captivates crowd at local music festival in the evening.jpg",
+          "license": "by",
+          "license_version": "CC BY 2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0",
+          "attribution": "Shixart1985 / CC BY 2.0",
+          "query": "live concert crowd",
+          "scene": 26,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "53d07a7198cc721b"
+          ]
+        },
+        {
+          "id": "wikimedia-commons:190017882",
+          "provider": "Wikimedia Commons",
+          "creator": "Shixart1985",
+          "creator_url": "",
+          "source_url": "https://commons.wikimedia.org/wiki/File:Live_rock_concert_performance_featuring_musicians_playing_guitar_on_stage_at_night_with_vibrant_lighting_effects.jpg",
+          "title": "Live rock concert performance featuring musicians playing guitar on stage at night with vibrant lighting effects.jpg",
+          "license": "by",
+          "license_version": "CC BY 2.0",
+          "license_url": "https://creativecommons.org/licenses/by/2.0",
+          "attribution": "Shixart1985 / CC BY 2.0",
+          "query": "live concert crowd and stage",
+          "scene": 27,
+          "variant": "horizontal",
+          "visual_hashes": [
+            "0b2e7045d1ba6eb1"
+          ]
+        }
+      ],
+      "rendered_at": "2026-11-20T05:01:22.290556+00:00",
+      "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A",
+      "validated_at": "2026-11-20T05:01:24.291510+00:00",
+      "upload_started_at": "2026-11-20T05:01:25.657856+00:00",
+      "video_id": "T_oU82GJkE8",
+      "url": "https://youtu.be/T_oU82GJkE8",
+      "scheduled_at": "2026-11-20T05:01:35.624883+00:00",
+      "original_video_id": "wHlq16shxrI",
+      "original_url": "https://youtu.be/wHlq16shxrI",
+      "original_stock_sources": [
         {
           "id": "openverse:274e38b4-914d-4b51-9789-e463758bfaa6",
           "provider": "Openverse",
@@ -4130,13 +4645,12 @@
           "variant": "horizontal"
         }
       ],
-      "rendered_at": "2026-11-20T05:01:22.290556+00:00",
-      "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A",
-      "validated_at": "2026-11-20T05:01:24.291510+00:00",
-      "upload_started_at": "2026-11-20T05:01:25.657856+00:00",
-      "video_id": "wHlq16shxrI",
-      "url": "https://youtu.be/wHlq16shxrI",
-      "scheduled_at": "2026-11-20T05:01:35.624883+00:00"
+      "previous_video_id": "wHlq16shxrI",
+      "previous_url": "https://youtu.be/wHlq16shxrI",
+      "replacement_at": "2026-11-21T06:00:20.428111+00:00",
+      "replacement_reason": "duplicate_visual_assets",
+      "replacement_original_privacy": "private",
+      "replacement_thumbnail": true
     },
     "20261121_astrotobby_1500": {
       "job_id": "20261121_astrotobby_1500",
