@@ -42,14 +42,14 @@ skipped.
 
 | Stage | How |
 |---|---|
-| **Discover** | With the configured `whop_via = "api"`, the GitHub workflow uses your Whop **user OAuth token** to fetch fresh Kenya-eligible bounties directly every run; no snapshot/connector task dependency. |
+| **Discover** | The GitHub workflow reads the campaign snapshot refreshed by your authenticated Whop MCP connector task. It fails visibly if the snapshot is stale; the connector must refresh and commit it before each scheduled run. |
 | **Score** | Hard filters: open, spots left, budget left, open to your country, under your per-user limit, a clipping campaign, no physical/on-location work. Then points for net payout, budget health, spots vs. pending queue, provided source footage, short-form, low view threshold; minus for livestream proof or several clips per submission. `python -m clipper scan` shows the reasons. |
 | **Source** | Google Drive files/folders via `gdown`; YouTube/Twitch/Kick/etc. via `yt-dlp`. Only footage the campaign links is used. |
 | **Clip** | `faster-whisper` word timestamps → Claude picks the strongest standalone moment and writes title/caption/hashtags (falls back to a free transcript heuristic without an API key) → `ffmpeg` renders 1080×1920, blurred-fill for landscape sources, big word-by-word captions, a hook banner for the first 3 seconds, loudness-normalised audio. |
 | **Review** | Current config is `mode = "auto"`: clips move straight to scheduled publishing; review mode is optional and disabled. |
 | **Post** | YouTube Shorts: the YouTube Data API with **your own Google OAuth app** (own daily quota, never Composio). Before each upload the credentials are checked to belong to the configured channel. Instagram Reels / TikTok: Composio. Only to platforms the campaign accepts. Re-checks the campaign is still open first. |
 | **Track** | Reads views (YouTube Data API; Composio for Instagram/TikTok) until the brief's threshold (e.g. "1,000 views") is met; gives up after 14 days. |
-| **Submit** | Direct Whop user-token API creates the submission, uploads the rendered MP4, attaches it with live post URLs and an idempotency key, and marks the ledger submitted. For proof-livestream campaigns, it polls your existing Whop attempt and submits/attaches automatically after Whop confirms the real stream ended. |
+| **Submit** | The pipeline queues complete submission data (post URLs, source timestamps and public MP4 asset URL). The signed-in Whop MCP connector uploads/attaches the file and submits idempotently. For livestream-required jobs, it submits only after Whop records your genuine stream as ended. |
 
 ### The livestream rule (read this)
 
@@ -73,7 +73,7 @@ clips in a single submission.
 
    | Secret | Where to get it |
    |---|---|
-   | `WHOP_TOKEN` | Required in current `api` mode: a Whop **user** OAuth token (business/account API keys cannot submit worker bounties). Already configured as a GitHub Actions secret; never print or commit its value. |
+   | `WHOP_TOKEN` | Not used in connector mode. The saved GitHub token currently returns 401 and must not be used for submissions. Whop MCP signs in as the worker and handles submit permissions. |
    | `COMPOSIO_API_KEY` | composio.dev → Settings → API keys |
    | `COMPOSIO_USER_ID` | The Composio user id your Instagram/TikTok are connected under |
    | `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET` | Your Google Cloud OAuth client (type *Desktop app*, YouTube Data API v3 enabled) |
