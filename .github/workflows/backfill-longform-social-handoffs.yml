@@ -1,0 +1,40 @@
+name: Backfill existing long-form social handoffs
+
+on:
+  workflow_dispatch:
+    inputs:
+      mappings:
+        description: "Comma-separated job_id=original_render_run_id pairs"
+        type: string
+        required: true
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: longform-social-handoff-backfill
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - name: Checkout AI-GEMS
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install FFmpeg for artifact integrity checks
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
+      - name: Backfill existing scheduled videos without re-uploading to YouTube
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MAPPINGS: ${{ inputs.mappings }}
+        run: |
+          set -euo pipefail
+          python scripts/backfill_longform_social_handoffs.py --mappings "$MAPPINGS"
