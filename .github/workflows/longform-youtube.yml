@@ -188,7 +188,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ "$DRY_RUN" != "true" ] && [ "$VISUAL_GATES_APPROVED" != "true" ]; then
-            echo "Live publishing blocked: run and inspect both channel dry-runs, then explicitly set GLOBAL_VISUAL_GATES_APPROVED=true."
+            echo "Live publishing blocked: complete and inspect both channel dry-runs, then explicitly set GLOBAL_VISUAL_GATES_APPROVED=true."
             exit 1
           fi
 
@@ -254,8 +254,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: python ../astro-blog/scripts/create_longform_social_release.py
 
-      # Persist the canonical registry in Git, not only the best-effort Actions cache.
-      # This file contains public provider IDs and perceptual hashes only; never credentials.
+      # Persist canonical visual history to Git as well as the best-effort Actions cache.
+      # Contains public asset IDs and perceptual hashes only; never credentials.
       - name: Commit canonical cross-channel visual registry
         if: always()
         shell: bash
