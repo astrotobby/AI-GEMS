@@ -7,7 +7,7 @@ on:
         description: "Comma-separated existing AI-GEMS job IDs to re-render with unique footage"
         type: string
         required: true
-        default: "20261120_digital_nomad_1200,20261120_digital_nomad_1800,20261121_astrotobby_1500,20261121_digital_nomad_1200,20261121_digital_nomad_1800"
+        default: "20261120_digital_nomad_1200,20261120_digital_nomad_1800,20261121_astrotobby_1000,20261121_astrotobby_1500,20261121_digital_nomad_1200,20261121_digital_nomad_1800"
       keep_original_public:
         description: "Keep original duplicate videos public (not recommended)"
         type: boolean
@@ -66,7 +66,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: astrotobby/astro-blog
-          ref: ${{ github.ref_name }}
+          ref: main
           path: astro-blog
           persist-credentials: false
 
@@ -80,18 +80,7 @@ jobs:
           restore-keys: |
             visual-assets-${{ github.ref_name }}-
 
-      - name: Restore canonical cross-channel visual registry
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p whop-clipper/state/longform astro-blog/.pipeline/state
-          if [ -f whop-clipper/state/longform/visual_registry.json ]; then
-            cp whop-clipper/state/longform/visual_registry.json astro-blog/.pipeline/state/footage_history.json
-          elif [ ! -f astro-blog/.pipeline/state/footage_history.json ]; then
-            printf '{"items":[]}\n' > astro-blog/.pipeline/state/footage_history.json
-          fi
-
-      - name: Seed every historical asset before replacements
+      - name: Seed all previous assets, including the two duplicate videos
         working-directory: astro-blog
         run: python scripts/seed_footage_history.py --ledger ../whop-clipper/state/longform/ledger.json
 
@@ -130,23 +119,6 @@ jobs:
             ARGS+=(--keep-original-public)
           fi
           python ../astro-blog/scripts/repair_longform_visuals.py "${ARGS[@]}" 2>&1 | tee "$RUNNER_TEMP/visual-repair-result.txt"
-
-      - name: Commit canonical cross-channel visual registry
-        if: always()
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p whop-clipper/state/longform
-          if [ -f astro-blog/.pipeline/state/footage_history.json ]; then
-            cp astro-blog/.pipeline/state/footage_history.json whop-clipper/state/longform/visual_registry.json
-            git add whop-clipper/state/longform/visual_registry.json
-            if ! git diff --cached --quiet; then
-              git config user.name "github-actions[bot]"
-              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-              git commit -m "Persist global visual registry after historical repair"
-              git push origin "HEAD:$GITHUB_REF_NAME"
-            fi
-          fi
 
       - name: Persist updated cross-channel visual history
         if: always()
