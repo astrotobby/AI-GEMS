@@ -5,8 +5,8 @@ $logDir = Join-Path $project "logs\whop-mcp"
 New-Item -ItemType Directory -Force -Path $logDir | Out-Null
 $log = Join-Path $logDir ("connector-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".log")
 
-# Use the current supported Codex CLI and the ChatGPT-account model for Free.
-# The provider override is per-run and leaves the user's global Codex configuration unchanged.
+# Use the Codex executable bundled with the signed-in desktop app so its ChatGPT login
+# and Whop OAuth session are available to the unattended scheduled runner.
 
 $prompt = @"
 You are the scheduled Whop MCP worker for this owner's clipping automation.
@@ -25,7 +25,30 @@ precise cause and last successful timestamp; never mark work successful on a loc
 "@
 
 try {
-    $prompt | npx.cmd --yes @openai/codex@0.159.0 -a never exec -c 'model_provider="openai"' -m gpt-6-luna --sandbox danger-full-access -C $repo - 2>&1 | Tee-Object -FilePath $log
+    # Prefer the Codex executable bundled with the signed-in desktop app. This keeps the
+    # ChatGPT login and Whop OAuth credentials in the same CODEX_HOME and avoids npm downloads.
+    $codexCandidate = Get-ChildItem -Path "$env:LOCALAPPDATA\OpenAI\Codex\bin\*\codex.exe" -File -ErrorAction SilentlyContinue |
+        Sort-Object LastWriteTime -Descending | Select-Object -First 1
+    if ($codexCandidate) {
+        $codexExe = $codexCandidate.FullName
+    } else {
+        $codexCommand = Get-Command codex.exe -ErrorAction Stop
+        $codexExe = $codexCommand.Source
+    }
+
+    $codexVersion = (& $codexExe --version 2>&1 | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0) { throw "Could not start Codex CLI: $codexVersion" }
+    "[$(Get-Date -Format o)] Using $codexExe ($codexVersion)" | Add-Content $log
+
+    # Fail closed if Whop OAuth is missing or expired. Never run a job through an unauthenticated
+    # MCP server and never fall back to the rejected WHOP_TOKEN.
+    $mcpStatus = (& $codexExe mcp list 2>&1 | Out-String)
+    if ($LASTEXITCODE -ne 0 -or $mcpStatus -notmatch '(?m)^whop\s+https://mcp\.whop\.com/mcp.*OAuth') {
+        $mcpStatus | Add-Content $log
+        throw "Whop MCP OAuth is not authenticated for this Windows account. Run the bundled Codex CLI: codex mcp login whop"
+    }
+
+    $prompt | & $codexExe exec -c 'model_provider="openai"' -m gpt-6-luna --sandbox danger-full-access -C $repo - 2>&1 | Tee-Object -FilePath $log
     if ($LASTEXITCODE -ne 0) { throw "Codex MCP task exited with code $LASTEXITCODE" }
     "[$(Get-Date -Format o)] MCP task completed." | Add-Content $log
 } catch {
