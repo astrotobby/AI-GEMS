@@ -43,7 +43,7 @@ jobs:
   render-and-publish:
     # Live schedule starts only after an end-to-end manual dry run is approved.
     # workflow_dispatch remains available while LONGFORM_LIVE_ENABLED is unset.
-    if: ${{ github.event_name != 'schedule' || vars.LONGFORM_LIVE_ENABLED == 'true' }}
+    if: ${{ github.event_name != 'schedule' || (vars.LONGFORM_LIVE_ENABLED == 'true' && vars.GLOBAL_VISUAL_GATES_APPROVED == 'true') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 180
     env:
@@ -179,6 +179,18 @@ jobs:
           echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
           echo "dry_run=$DRY_RUN" >> "$GITHUB_OUTPUT"
           echo "Selected $CHANNEL / $SLOT EAT / target date ${TARGET_DATE:-next future slot} / dry-run=$DRY_RUN"
+
+      - name: Require explicit visual-gate approval for any live publication
+        shell: bash
+        env:
+          DRY_RUN: ${{ steps.slot.outputs.dry_run }}
+          VISUAL_GATES_APPROVED: ${{ vars.GLOBAL_VISUAL_GATES_APPROVED }}
+        run: |
+          set -euo pipefail
+          if [ "$DRY_RUN" != "true" ] && [ "$VISUAL_GATES_APPROVED" != "true" ]; then
+            echo "Live publishing blocked: run and inspect both channel dry-runs, then explicitly set GLOBAL_VISUAL_GATES_APPROVED=true."
+            exit 1
+          fi
 
       - name: Verify expected account routing before research
         working-directory: whop-clipper
