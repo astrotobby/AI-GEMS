@@ -7,7 +7,7 @@ on:
         description: "Comma-separated existing AI-GEMS job IDs to re-render with unique footage"
         type: string
         required: true
-        default: "20261120_astrotobby_1000,20261120_astrotobby_1500"
+        default: "20261120_digital_nomad_1200,20261120_digital_nomad_1800,20261121_astrotobby_1000,20261121_astrotobby_1500,20261121_digital_nomad_1200,20261121_digital_nomad_1800"
       keep_original_public:
         description: "Keep original duplicate videos public (not recommended)"
         type: boolean
@@ -24,7 +24,7 @@ concurrency:
 jobs:
   repair:
     runs-on: ubuntu-24.04
-    timeout-minutes: 180
+    timeout-minutes: 360
     env:
       LONGFORM_STATE_DIR: ${{ github.workspace }}/whop-clipper/state/longform
       NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
