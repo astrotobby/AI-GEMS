@@ -118,6 +118,13 @@ class LongformScheduleRecoveryTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 read_ledger(path)
 
+    def test_ledger_missing_jobs_field_fails_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "ledger.json"
+            path.write_text(json.dumps({"schema": 1}), encoding="utf-8")
+            with self.assertRaises(RuntimeError):
+                read_ledger(path)
+
 
 if __name__ == "__main__":
     unittest.main()

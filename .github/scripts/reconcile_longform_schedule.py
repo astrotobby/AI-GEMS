@@ -59,7 +59,7 @@ def read_ledger(path: Path = LEDGER_PATH) -> dict:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         raise RuntimeError(f"Long-form ledger cannot be read safely: {type(exc).__name__}") from exc
-    if not isinstance(data, dict) or not isinstance(data.get("jobs", {}), dict):
+    if not isinstance(data, dict) or "jobs" not in data or not isinstance(data["jobs"], dict):
         raise RuntimeError("Long-form ledger has an invalid structure; refusing automatic dispatch")
     return data
 
