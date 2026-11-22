@@ -1,0 +1,34 @@
+name: Long-form scheduler recovery
+
+on:
+  # A heartbeat ensures a missed or delayed cron slot is reconciled later.
+  # It never renders directly; it dispatches at most one missing next-day slot.
+  schedule:
+    - cron: "47 * * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: longform-scheduler-reconciliation
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout scheduler ledger
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Recover one missing next-day publication slot
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LONGFORM_LIVE_ENABLED: ${{ vars.LONGFORM_LIVE_ENABLED }}
+          GLOBAL_VISUAL_GATES_APPROVED: ${{ vars.GLOBAL_VISUAL_GATES_APPROVED }}
+        run: python3 .github/scripts/reconcile_longform_schedule.py
