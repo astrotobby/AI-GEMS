@@ -54,7 +54,7 @@ def parse_timestamp(value: str | None) -> datetime | None:
 
 def read_ledger(path: Path = LEDGER_PATH) -> dict:
     if not path.exists():
-        return {"jobs": {}}
+        raise RuntimeError("Long-form ledger is missing; refusing automatic dispatch")
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
