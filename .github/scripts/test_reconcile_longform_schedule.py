@@ -105,6 +105,12 @@ class LongformScheduleRecoveryTests(unittest.TestCase):
         result = select_next_slot(ledger, self.target, self.now)
         self.assertEqual(result["action"], "dispatch")
 
+    def test_missing_ledger_fails_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "missing-ledger.json"
+            with self.assertRaises(RuntimeError):
+                read_ledger(path)
+
     def test_corrupt_ledger_fails_closed(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "ledger.json"
