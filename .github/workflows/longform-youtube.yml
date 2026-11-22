@@ -180,15 +180,16 @@ jobs:
           echo "dry_run=$DRY_RUN" >> "$GITHUB_OUTPUT"
           echo "Selected $CHANNEL / $SLOT EAT / target date ${TARGET_DATE:-next future slot} / dry-run=$DRY_RUN"
 
-      - name: Require explicit visual-gate approval for any live publication
+      - name: Require explicit approval for any live publication
         shell: bash
         env:
           DRY_RUN: ${{ steps.slot.outputs.dry_run }}
+          LONGFORM_LIVE_ENABLED: ${{ vars.LONGFORM_LIVE_ENABLED }}
           VISUAL_GATES_APPROVED: ${{ vars.GLOBAL_VISUAL_GATES_APPROVED }}
         run: |
           set -euo pipefail
-          if [ "$DRY_RUN" != "true" ] && [ "$VISUAL_GATES_APPROVED" != "true" ]; then
-            echo "Live publishing blocked: complete and inspect both channel dry-runs, then explicitly set GLOBAL_VISUAL_GATES_APPROVED=true."
+          if [ "$DRY_RUN" != "true" ] && { [ "$LONGFORM_LIVE_ENABLED" != "true" ] || [ "$VISUAL_GATES_APPROVED" != "true" ]; }; then
+            echo "Live publishing blocked: LONGFORM_LIVE_ENABLED and GLOBAL_VISUAL_GATES_APPROVED must both be true."
             exit 1
           fi
 
