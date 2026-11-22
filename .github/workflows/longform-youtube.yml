@@ -262,18 +262,76 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          SOURCE="astro-blog/.pipeline/state/footage_history.json"
+          REGISTRY="whop-clipper/state/longform/visual_registry.json"
+          SNAPSHOT="$RUNNER_TEMP/rendered-visual-registry.json"
+          REMOTE_SNAPSHOT="$RUNNER_TEMP/remote-visual-registry.json"
           mkdir -p whop-clipper/state/longform
-          if [ -f astro-blog/.pipeline/state/footage_history.json ]; then
-            cp astro-blog/.pipeline/state/footage_history.json whop-clipper/state/longform/visual_registry.json
-            git add whop-clipper/state/longform/visual_registry.json
-            if ! git diff --cached --quiet; then
-              git config user.name "github-actions[bot]"
-              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-              git commit -m "Persist global visual no-reuse registry"
-              git push origin "HEAD:$GITHUB_REF_NAME"
-            fi
+
+          if [ ! -f "$SOURCE" ]; then
+            echo "No rendered visual-history file exists; nothing to persist."
+            exit 0
           fi
 
+          # Freeze this run's full history before syncing Git. It includes the
+          # restored canonical registry, ledger seeding, and any newly accepted visuals.
+          cp "$SOURCE" "$SNAPSHOT"
+          python .github/scripts/merge_visual_registry.py \
+            --output "$RUNNER_TEMP/validated-visual-registry.json" "$SNAPSHOT"
+          cp "$RUNNER_TEMP/validated-visual-registry.json" "$SNAPSHOT"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp "$SNAPSHOT" "$REGISTRY"
+          git add "$REGISTRY"
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist global visual no-reuse registry"
+          fi
+
+          # A run may finish after another video render or a repository merge.
+          # Merge the latest branch and union registry entries before every push.
+          for attempt in 1 2 3 4 5; do
+            echo "Synchronizing canonical visual history (attempt $attempt/5)"
+            git fetch origin "+refs/heads/${GITHUB_REF_NAME}:refs/remotes/origin/${GITHUB_REF_NAME}"
+
+            if ! git merge --no-edit --no-ff "refs/remotes/origin/${GITHUB_REF_NAME}"; then
+              unresolved="$(git diff --name-only --diff-filter=U)"
+              if [ "$unresolved" != "$REGISTRY" ]; then
+                echo "Unexpected merge conflict outside the visual registry:"
+                printf '%s\n' "$unresolved"
+                git merge --abort || true
+                exit 1
+              fi
+
+              git show "refs/remotes/origin/${GITHUB_REF_NAME}:$REGISTRY" > "$REMOTE_SNAPSHOT"
+              python .github/scripts/merge_visual_registry.py \
+                --output "$REGISTRY" "$REMOTE_SNAPSHOT" "$SNAPSHOT"
+              git add "$REGISTRY"
+              if [ -n "$(git diff --name-only --diff-filter=U)" ]; then
+                echo "Visual registry merge did not resolve every conflict." >&2
+                git merge --abort || true
+                exit 1
+              fi
+              git -c core.editor=true commit --no-edit
+            fi
+
+            git show "refs/remotes/origin/${GITHUB_REF_NAME}:$REGISTRY" > "$REMOTE_SNAPSHOT"
+            python .github/scripts/merge_visual_registry.py \
+              --output "$REGISTRY" "$REMOTE_SNAPSHOT" "$SNAPSHOT" "$REGISTRY"
+            git add "$REGISTRY"
+            if ! git diff --cached --quiet; then
+              git commit -m "Merge cross-channel visual asset history"
+            fi
+
+            if git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"; then
+              echo "Canonical cross-channel visual registry persisted successfully."
+              exit 0
+            fi
+            echo "Push raced with another branch update; fetching and merging again."
+          done
+
+          echo "Could not persist visual history after five synchronization attempts." >&2
+          exit 1
       # Save only non-secret visual search/history files; leave OAuth and other state untouched.
       - name: Persist cross-run visual asset history
         if: always()

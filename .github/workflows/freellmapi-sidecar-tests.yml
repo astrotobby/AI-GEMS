@@ -10,6 +10,8 @@ on:
       - ".github/workflows/longform-scheduler-recovery.yml"
       - ".github/scripts/reconcile_longform_schedule.py"
       - ".github/scripts/test_reconcile_longform_schedule.py"
+      - ".github/scripts/merge_visual_registry.py"
+      - ".github/scripts/test_merge_visual_registry.py"
   workflow_dispatch:
 
 permissions:
@@ -35,9 +37,14 @@ jobs:
           scripts/test_freellmapi_sidecar.py
           .github/scripts/reconcile_longform_schedule.py
           .github/scripts/test_reconcile_longform_schedule.py
+          .github/scripts/merge_visual_registry.py
+          .github/scripts/test_merge_visual_registry.py
 
       - name: Run offline sidecar safety tests
         run: python -m unittest discover -s scripts -p "test_freellmapi_sidecar.py"
 
       - name: Run long-form scheduler recovery safety tests
         run: python -m unittest discover -s .github/scripts -p "test_reconcile_longform_schedule.py"
+
+      - name: Run visual registry merge safety tests
+        run: python -m unittest discover -s .github/scripts -p "test_merge_visual_registry.py"
