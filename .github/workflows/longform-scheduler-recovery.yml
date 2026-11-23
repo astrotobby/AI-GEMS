@@ -30,5 +30,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           LONGFORM_LIVE_ENABLED: ${{ vars.LONGFORM_LIVE_ENABLED }}
-          GLOBAL_VISUAL_GATES_APPROVED: ${{ vars.GLOBAL_VISUAL_GATES_APPROVED }}
         run: python3 .github/scripts/reconcile_longform_schedule.py
