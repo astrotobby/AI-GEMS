@@ -7273,6 +7273,106 @@
       "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A",
       "validated_at": "2026-11-23T11:56:22.567331+00:00",
       "upload_started_at": "2026-11-23T11:56:24.370688+00:00"
+    },
+    "20261124_digital_nomad_1200": {
+      "job_id": "20261124_digital_nomad_1200",
+      "channel": "digital_nomad",
+      "channel_title": "DIJITOL NOMAD",
+      "owner_account": "chanzera3@gmail.com",
+      "slot": "12:00",
+      "publish_at": "2026-11-24T09:00:00+00:00",
+      "workflow_run_id": "45212331855",
+      "artifact_name": "longform-digital_nomad-45212331855",
+      "title": "Marvel's Final Avengers: Doomsday Trailer Assembles Every MCU Hero",
+      "topic_title": "Marvel crams every superhero ever into Avengers: Doomsday final trailer",
+      "lead": {
+        "title": "Marvel crams every superhero ever into Avengers: Doomsday final trailer",
+        "url": "https://arstechnica.com/culture/2026/11/marvel-crams-every-superhero-ever-into-avengers-doomsday-final-trailer/",
+        "summary": "\"All of you have lived stolen lives. But now you must give them back\"",
+        "publisher": "Ars Technica",
+        "publisher_url": "",
+        "published_at": "2026-11-23T15:55:12+00:00"
+      },
+      "sources": [
+        {
+          "title": "Marvel crams every superhero ever into Avengers: Doomsday final trailer",
+          "url": "https://arstechnica.com/culture/2026/11/marvel-crams-every-superhero-ever-into-avengers-doomsday-final-trailer/",
+          "summary": "\"All of you have lived stolen lives. But now you must give them back\"",
+          "publisher": "Ars Technica",
+          "publisher_url": "",
+          "published_at": "2026-11-23T15:55:12+00:00"
+        },
+        {
+          "title": "Robert Downey Jr. returns as Doctor Doom in Avengers: Doomsday - Chosunbiz",
+          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOZmhob0RCYUxMdDJ0aVRVbS1jcUlzOS1XVXJaQ1RMQmlLdFY0bkJhMHk3QlY4VnJYMzZaVk8tTHBYeVh0NU5tNGFtb0o5T0RpVl9rcnd3clFwYlhDRjdSU0dnQ3kyWFVFTGhtZVAyYzlYT205Yk9tRjZqSXgybGc0bmU5T2pjbjRZ0gGcAUFVX3lxTFBnWUxjWGdmRklKWkxMNmRyTGtqSmttbW11clo3eHJaRW1mSnphQVdZMzNhRDR0aTFSbE9aRk41U1RGUThpM3NXN0g1Sngzbkh3UTUxT3RZdThVODIwVlRlSUZMSkJCRXRXS3d2UHNQZmp6ZVMxdjJRWm5ZZUVldVNkakhrcENDS0NFaXN1WGtEYU90dVFlNW1tNFd3Xw?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "Robert Downey Jr. returns as Doctor Doom in Avengers: Doomsday Chosunbiz",
+          "publisher": "Chosunbiz",
+          "publisher_url": "https://biz.chosun.com",
+          "published_at": "2026-11-23T02:10:00+00:00"
+        },
+        {
+          "title": "AVENGERS: DOOMSDAY Runtime Rumor Sparks Fan Outrage - “What the Hell Did They Cut!?” - GeekTyrant",
+          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOQTlsM2FIc3BZVndDdm1IUnI2ZGVfTDFDUmc1Q2QwMmFpWnRxZm4zTWc5bk1mMldqQzQ5MnBVU1Z3aU41eXdVYlQyUnAwUGZfaFhSdUtBNnMtd0hvQzVOekdBaE1YWmVWS2F5MVB5dXZXU3oxdFpjbE0tR0lMQzJiRExPbm9nQWxfSFlyX3hoMDdDSXVkb0Y1QVh2c1k5RkVSclduMl9Yd0s?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "AVENGERS: DOOMSDAY Runtime Rumor Sparks Fan Outrage - “What the Hell Did They Cut!?” GeekTyrant",
+          "publisher": "GeekTyrant",
+          "publisher_url": "https://geektyrant.com",
+          "published_at": "2026-11-18T23:00:00+00:00"
+        },
+        {
+          "title": "The End of an Era as Marvel Studios Confirms 'Avengers: Doomsday's Massive Responsibility - disneydining.com",
+          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQTm1ybi1ZbHVKTWNCR1VNZ0kwTmxLek5ac19KRnVaZm53V3kzaS04SjRwNFAxUW5YUUhqdVdFWnJ1WmVxdVFHVURpZS1uaUZVLTZIcUZWdy12TGh3SUlua1Y3eVdOYWxaSndfLTFvS0JsYjIxOFNLdGF2V1pVVHRULWxiNmlZVHc4QzZVZ0RpQWpoVjlnbDEzUktodzAxMmQz?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "The End of an Era as Marvel Studios Confirms 'Avengers: Doomsday's Massive Responsibility disneydining.com",
+          "publisher": "disneydining.com",
+          "publisher_url": "https://www.disneydining.com",
+          "published_at": "2026-11-14T20:42:11+00:00"
+        },
+        {
+          "title": "‘Avengers: Doomsday’ Will Begin the End of 25 Years of Marvel Storytelling - Disney Fanatic",
+          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNdDVhVUNrajVMNVE5dnBQZWNNa2xyVV9tazUzdG81ODcxUEhrRVJfbmR6cGlHMmEzNUlhOV92amdEc1kxbXJYREtUVDl4REk1NE9xWnNIdW9FbVRCZVFBMGd3MTBMdmNvYlV6c2g2VFA0YTBGNWwyM2NaaV9oWnRiLWRDRmd3NnN1bDNUQjhSWGRtaFdodUE?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "‘Avengers: Doomsday’ Will Begin the End of 25 Years of Marvel Storytelling Disney Fanatic",
+          "publisher": "Disney Fanatic",
+          "publisher_url": "https://www.disneyfanatic.com",
+          "published_at": "2026-11-14T20:21:14+00:00"
+        },
+        {
+          "title": "New 'Avengers: Doomsday' Ads Tease Battle-Scarred Sentinels and a Lightning-Powered Thor - Comic Basics",
+          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQQUhBTDVMUUJEc25WdkFqTVZNcXBDRlR4OEFEMzhiTDBnOTZPUVhtS3RUX095OEs1MFZXVDRkcHhPd0ZvRlpHaEdOa3VVLTdRS0NWR2E0U3BOOHBZQXg0VFcyVDNtbHNCV1FrRUZPTFUxamtpdl9tZE9UZUhaZmtDYmZ6MEVHODlkWUZXeFBnUUV3bkVuXzdpdG9Edmt0V0dTSk1qOGN3bElNMXk5SEZnbmdFZ0w?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "New 'Avengers: Doomsday' Ads Tease Battle-Scarred Sentinels and a Lightning-Powered Thor Comic Basics",
+          "publisher": "Comic Basics",
+          "publisher_url": "https://www.comicbasics.com",
+          "published_at": "2026-11-09T08:59:24+00:00"
+        },
+        {
+          "title": "Jumanji 4 & Dune 3’s Final Trailer Releases Have Avengers: Doomsday Fans Feeling Left Out",
+          "url": "https://www.superherohype.com/movies/702562-jumanji-4-dune-3-final-trailer-releases-avengers-doomsday-fans-feeling-left-out",
+          "summary": "With the final trailers for Jumanji: Open World and Dune: Part Three officially out, Marvel Cinematic Universe fans are growing impatient for a comprehensive look at Avengers: Doomsday. With other ...",
+          "publisher": "SuperHeroHype",
+          "publisher_url": "",
+          "published_at": "2026-10-28T13:34:00+00:00"
+        }
+      ],
+      "package": {
+        "title": "Marvel's Final Avengers: Doomsday Trailer Assembles Every MCU Hero",
+        "description": "The final trailer for Avengers: Doomsday reveals how beloved heroes from three distinct universes face an existential threat from Doctor Doom, with consequences for their stolen lives",
+        "tags": [
+          "Avengers",
+          "Doomsday",
+          "MCU",
+          "Marvel",
+          "DoctorDoom",
+          "RobertDowneyJr",
+          "Trailer",
+          "MultiverseSaga",
+          "Superhero",
+          "Crossover"
+        ],
+        "narration": "The Marvel Cinematic Universe has spent fifteen years constructing an intricate multiversal architecture, a web of interconnected realities that began with a billionaire in a suit of armor and has grown to encompass deities, mutants, and beings from dimensions beyond comprehension. Through phases that each attempted to outdo the last in scope and ambition, the studio guided audiences through wars against alien invaders, internal conflicts among enhanced individuals, and the quiet, devastating consequences of a snap that erased half of all life from existence. The so-called Multiverse Saga emerged as the latest chapter in this ongoing epic, promising to explore the ramifications of realities colliding, of choices made in one universe echoing across others, and of the inevitable confrontation that arises when too many powers are set upon a collision course. For years, fans speculated about how the various threads—mutantkind's introduction, the return of the First Family, the lingering presence of those who had vanished and returned—would converge, and when the first whispers of a new Avengers assembly began to circulate, the anticipation was palpable. The announcement that Robert Downey Jr. would step into the role of Doctor Doom sent shockwaves through the fanbase, not merely because of the recasting of a iconic villain but because of what it signified about the direction of the narrative. Doom, a ruler of Latveria whose tragic backstory involves the loss of his mother and a burning resentment toward those who possess what he believes is rightfully his, became the catalyst for an conflict that would force every major faction of the MCU to reckon with their own existence. The official logline makes clear that beloved heroes from three distinct universes will be set on a deadly collision course and face an existential threat unlike anything they've ever encountered. Those universes are Earth-616, the primary reality housing the Avengers, Wakandans, and New Avengers; Earth-828, the realm of the Fantastic Four; and the \"original\" X-Men reality, home to a generation of mutants who have long been absent from the mainstream cinematic landscape. The convergence of these three worlds is not merely a gathering of favorites; it is a necessity born of consequences that no single universe could withstand alone. Fourteen months after the events of Thunderbolts*, the world has been irrevocably changed. The blip, the reversal, the attempt to right what had been wrong—each action has rippled outward, altering timelines and unsettling the delicate balance that had been maintained across realities. Steve Rogers, having made the choice to remain in the past with Peggy Carter, believed he had done what was needed to make the world right. Yet as he reflects in the new final trailer, years ago they did what was needed, but they did not know those choices would have consequences. The truth of that statement becomes painfully clear when Rogers and Peggy discuss the son they built a life together, a young teen now unaware of the full extent of his parents' sacrifices. That they made this life in the same alternate universe as the Fantastic Four only adds layers of complexity to a situation already fraught with tension. When the Fantastic Four arrive to recruit Rogers to the latest cause, they bring with them not just their own stakes but the weight of an entire family's history, one that intersects with Rogers' in ways neither side fully anticipated. Doctor Doom's motivation is rooted in a belief that all of the assembled heroes have lived stolen lives—a sentiment that finds him demanding they give them back. The origins of his grudge are tragic: a past shaped by scientific ambition gone wrong, by the death of his mother and the subsequent transformation into the armored ruler of Latveria. His belief that the Avengers and their allies have cheated death, cheated fate, cheated the natural order is not without basis, given the number of times the universe has been reset, the number of times heroes have cheated death only to face new threats. When he warns that now they must give back what they have taken, he is speaking to a truth that every being who has returned from the blip, who has been resurrected, who has been brought back from the brink of death must confront. The ethical weight of such a demand is immense, and it forces each hero to examine not just what they have done, but who they have become in the process. The scale of the assembly is without precedent. From Earth-616 come Thor, the new Captain America, Bucky Barnes, Ant-Man, Falcon, and Loki, each carrying the burdens of their respective histories and the trust placed in them by a universe that has come to rely on their resilience. The Wakandan contingent—Shuri as the new Black Panther, M'Baku, and Namor, alongside Namor's ally Attuma—brings technological and aquatic expertise that has often proven decisive in previous conflicts. Alex Livinalli's Attuma adds a personal stake for Namor, whose alliance has rarely been without its own agenda. Then there is the roster of the new Captain America's own team: John Walker as US Agent, Yelena Belova, the sentient being known as Sentry, Red Guardian, and Ghost, each having walked their own complicated paths from antagonist to ally and back again. The inclusion of Sentry, a being of immense power whose very existence raises questions about the nature of heroism and the cost of power, adds a layer of psychological complexity to the confrontation ahead. Earth-828 brings the Fantastic Four in the personages of Reed Richards, Sue Storm, Ben Grimm, and Johnny Storm, first family of the multiverse and bearers of scientific and cosmic knowledge that could prove invaluable against a threat as multifaceted as Doom. Their inclusion signals that this is not merely a battle of fists and thunderbut a conflict that will require intellect, innovation, and the willingness to confront the unknown. The presence of the X-Men from the original reality—Charles Xavier, Beast, Magneto, Mystique, Nightcrawler, and Cyclops—brings the mutant perspective to the forefront, a community that has spent generations fighting for acceptance in a world that has often feared what it does not understand. James Marsden's Cyclops calling forth \"To me, my X-Men\" in the face of Doom and advancing Sentinels is a moment that speaks to the deep bonds of leadership and loyalty that have been tested time and again. The sight of every X-Man responding, however, speaks to the unity that can arise when the stakes are nothing less than the survival of multiple realities. Among the newest footage revealed in the final trailer, Marsden's Cyclops faces off against Doom and several Sentinels, a confrontation that hints at the scale of the mechanical threat Doom has assembled. The Sentinels, long associated with mutant persecution, now serve a new master, their purpose twisted by a villain who understands the power of fear and machinery alike. When Cyclops summons his team, the response is immediate and absolute, a testament to the trust and history shared among those who have fought side by side against impossible odds. The banter between Steve Rogers and Thor, with the Norse god admitting that seeing the former captain wield Mjölnir bothers him more than he cares to admit, provides a moment of levity amidst the tension, a reminder that even in the face of extinction, humanity—and divinity—finds ways to connect, to tease, to remain grounded in relationships that predate the crisis at hand. Wanda Maximoff, the Scarlet Witch, is notably absent from the primary footage, though her presence lingers in the periphery. Having been revived by Doom in a post-credits scene at the end of VisionQuest, her absence from the main trailer may be intentional, a way to keep her fate ambiguous until the film's release. The trailer does briefly show what appear to be three Latverian witches, and speculation is rife that one or more of them may be Wanda, her fate intertwined with Doom's in ways that have yet to be fully revealed. Whether she stands as ally, enemy, or something in between remains one of the tantalizing questions the film must answer. Also absent from the initial trailer but certain to make an appearance in some capacity are cameos that include Steve Rogers in his vintage costume, revealed in one of four sneak teasers last year, Peggy Carter, Spider-Man, Hawkeye, Doctor Strange, Thor's adopted daughter Love, and Scott Lang's daughter Cassie. Each of these characters carries a piece of the MCU's heart, and their inclusion—even briefly—serves as a reminder of the relationships and histories that have been built over fifteen years of storytelling. The visual spectacle of the final trailer is immense, with Thor admitting to the assembled superheroes that he does not even know who half of them are, a line that underscores the absurdity and grandeur of bringing together so many versions of heroism from across the multiverse. His call for them to stand together against Doom is both a tactical imperative and a thematic statement, a recognition that the threat before them is too great for any single hero or team to face alone. The footage of Rogers and Thor bantering about the worthiness of wielding Mjölnir, and the god's genuine bemusement at the mortal who has earned the hammer's favor, speaks to the heart of what the MCU has always been about: not just power, but the worthiness to wield it, the character to carry the weight of responsibility, the humility to accept help from those unexpected. When Rogers ultimately proves himself worthy once more, the moment resonates not just as a visual thrill but as a narrative payoff years in the making. Behind the spectacle lies a narrative about consequences, about the ways in which the desire to fix what is broken can create problems far larger than the original issues. The choices made in End Game, the decision to restore the blipped, the decision to allow Rogers to remain in the past—each was made with the best of intentions, yet each has contributed to the fragile state of existence that now necessitates a confrontation of unprecedented scale. Doom's assertion that all have lived stolen lives is a accusation leveled at every being who has been given a second chance, a third chance, a fourth chance at existence. The ethical complexity of such a statement is vast, and it forces the audience to consider not just the rights and wrongs of fictional characters, but the real-world parallels of privilege, of survival, of the ways in which some are given opportunities others are not. The film does not provide easy answers, but it does pose questions that will echo throughout the remaining chapters of the Multiverse Saga. As the release date of December 18, 2026 approaches, the film will face competition from Dune: Part III, also dropping on that same day, a clash of franchises that speaks to the crowded holiday season blockbuster landscape. Avengers: Secret Wars, currently slated for December 17, 2027, will mark the conclusion of Phase Six, bringing to a close a chapter that has been five years in the making. The anticipation surrounding Doomsday is not just about the immediate film but about what it represents: the culmination of narratives that have been building since the earliest days of the MCU, the resolution of threads that have been woven through television series and streaming specials, and the final statement on a saga that has redefined what superhero cinema can aspire to be. The rumors, the trailers, the casting announcements and reannouncements, the fan theories and speculation—all of it converges on this moment, where the multiverse's many worlds must finally come together or fall apart trying. The final trailer's opening moments, with Rogers and Peggy reflecting on the rightness of their choices while acknowledging the truth they have hidden from their son, set the emotional core of a film that could have been nothing more than a cacophony of cameos and combat. Instead, it is a story about the cost of second chances, about the ways in which our attempts to secure a better future for those we love can have ramifications we never anticipated. Doctor Doom's demand that they give back the lives they have lived stolen is a challenge that cuts to the heart of every character in the film, and by extension, to every viewer who has watched these heroes grow, stumble, and rise again over the past fifteen years. The answers may not be clear in the moments immediately following the film's release, but the questions it raises—about responsibility, about consequence, about the price of survival—will resonate long after the credits roll and the next saga begins. The Marvel that began with a man in a cave now ends with a multiverse in collision, and in the spaces between the battles and the cameos and the spectacle, there is a story about what it means to be a hero, what it means to choose, and what it means to ultimately answer for the lives we have been given and the lives we have taken.",
+        "word_count": 2179,
+        "model": "claude-sonnet-5"
+      },
+      "status": "scripted",
+      "created_at": "2026-11-23T16:07:50.071174+00:00",
+      "updated_at": "2026-11-23T16:07:50.071325+00:00"
     }
   },
   "recent_topics": [
@@ -7315,6 +7415,10 @@
     {
       "title": "Sony Pictures Networks India, NFDC Launch Five-Language Creator Pitch Initiative at WAVES Film Bazaar - Variety",
       "job_id": "20261124_astrotobby_1000"
+    },
+    {
+      "title": "Marvel crams every superhero ever into Avengers: Doomsday final trailer",
+      "job_id": "20261124_digital_nomad_1200"
     }
   ]
 }
