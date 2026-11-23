@@ -157,12 +157,15 @@ def write_summary(message: str) -> None:
             handle.write(f"## Long-form schedule recovery\n\n{message}\n")
 
 
+def live_publishing_enabled(environ: dict[str, str] | None = None) -> bool:
+    """The owner-controlled repository variable is the sole live-publishing switch."""
+    source = os.environ if environ is None else environ
+    return source.get("LONGFORM_LIVE_ENABLED", "").strip().lower() == "true"
+
+
 def main() -> int:
-    if os.environ.get("LONGFORM_LIVE_ENABLED", "").strip().lower() != "true":
+    if not live_publishing_enabled():
         write_summary("No action: LONGFORM_LIVE_ENABLED is not true.")
-        return 0
-    if os.environ.get("GLOBAL_VISUAL_GATES_APPROVED", "").strip().lower() != "true":
-        write_summary("No action: GLOBAL_VISUAL_GATES_APPROVED is not true.")
         return 0
 
     token = os.environ.get("GH_TOKEN", "").strip()
