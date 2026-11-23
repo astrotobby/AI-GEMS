@@ -11,12 +11,21 @@ sys.path.insert(0, str(Path(__file__).parent))
 from reconcile_longform_schedule import (  # noqa: E402
     EAT,
     job_id,
+    live_publishing_enabled,
     read_ledger,
     select_next_slot,
 )
 
 
 class LongformScheduleRecoveryTests(unittest.TestCase):
+    def test_live_master_switch_does_not_depend_on_legacy_visual_gate(self):
+        self.assertTrue(live_publishing_enabled({"LONGFORM_LIVE_ENABLED": "true"}))
+
+    def test_live_master_switch_requires_literal_true(self):
+        for value in ("", "false", "1", "yes", "enabled"):
+            with self.subTest(value=value):
+                self.assertFalse(live_publishing_enabled({"LONGFORM_LIVE_ENABLED": value}))
+
     def setUp(self):
         self.target = date(2026, 11, 23)
         self.now = datetime(2026, 11, 22, 16, 0, tzinfo=EAT)
