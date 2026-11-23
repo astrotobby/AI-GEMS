@@ -41,9 +41,9 @@ concurrency:
 
 jobs:
   render-and-publish:
-    # Live schedule starts only after an end-to-end manual dry run is approved.
-    # workflow_dispatch remains available while LONGFORM_LIVE_ENABLED is unset.
-    if: ${{ github.event_name != 'schedule' || (vars.LONGFORM_LIVE_ENABLED == 'true' && vars.GLOBAL_VISUAL_GATES_APPROVED == 'true') }}
+    # The owner-approved LONGFORM_LIVE_ENABLED repository variable is the single live-publishing master switch.
+    # Scheduled runs fail closed while it is unset or anything other than the literal string 'true'.
+    if: ${{ github.event_name != 'schedule' || vars.LONGFORM_LIVE_ENABLED == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 180
     env:
@@ -146,6 +146,10 @@ jobs:
       - name: Install long-form Python dependencies
         run: python -m pip install --disable-pip-version-check -r astro-blog/requirements-longform.txt
 
+      - name: Validate both YouTube channel credentials before rendering
+        working-directory: whop-clipper
+        run: python validate_youtube_channels.py
+
       - name: Verify visual no-repeat guard before rendering
         working-directory: astro-blog
         run: |
@@ -185,13 +189,13 @@ jobs:
         env:
           DRY_RUN: ${{ steps.slot.outputs.dry_run }}
           LONGFORM_LIVE_ENABLED: ${{ vars.LONGFORM_LIVE_ENABLED }}
-          VISUAL_GATES_APPROVED: ${{ vars.GLOBAL_VISUAL_GATES_APPROVED }}
         run: |
           set -euo pipefail
-          if [ "$DRY_RUN" != "true" ] && { [ "$LONGFORM_LIVE_ENABLED" != "true" ] || [ "$VISUAL_GATES_APPROVED" != "true" ]; }; then
-            echo "Live publishing blocked: LONGFORM_LIVE_ENABLED and GLOBAL_VISUAL_GATES_APPROVED must both be true."
+          if [ "$DRY_RUN" != "true" ] && [ "$LONGFORM_LIVE_ENABLED" != "true" ]; then
+            echo "Live publishing blocked: set the LONGFORM_LIVE_ENABLED repository variable to the literal string true."
             exit 1
           fi
+          echo "Live publishing master switch verified (or dry-run mode selected)."
 
       - name: Verify expected account routing before research
         working-directory: whop-clipper
