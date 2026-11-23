@@ -8387,9 +8387,9 @@
         "word_count": 1953,
         "model": "claude-sonnet-5"
       },
-      "status": "scripted",
+      "status": "rendering",
       "created_at": "2026-11-23T20:33:56.996226+00:00",
-      "updated_at": "2026-11-23T20:33:56.996450+00:00"
+      "updated_at": "2026-11-23T20:33:58.794664+00:00"
     }
   },
   "recent_topics": [
