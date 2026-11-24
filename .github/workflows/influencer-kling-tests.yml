@@ -1,0 +1,28 @@
+name: Influencer Kling pipeline tests
+
+on:
+  pull_request:
+    paths:
+      - "scripts/influencer_kling_pipeline.py"
+      - "scripts/test_influencer_kling_pipeline.py"
+      - ".github/workflows/influencer-kling-animation.yml"
+      - ".github/workflows/influencer-kling-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test dependencies
+        run: python -m pip install --disable-pip-version-check "requests>=2.32,<3" "Pillow>=10,<13"
+      - name: Compile and run tests (no Kling credentials or credits)
+        run: |
+          python -m py_compile scripts/influencer_kling_pipeline.py
+          python -m unittest scripts.test_influencer_kling_pipeline -v
