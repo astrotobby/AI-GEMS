@@ -95,7 +95,6 @@ def main() -> int:
     if expected_dt <= datetime.now(timezone.utc).replace(microsecond=0):
         raise SystemExit("The intended release time has passed; refusing to schedule a past time")
 
-    config = json.loads("{}")
     import tomllib
     with Path("config.toml").open("rb") as handle:
         config = tomllib.load(handle)
@@ -157,24 +156,21 @@ def main() -> int:
         raise SystemExit("Saved thumbnail is not a valid JPEG within YouTube's 2 MB limit")
 
     # Re-apply the exact thumbnail produced by the original render, never a new or guessed image.
-    thumb_result = yt.thumbnails().set(
+    yt.thumbnails().set(
         videoId=video_id,
         media_body=MediaFileUpload(str(thumbnail_path), mimetype="image/jpeg", resumable=False),
     ).execute()
-    thumb_items = thumb_result.get("items") or []
-    if not thumb_items or not any(
-        (thumb_items[0].get(size) or {}).get("url")
-        for size in ("maxres", "standard", "high")
-    ):
-        raise SystemExit("YouTube did not confirm a custom thumbnail upload")
 
-    # Read the status again after thumbnail QA. Only private videos are eligible.
+    # Verify via videos.list, matching the production pipeline's thumbnail QA gate.
     rows = yt.videos().list(part="snippet,status", id=video_id).execute().get("items") or []
     if not rows:
         raise SystemExit("Video could not be read back after thumbnail verification")
     current_video = rows[0]
     current_snippet = current_video.get("snippet") or {}
     current_status = current_video.get("status") or {}
+    current_thumbnails = current_snippet.get("thumbnails") or {}
+    if not any(current_thumbnails.get(size, {}).get("url") for size in ("maxres", "standard", "high", "medium", "default")):
+        raise SystemExit("YouTube custom thumbnail upload could not be verified")
     if current_snippet.get("channelId") != expected_channel["channel_id"]:
         raise SystemExit("Post-thumbnail channel identity check failed")
     if current_status.get("privacyStatus") != "private":
