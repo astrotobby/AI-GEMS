@@ -12365,7 +12365,7 @@
       "channel_title": "Astro Tobby",
       "owner_account": "goodlucktobby@gmail.com",
       "slot": "15:00",
-      "publish_at": "2026-11-25T12:00:00+00:00",
+      "publish_at": "2026-11-25T12:00:00Z",
       "workflow_run_id": "45472707758",
       "artifact_name": "longform-astrotobby-45472707758",
       "title": "Tidal's Radical New Policy: Why AI Music Is Being Purged",
@@ -12458,9 +12458,9 @@
         "word_count": 2072,
         "model": "claude-sonnet-5"
       },
-      "status": "uploading",
+      "status": "scheduled",
       "created_at": "2026-11-24T19:42:42.388301+00:00",
-      "updated_at": "2026-11-24T20:15:54.936709+00:00",
+      "updated_at": "2026-11-24T20:16:01.999889+00:00",
       "media": {
         "duration_seconds": 729.73,
         "width": 1920,
@@ -13379,7 +13379,8 @@
       "url": "https://youtu.be/b-Cvc3JUIR4",
       "upload_response_received_at": "2026-11-24T20:15:50.043874+00:00",
       "thumbnail_verified": true,
-      "thumbnail_verified_at": "2026-11-24T20:15:54.936549+00:00"
+      "thumbnail_verified_at": "2026-11-24T20:15:54.936549+00:00",
+      "scheduled_at": "2026-11-24T20:16:01.999705+00:00"
     }
   },
   "recent_topics": [
