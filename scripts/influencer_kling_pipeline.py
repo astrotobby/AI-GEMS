@@ -136,10 +136,10 @@ class OneFileHandler(BaseHTTPRequestHandler):
     file_path: Path
     secret_path: str
 
-    def do_GET(self) -> None:
+    def _send_headers(self) -> bool:
         if self.path != self.secret_path:
             self.send_error(404)
-            return
+            return False
         try:
             stat = self.file_path.stat()
             self.send_response(200)
@@ -148,6 +148,18 @@ class OneFileHandler(BaseHTTPRequestHandler):
             self.send_header("Cache-Control", "no-store, max-age=0")
             self.send_header("X-Content-Type-Options", "nosniff")
             self.end_headers()
+            return True
+        except FileNotFoundError:
+            self.send_error(404)
+            return False
+
+    def do_HEAD(self) -> None:
+        self._send_headers()
+
+    def do_GET(self) -> None:
+        if not self._send_headers():
+            return
+        try:
             with self.file_path.open("rb") as handle:
                 while chunk := handle.read(1024 * 1024):
                     self.wfile.write(chunk)
@@ -449,12 +461,31 @@ def main() -> int:
             )
             print(f"KLING_TASK_SUBMITTED scene={scene.name} task_id={task_id}")
             out_file = output_dir / f"{scene.stem}_speaking.mp4"
-            result = wait_for_task(key, task_id, out_file)
+            try:
+                result = wait_for_task(key, task_id, out_file)
+            except Exception as exc:
+                report["status"] = "failed"
+                report["error"] = f"{type(exc).__name__}: {str(exc)[:240]}"
+                report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+                raise
             report["results"].append(result)
+            report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+            charge_types = {
+                str(item.get("charge_type", "")).lower()
+                for item in (result.get("billing") or [])
+                if isinstance(item, dict)
+            }
             print(
                 f"KLING_TASK_COMPLETE scene={scene.name} "
                 f"output={out_file.name} duration={result.get('duration')}"
             )
+            if "cash" in charge_types:
+                report["status"] = "stopped_unexpected_cash_billing"
+                report["warning"] = "Kling reported cash billing; no further tasks submitted."
+                report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+                raise RuntimeError(
+                    "Kling reported cash billing for this task; stopping the batch before any further task."
+                )
     report["status"] = "completed"
     report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(f"ANIMATION_BATCH_COMPLETE count={len(report['results'])}")
