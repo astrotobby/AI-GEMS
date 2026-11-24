@@ -13,6 +13,7 @@ import os
 import queue
 import re
 import secrets
+import shutil
 import subprocess
 import sys
 import threading
@@ -299,7 +300,6 @@ def create_task(
             "resolution": "720p",
             "aspect_ratio": "16:9",
             "duration": 5,
-            "audio": "off",
         },
         "options": {
             "watermark_info": {"enabled": False},
@@ -349,6 +349,19 @@ def wait_for_task(key: str, task_id: str, out_file: Path) -> dict[str, Any]:
             download = requests.get(videos[0]["url"], timeout=180)
             download.raise_for_status()
             out_file.write_bytes(download.content)
+            ffmpeg = shutil.which("ffmpeg")
+            if not ffmpeg:
+                raise RuntimeError("ffmpeg is required to strip Kling-generated audio before narration is added.")
+            silent_file = out_file.with_name(out_file.stem + ".silent.mp4")
+            stripped = subprocess.run(
+                [ffmpeg, "-y", "-i", str(out_file), "-c:v", "copy", "-an", "-movflags", "+faststart", str(silent_file)],
+                capture_output=True,
+                text=True,
+                timeout=180,
+            )
+            if stripped.returncode != 0:
+                raise RuntimeError("Could not remove generated audio from the Kling reference clip.")
+            silent_file.replace(out_file)
             return {
                 "task_id": task_id,
                 "status": status,
@@ -380,9 +393,8 @@ def main() -> int:
     mask_keys(keys)
     key = select_one_key(keys, args.credential_index)
 
-    root = Path(os.environ.get("INFLUENCER_ROOT", "")).expanduser()
-    if not str(root):
-        root = Path.home() / "OneDrive" / "Desktop" / "INFLUENCER"
+    root_text = os.environ.get("INFLUENCER_ROOT", "").strip()
+    root = Path(root_text).expanduser() if root_text else (Path.home() / "OneDrive" / "Desktop" / "INFLUENCER")
     root = root.resolve()
     approved = root / "Kling_Animations" / "ApprovedImages"
     output_dir = root / "Kling_Animations"
