@@ -27,4 +27,4 @@ jobs:
       - name: Compile recovery code
         run: python -m py_compile .github/scripts/reconcile_existing_longform_upload.py .github/scripts/test_reconcile_existing_longform_upload.py
       - name: Run offline recovery safety tests
-        run: python -m unittest .github.scripts.test_reconcile_existing_longform_upload -v
+        run: python -m unittest discover -s .github/scripts -p 'test_reconcile_existing_longform_upload.py' -v
