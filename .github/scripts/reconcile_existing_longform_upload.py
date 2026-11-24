@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -190,6 +191,20 @@ def main() -> int:
             "no schedule change was made"
         )
 
+    def read_status():
+        current_rows = yt.videos().list(part="status", id=video_id).execute().get("items") or []
+        return (current_rows[0].get("status") or {}) if current_rows else {}
+
+    def wait_for_status(predicate, attempts=12, interval_seconds=5):
+        last = {}
+        for attempt in range(attempts):
+            last = read_status()
+            if predicate(last):
+                return last
+            if attempt + 1 < attempts:
+                time.sleep(interval_seconds)
+        return last
+
     if not same_time(actual_publish_at, expected_publish_at):
         scheduled_status = {
             key: current_status[key]
@@ -205,29 +220,39 @@ def main() -> int:
             body={"id": video_id, "status": scheduled_status},
         ).execute()
 
-    verified = yt.videos().list(part="snippet,status", id=video_id).execute().get("items") or []
+    # Poll after write: YouTube's read endpoint can briefly return the previous status.
+    final_status = wait_for_status(
+        lambda status: status.get("privacyStatus") == "private"
+        and same_time(status.get("publishAt"), expected_publish_at)
+    )
+    verified = yt.videos().list(part="snippet", id=video_id).execute().get("items") or []
     if not verified:
         raise SystemExit("YouTube schedule update returned but could not be read back")
-    final_video = verified[0]
-    final_snippet = final_video.get("snippet") or {}
-    final_status = final_video.get("status") or {}
+    final_snippet = (verified[0].get("snippet") or {})
     if final_snippet.get("channelId") != expected_channel["channel_id"]:
         raise SystemExit("Post-schedule channel identity check failed")
     if final_status.get("privacyStatus") != "private" or not same_time(
         final_status.get("publishAt"), expected_publish_at
     ):
-        # Fail closed and verify rollback. Omit publishAt instead of sending null.
+        # Fail closed, then poll until YouTube confirms the private-unscheduled state.
         yt.videos().update(
             part="status",
             body={"id": video_id, "status": private_unscheduled_status(final_status)},
         ).execute()
-        after = yt.videos().list(part="status", id=video_id).execute().get("items") or []
-        after_status = (after[0].get("status") or {}) if after else {}
+        after_status = wait_for_status(
+            lambda status: status.get("privacyStatus") == "private" and not status.get("publishAt")
+        )
         if after_status.get("privacyStatus") != "private" or after_status.get("publishAt"):
             raise SystemExit(
-                "Schedule verification failed and YouTube did not confirm private-unscheduled rollback"
+                "Schedule verification failed; private-unscheduled rollback was not confirmed after polling "
+                f"(privacyStatus={after_status.get('privacyStatus')!r}, "
+                f"publishAt={after_status.get('publishAt')!r}, "
+                f"uploadStatus={after_status.get('uploadStatus')!r})"
             )
-        raise SystemExit("YouTube did not retain the exact requested release time; upload remains private-unscheduled")
+        raise SystemExit(
+            "YouTube did not retain the exact requested release time after polling; "
+            "the upload remains private-unscheduled"
+        )
 
     job.update({
         "status": "scheduled",
