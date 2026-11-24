@@ -248,7 +248,7 @@ jobs:
           if [ "$DRY_RUN" = "true" ]; then ARGS+=(--dry-run); fi
           python ../astro-blog/scripts/longform_pipeline.py "${ARGS[@]}" 2>&1 | tee "$RUNNER_TEMP/longform-result.txt"
 
-      - name: Create public handoff asset for Facebook, Instagram and Rumble
+      - name: Create public handoff asset for Facebook and manual Rumble handoff
         if: success() && steps.slot.outputs.dry_run != 'true'
         continue-on-error: true
         working-directory: whop-clipper
@@ -353,6 +353,7 @@ jobs:
           name: longform-${{ steps.slot.outputs.channel || 'manual' }}-${{ github.run_id }}
           path: |
             astro-blog/.pipeline/out/video_16x9.mp4
+            astro-blog/.pipeline/out/thumb-*.jpg
             astro-blog/.pipeline/out/longform_*.json
             whop-clipper/state/longform/ledger.json
           if-no-files-found: ignore
