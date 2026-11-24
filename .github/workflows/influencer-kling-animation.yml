@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "Check API eligibility without spending credits, or animate the two approved scenes"
+        description: "Check readiness or generate realistic content-driven video footage"
         type: choice
         options:
           - check
@@ -16,13 +16,21 @@ on:
         type: boolean
         default: false
         required: true
+      content_brief:
+        description: "Required video script or content brief. Footage will be generated from this content."
+        type: string
+        required: true
       max_jobs:
-        description: "Maximum scene animations in this batch (1 or 2)"
+        description: "Number of 15-second content-driven video clips to generate (1-10)"
         type: choice
         options:
           - "1"
           - "2"
-        default: "1"
+          - "4"
+          - "6"
+          - "8"
+          - "10"
+        default: "2"
         required: true
 
 permissions:
@@ -34,7 +42,6 @@ concurrency:
 
 jobs:
   animate:
-    if: github.ref == 'refs/heads/main'
     runs-on: [self-hosted, windows, influencer-runner]
     timeout-minutes: 75
     env:
@@ -42,10 +49,10 @@ jobs:
       INFLUENCER_ROOT: 'C:\Users\chanz\OneDrive\Desktop\INFLUENCER'
       PYTHONUTF8: '1'
     steps:
-      - name: Checkout trusted main branch
+      - name: Checkout selected project branch
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.ref }}
           persist-credentials: false
 
       - name: Create isolated Python environment
@@ -54,25 +61,22 @@ jobs:
           $venv = Join-Path $env:RUNNER_TEMP 'influencer-venv'
           python -m venv $venv
           $py = Join-Path $venv 'Scripts\python.exe'
-          & $py -m pip install --disable-pip-version-check "requests>=2.32,<3" "Pillow>=10,<13"
+          & $py -m pip install --disable-pip-version-check "requests>=2.32,<3"
           if ($LASTEXITCODE -ne 0) { throw "Could not install pipeline dependencies." }
           if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
             throw "ffmpeg is required to remove generated Kling audio before narration."
           }
           "INFLUENCER_PYTHON=$py" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
 
-      - name: Verify local assets and Python dependencies
+      - name: Verify character-video asset and Python dependencies
         shell: powershell
         run: |
-          & $env:INFLUENCER_PYTHON -c "import requests, PIL; print('PYTHON_DEPENDENCIES_OK')"
-          if (-not (Test-Path "$env:INFLUENCER_ROOT\Kling_Animations\ApprovedImages\master_studio_reference.jpg")) {
-            throw "Missing approved master studio image."
-          }
-          if (-not (Test-Path "$env:INFLUENCER_ROOT\Kling_Animations\ApprovedImages\office_studio_reference.jpg")) {
-            throw "Missing approved office studio image."
+          & $env:INFLUENCER_PYTHON -c "import requests; print('PYTHON_DEPENDENCIES_OK')"
+          if (-not (Get-Command ffprobe -ErrorAction SilentlyContinue)) {
+            throw "ffprobe is required to validate the persistent character video."
           }
           if (-not (Test-Path "$env:INFLUENCER_ROOT\kling_20261124_VIDEO_Subtle_slo_4117_0.mp4")) {
-            throw "Missing local Kling motion reference."
+            throw "Missing approved 1080p Kling character-reference video."
           }
 
       - name: Run isolated Kling influencer pipeline
@@ -81,8 +85,9 @@ jobs:
           PIPELINE_MODE: ${{ inputs.mode }}
           ALLOW_CASH_BILLING: ${{ inputs.allow_cash_billing }}
           MAX_JOBS: ${{ inputs.max_jobs }}
+          CONTENT_BRIEF: ${{ inputs.content_brief }}
         run: |
-          $arguments = @("--mode", "$env:PIPELINE_MODE", "--max-jobs", "$env:MAX_JOBS")
+          $arguments = @("--mode", "$env:PIPELINE_MODE", "--max-jobs", "$env:MAX_JOBS", "--content-brief", "$env:CONTENT_BRIEF")
           if ($env:ALLOW_CASH_BILLING -eq "true") { $arguments += "--allow-cash-billing" }
           & $env:INFLUENCER_PYTHON scripts\influencer_kling_pipeline.py @arguments
 

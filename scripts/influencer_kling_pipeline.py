@@ -25,7 +25,6 @@ from pathlib import Path
 from typing import Any
 
 import requests
-from PIL import Image
 
 API = "https://api-singapore.klingai.com"
 # Model-specific Omni endpoints supported by the current Kling API.
@@ -37,15 +36,7 @@ MODEL_ENDPOINTS = (
     ("kling-3.0-omni", "/omni-video/kling-3.0-omni"),
 )
 MODEL_PRIORITY = {name: index for index, (name, _) in enumerate(MODEL_ENDPOINTS)}
-MOTION_NAME = "kling_20261124_VIDEO_Subtle_slo_4117_0.mp4"
-IDENTITY_IMAGES = [
-    "IMG_20261124_135816.jpg",
-    "IMG_20261124_135845.jpg",
-]
-APPROVED_SCENES = [
-    "master_studio_reference.jpg",
-    "office_studio_reference.jpg",
-]
+CHARACTER_REFERENCE_VIDEO_NAME = "kling_20261124_VIDEO_Subtle_slo_4117_0.mp4"
 
 
 def parse_key_pool(raw: str) -> list[str]:
@@ -100,11 +91,11 @@ def supported_model_endpoints(pack: dict[str, Any]) -> list[tuple[str, str]]:
     raw = str(pack.get("resource_pack_applicable_models", "")).lower()
     compact = re.sub(r"[^a-z0-9.]+", "", raw)
     result: list[tuple[str, str]] = []
-    if "kling4.0" in compact:
+    if re.search(r"kling\s*4\.0(?!\s*flash)", raw):
         result.append(("kling-4.0", "/omni-video/kling-4.0"))
-    if "kling4.0flash" in compact:
+    if re.search(r"kling\s*4\.0\s*flash", raw):
         result.append(("kling-4.0-flash", "/omni-video/kling-4.0-flash"))
-    if any(token in compact for token in ("kling3.0omni", "klingv3omni")):
+    if any(token in compact for token in ("kling3.0omni", "klingv3omni", "klingvideo3.0omni")):
         result.append(("kling-3.0-omni", "/omni-video/kling-3.0-omni"))
     return result
 
@@ -265,9 +256,9 @@ class OneFileHandler(BaseHTTPRequestHandler):
         return
 
 
-class TemporaryMotionTunnel:
-    def __init__(self, motion_file: Path, temp_dir: Path):
-        self.motion_file = motion_file
+class TemporaryCharacterVideoTunnel:
+    def __init__(self, video_file: Path, temp_dir: Path):
+        self.video_file = video_file
         self.temp_dir = temp_dir
         self.secret_path = "/" + secrets.token_urlsafe(32) + ".mp4"
         self.httpd: ThreadingHTTPServer | None = None
@@ -279,7 +270,7 @@ class TemporaryMotionTunnel:
         handler = type(
             "BoundOneFileHandler",
             (OneFileHandler,),
-            {"file_path": self.motion_file, "secret_path": self.secret_path},
+            {"file_path": self.video_file, "secret_path": self.secret_path},
         )
         self.httpd = ThreadingHTTPServer(("127.0.0.1", 0), handler)
         self.server_thread = threading.Thread(
@@ -344,75 +335,233 @@ class TemporaryMotionTunnel:
                 self.process.kill()
 
 
-def validate_image(path: Path) -> tuple[int, int]:
+def split_content_segments(content: str, count: int) -> list[str]:
+    """Split narration into balanced, non-overlapping visual beats."""
+    text = re.sub(r"\s+", " ", content).strip()
+    if not text:
+        raise RuntimeError("A video script or content brief is required.")
+    if len(text) > 10000:
+        raise RuntimeError("Content brief is too long; limit it to 10,000 characters per batch.")
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+    sentences = [x.strip() for x in sentences if x.strip()]
+    if len(sentences) < count:
+        words = text.split()
+        chunk_size = max(1, (len(words) + count - 1) // count)
+        return [" ".join(words[i:i + chunk_size]) for i in range(0, len(words), chunk_size)][:count]
+
+    chunks: list[list[str]] = [[] for _ in range(count)]
+    for index, sentence in enumerate(sentences):
+        target = min(count - 1, (index * count) // len(sentences))
+        chunks[target].append(sentence)
+    return [" ".join(x).strip() for x in chunks if x]
+
+
+def build_content_prompt(content_segment: str, clip_index: int, clip_count: int) -> str:
+    """Create a specific live-action visual plan from a narration segment."""
+    return (
+        f"Create a photorealistic live-action video, clip {clip_index} of {clip_count}, "
+        "for a polished YouTube documentary/explainer. This must be moving footage, "
+        "not a still image, slideshow, photo montage, collage, poster, or static avatar. "
+        "VISUAL STORY TO DEPICT: "
+        f"{content_segment} "
+        "Treat the narration topic above as the actual subject of the footage. "
+        "Show concrete, recognisable actions, places, objects, people, and consequences "
+        "that directly illustrate the topic. Do not substitute unrelated stock-looking "
+        "visuals or keep the host sitting at a desk. "
+        "CHARACTER CONTINUITY: @host is the recurring main presenter from the approved "
+        "character element. Preserve his exact face, age, skin tone, hairstyle, hairline, "
+        "facial proportions, build, and recognisable wardrobe style. Never redesign, "
+        "beautify, age, replace, duplicate, or morph him. Include @host naturally in "
+        "the story where it makes visual sense; he may walk, investigate, demonstrate, "
+        "interact with objects, react, or address the camera. When a cutaway is needed, "
+        "return to the same @host in a coherent continuation. "
+        "CAMERA AND MOTION: create a cinematic sequence with several distinct moving "
+        "shots: an establishing view, active medium framing, and close detail/action "
+        "coverage. Use purposeful tracking, pans, dolly movement, natural handheld "
+        "movement where appropriate, realistic body mechanics, believable physics, "
+        "natural lighting, realistic depth and environmental motion. Each shot must "
+        "add new visual information and advance the story. Maintain spatial and "
+        "temporal continuity across cuts. "
+        "STYLE: high-end photoreal documentary footage, lifelike textures, natural "
+        "motion blur, authentic environments, 16:9 landscape composition. "
+        "No frozen frames, no Ken Burns movement on photos, no image-to-slideshow "
+        "presentation, no title cards, no captions, no visible text, no logos, no "
+        "watermarks, no artificial face changes, and no generated dialogue/music. "
+        "Silent footage is required because narration and sound design are added later."
+    )
+
+
+def validate_character_video(path: Path) -> dict[str, Any]:
+    """Validate the approved character seed clip against Kling video-element limits."""
     if not path.exists():
-        raise RuntimeError(f"Approved scene image is missing: {path.name}")
-    if path.stat().st_size > 30 * 1024 * 1024:
-        raise RuntimeError(f"Image exceeds Kling's 30 MB limit: {path.name}")
-    with Image.open(path) as im:
-        im.verify()
-    with Image.open(path) as im:
-        width, height = im.size
-    if min(width, height) < 300:
-        raise RuntimeError(f"Image must be at least 300 px in each dimension: {path.name}")
-    ratio = width / height
-    if ratio < 0.4 or ratio > 2.5:
-        raise RuntimeError(f"Image aspect ratio is outside Kling's supported range: {path.name}")
-    return width, height
+        raise RuntimeError(f"Approved Kling character reference video is missing: {path.name}")
+    if path.stat().st_size > 200 * 1024 * 1024:
+        raise RuntimeError("Character reference video exceeds Kling's 200 MB element limit.")
+    ffprobe = shutil.which("ffprobe")
+    if not ffprobe:
+        raise RuntimeError("ffprobe is required to validate the character reference video.")
+    probe = subprocess.run(
+        [
+            ffprobe, "-v", "error", "-select_streams", "v:0",
+            "-show_entries", "stream=width,height,r_frame_rate",
+            "-show_entries", "format=duration",
+            "-of", "json", str(path),
+        ],
+        capture_output=True, text=True, timeout=30,
+    )
+    if probe.returncode != 0:
+        raise RuntimeError("Could not inspect the approved character reference video.")
+    payload = json.loads(probe.stdout)
+    stream = (payload.get("streams") or [{}])[0]
+    width, height = int(stream.get("width") or 0), int(stream.get("height") or 0)
+    duration = float((payload.get("format") or {}).get("duration") or 0)
+    ratio = width / height if height else 0
+    if min(width, height) < 1080 or min(abs(ratio - 16/9), abs(ratio - 9/16)) > 0.015:
+        raise RuntimeError(
+            f"Character video must be 1080p in 16:9 or 9:16; found {width}x{height}."
+        )
+    if not 3 <= duration <= 8:
+        raise RuntimeError(
+            f"Character video must be 3–8 seconds for video-character creation; found {duration:.2f}s."
+        )
+    return {"width": width, "height": height, "duration": duration, "bytes": path.stat().st_size}
 
 
-def image_data_url(path: Path) -> str:
-    mime = "image/png" if path.suffix.lower() == ".png" else "image/jpeg"
-    encoded = base64.b64encode(path.read_bytes()).decode("ascii")
-    return f"data:{mime};base64,{encoded}"
+def _element_id_from_payload(payload: dict[str, Any]) -> str | None:
+    data = payload.get("data") or {}
+    elements = ((data.get("task_result") or {}).get("elements") or [])
+    if elements and elements[0].get("element_id") is not None:
+        return str(elements[0]["element_id"])
+    direct = data.get("element_id")
+    return str(direct) if direct is not None else None
+
+
+def create_character_element(key: str, character_video_url: str) -> str:
+    """Create or reuse one account-scoped Kling video-character element."""
+    headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
+    base = f"{API}/v1/general/advanced-custom-elements"
+    fingerprint = __import__("hashlib").sha256(key.encode("utf-8")).hexdigest()[:12]
+    external_id = f"astro-host-{fingerprint}"
+
+    response = requests.get(f"{base}/{urllib.parse.quote(external_id)}", headers=headers, timeout=30)
+    if response.status_code == 200:
+        payload = response.json()
+        if payload.get("code") == 0:
+            existing = _element_id_from_payload(payload)
+            status = ((payload.get("data") or {}).get("task_status") or "").lower()
+            if existing and status in ("succeed", "succeeded"):
+                print(f"CHARACTER_ELEMENT_REUSED account_fingerprint={fingerprint}", flush=True)
+                return existing
+            task_id = (payload.get("data") or {}).get("task_id")
+            if task_id:
+                poll_id = str(task_id)
+            else:
+                poll_id = external_id
+        else:
+            poll_id = ""
+    elif response.status_code == 404:
+        poll_id = ""
+    elif response.status_code in (401, 402, 403):
+        raise AccountFallbackError(
+            f"Kling rejected this account during character-element lookup (HTTP {response.status_code})."
+        )
+    else:
+        response.raise_for_status()
+        poll_id = ""
+
+    if not poll_id:
+        body = {
+            "element_name": "AstroTobbyHost",
+            "element_description": (
+                "Photoreal recurring male host; preserve exact face, skin tone, hairstyle and build"
+            ),
+            "reference_type": "video_refer",
+            "element_video_list": {
+                "refer_videos": [{"video_url": character_video_url}]
+            },
+            "external_task_id": external_id,
+            "tag_list": [{"tag_id": "o_102"}],
+        }
+        created = requests.post(base, headers=headers, json=body, timeout=90)
+        if created.status_code in (401, 402, 403):
+            raise AccountFallbackError(
+                f"Kling rejected this account during character-element creation (HTTP {created.status_code})."
+            )
+        created.raise_for_status()
+        result = created.json()
+        if result.get("code") != 0:
+            message = str(result.get("message", ""))[:200]
+            if any(term in message.lower() for term in ("unauthorized", "invalid", "balance", "quota")):
+                raise AccountFallbackError(
+                    f"Kling rejected this account during character-element creation: {message}"
+                )
+            raise RuntimeError(f"Kling character-element creation failed: {message}")
+        poll_id = str((result.get("data") or {}).get("task_id") or external_id)
+        print(f"CHARACTER_ELEMENT_CREATION_STARTED account_fingerprint={fingerprint}", flush=True)
+
+    deadline = time.time() + 8 * 60
+    while time.time() < deadline:
+        check = requests.get(
+            f"{base}/{urllib.parse.quote(poll_id)}",
+            headers=headers,
+            timeout=30,
+        )
+        if check.status_code in (401, 402, 403):
+            raise AccountFallbackError(
+                f"Kling rejected this account while retrieving its character element (HTTP {check.status_code})."
+            )
+        check.raise_for_status()
+        payload = check.json()
+        if payload.get("code") != 0:
+            raise RuntimeError(
+                f"Kling character-element query failed: {str(payload.get('message', ''))[:180]}"
+            )
+        data = payload.get("data") or {}
+        status = str(data.get("task_status") or "").lower()
+        element_id = _element_id_from_payload(payload)
+        if status in ("succeed", "succeeded") and element_id:
+            print(
+                f"CHARACTER_ELEMENT_READY account_fingerprint={fingerprint}",
+                flush=True,
+            )
+            return element_id
+        if status == "failed":
+            raise RuntimeError(
+                f"Kling character-element creation failed: {str(data.get('task_status_msg', ''))[:180]}"
+            )
+        time.sleep(5)
+    raise TimeoutError("Timed out waiting for Kling to create the reusable character element.")
 
 
 def create_task(
     key: str,
-    scene_file: Path,
-    identity_one: Path,
-    identity_two: Path,
-    motion_url: str,
+    content_prompt: str,
+    character_element_id: str,
     external_id: str,
     model_endpoint: str,
+    model_name: str,
 ) -> str:
-    scene_data = image_data_url(scene_file)
-    identity_one_data = image_data_url(identity_one)
-    identity_two_data = image_data_url(identity_two)
-    prompt = (
-        "Create a photorealistic five-second presenter animation. The person in "
-        "@identity_a and @identity_b is the ONLY identity authority. Preserve his "
-        "actual face exactly: same face shape and proportions, eyes, nose, lips, "
-        "jawline, skin tone, short haircut and natural hairline, and subtle facial "
-        "hair. Do not beautify, broaden his face, thicken facial hair, age him, or "
-        "change his identity. @scene is the required opening composition and set; "
-        "keep its clothing, framing, desk and background. @motion is ONLY a guide "
-        "for restrained presenter movement and pacing; do not copy the person, "
-        "face, clothes, or background from @motion. Animate subtle natural speech "
-        "mouth movement, two soft blinks, a gentle head nod and minimal shoulder "
-        "movement as if narrating a YouTube explainer. Keep the camera locked, "
-        "natural human proportions, one continuous take, no cuts, no zoom, no "
-        "new people, no exaggerated gestures, no face warping, no added text, "
-        "no generated dialogue or music. Silent footage for later narration."
-    )
-    body = {
-        "contents": [
-            {"type": "prompt", "text": prompt},
-            {"type": "feature_video", "url": motion_url, "id": "motion"},
-            {"type": "first_frame", "url": scene_data, "id": "scene"},
-            {"type": "refer_image", "url": identity_one_data, "id": "identity_a"},
-            {"type": "refer_image", "url": identity_two_data, "id": "identity_b"},
-        ],
-        "settings": {
-            "resolution": "720p",
-            "aspect_ratio": "16:9",
-            "duration": 5,
-            **(
-                {"audio": "off", "multi_shot": False}
-                if "kling-3.0-omni" in model_endpoint
-                else {}
-            ),
+    """Submit a script-driven moving video using the persistent character element."""
+    contents = [
+        {"type": "prompt", "text": content_prompt},
+        {
+            "type": "element",
+            "element_id": str(character_element_id),
+            "id": "host",
         },
+    ]
+    settings: dict[str, Any] = {
+        "resolution": "720p" if model_name == "kling-4.0-flash" else "1080p",
+        "aspect_ratio": "16:9",
+        "duration": 15,
+        "audio": "off",
+    }
+    if model_name == "kling-3.0-omni":
+        settings["multi_shot"] = True
+        settings["shot_type"] = "intelligence"
+    body = {
+        "contents": contents,
+        "settings": settings,
         "options": {
             "watermark_info": {"enabled": False},
             "external_task_id": external_id,
@@ -522,14 +671,21 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", choices=("check", "animate"), default="check")
     parser.add_argument("--max-jobs", type=int, default=2)
+    parser.add_argument("--content-brief", required=True)
     parser.add_argument(
         "--allow-cash-billing",
         action="store_true",
-        help="Explicitly authorize Kling to use the selected account's monetary API balance.",
+        help="Explicitly authorize Kling to use an account's monetary API balance.",
     )
     args = parser.parse_args()
-    if args.max_jobs < 1 or args.max_jobs > 2:
-        raise RuntimeError("max-jobs must be 1 or 2 for the initial controlled batch.")
+    if args.max_jobs < 1 or args.max_jobs > 10:
+        raise RuntimeError("max-jobs must be between 1 and 10.")
+    segments = split_content_segments(args.content_brief, args.max_jobs)
+    if max(len(segment) for segment in segments) > 900:
+        raise RuntimeError(
+            "A content segment is too long for a reliable Kling Omni prompt. "
+            "Increase max_jobs so each clip contains a shorter part of the script."
+        )
 
     raw_secret = os.environ.get("KLING_API_KEYS", "")
     keys = parse_key_pool(raw_secret)
@@ -538,108 +694,123 @@ def main() -> int:
         print(f"KLING_KEY_POOL_COUNT={len(keys)} (expected 11)", flush=True)
     accounts = select_eligible_accounts(keys)
     print(
-        f"KLING_ELIGIBLE_ACCOUNTS={len(accounts)}; "
-        f"KEY_POOL_ENTRIES={len(keys)}; MODEL_FALLBACK=Kling 4.0 then Kling 3.0 Omni",
+        f"KLING_ELIGIBLE_MODEL_PAIRS={len(accounts)}; "
+        f"KEY_POOL_ENTRIES={len(keys)}; MODEL_FALLBACK=4.0, 4.0 Flash, 3.0 Omni",
         flush=True,
     )
 
     root_text = os.environ.get("INFLUENCER_ROOT", "").strip()
-    root = Path(root_text).expanduser() if root_text else (Path.home() / "OneDrive" / "Desktop" / "INFLUENCER")
+    root = Path(root_text).expanduser() if root_text else (
+        Path.home() / "OneDrive" / "Desktop" / "INFLUENCER"
+    )
     root = root.resolve()
-    approved = root / "Kling_Animations" / "ApprovedImages"
     output_dir = root / "Kling_Animations"
     output_dir.mkdir(parents=True, exist_ok=True)
-    scenes = [approved / name for name in APPROVED_SCENES]
-    identities = [root / name for name in IDENTITY_IMAGES]
-    motion_file = root / MOTION_NAME
-
-    for path in scenes:
-        validate_image(path)
-    for path in identities:
-        validate_image(path)
-    if not motion_file.exists() or motion_file.stat().st_size > 300 * 1024 * 1024:
-        raise RuntimeError("The approved local Kling motion-reference video is missing or exceeds 300 MB.")
-
-    print(f"LOCAL_ASSETS_OK scenes={len(scenes)} identity_photos={len(identities)} motion_video=yes")
-    print(f"SELECTED_CREDENTIAL_INDEX={args.credential_index}; total_stored_entries={len(keys)}; one_account_for_this_run=yes")
-    first_account = accounts[0]
-    pack = first_account["pack"]
+    character_video = root / CHARACTER_REFERENCE_VIDEO_NAME
+    character_video_info = validate_character_video(character_video)
     print(
-        "API_RESOURCE_PACKAGE_OK "
-        f"credential_index={first_account['credential_index']} "
-        f"model={first_account['model_name']} "
-        f"tier={pack.get('resource_pack_tier')} "
-        f"status={pack.get('status')} "
-        f"remaining_units={pack.get('remaining_quantity')}"
+        f"CHARACTER_SEED_VIDEO_OK {character_video_info['width']}x"
+        f"{character_video_info['height']} duration={character_video_info['duration']:.2f}s",
+        flush=True,
     )
-    print("NOTE: Kling states resource-package remaining-quantity statistics may be delayed by up to 12 hours.")
     require_billing_authorization(args.mode, args.allow_cash_billing)
 
     report_path = output_dir / "last_run_report.json"
     report: dict[str, Any] = {
         "created_at": datetime.now(timezone.utc).isoformat(),
         "mode": args.mode,
-        "credential_index": first_account["credential_index"],
+        "key_pool_entries": len(keys),
         "account_rotation": True,
-        "eligible_accounts": [
-            {"credential_index": a["credential_index"], "model": a["model_name"]}
+        "eligible_model_pairs": [
+            {
+                "credential_index": a["credential_index"],
+                "model": a["model_name"],
+            }
             for a in accounts
         ],
         "paid_balance_authorized": args.allow_cash_billing,
-        "scene_files": [x.name for x in scenes],
-        "identity_files": [x.name for x in identities],
-        "motion_reference": motion_file.name,
+        "character_reference_video": character_video.name,
+        "character_element": "Kling video-character element",
+        "content_brief": args.content_brief,
+        "scene_strategy": "script-driven live-action multi-shot video; no still-image output",
         "results": [],
     }
     if args.mode == "check":
-        report["status"] = "preflight_passed_no_credits_spent"
+        report["status"] = "preflight_passed_no_generation_tasks_submitted"
         report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
-        print("PREFLIGHT_PASSED; NO GENERATION TASKS SUBMITTED; NO CREDITS SPENT.")
+        print("PREFLIGHT_PASSED; CHARACTER VIDEO VALID; NO GENERATION TASKS SUBMITTED.")
         return 0
 
     temp_dir = Path(os.environ.get("TEMP", str(output_dir)))
     external_prefix = "influencer-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    with TemporaryMotionTunnel(motion_file, temp_dir) as motion_url:
-        print("TEMPORARY_MOTION_REFERENCE_TUNNEL_READY; URL VALUE REDACTED.")
-        for index, scene in enumerate(scenes[: args.max_jobs], start=1):
+    element_by_account: dict[int, str] = {}
+    account_element_failures: set[int] = set()
+    with TemporaryCharacterVideoTunnel(character_video, temp_dir) as character_video_url:
+        print("CHARACTER_VIDEO_TUNNEL_READY; URL VALUE REDACTED.", flush=True)
+        for index, segment in enumerate(segments, start=1):
+            content_prompt = build_content_prompt(segment, index, len(segments))
             external_id = f"{external_prefix}-{index}"
             task_id = None
             selected_account = None
             account_errors: list[str] = []
-            # Rotate only after a definite per-account rejection received before
-            # Kling returns a task ID. Never retry on 429 or ambiguous timeouts/5xx.
+
+            # Attempt accounts/models in order. An account-specific rejection before
+            # task acceptance permits fallback; ambiguous timeouts/5xx and 429 do not.
             for account in accounts:
+                account_index = int(account["credential_index"])
+                if account_index in account_element_failures:
+                    continue
                 try:
+                    if account_index not in element_by_account:
+                        element_by_account[account_index] = create_character_element(
+                            account["key"], character_video_url
+                        )
                     task_id = create_task(
-                        account["key"], scene, identities[0], identities[1],
-                        motion_url, external_id, account["endpoint"]
+                        account["key"],
+                        content_prompt,
+                        element_by_account[account_index],
+                        external_id,
+                        account["endpoint"],
+                        account["model_name"],
                     )
                     selected_account = account
                     break
                 except AccountFallbackError as exc:
+                    account_element_failures.add(account_index)
                     account_errors.append(
-                        f"key {account['credential_index']}: {str(exc)[:160]}"
+                        f"key {account_index}: {str(exc)[:160]}"
                     )
                     print(
-                        f"KLING_SUBMISSION_FALLBACK index={account['credential_index']} "
+                        f"KLING_ACCOUNT_FALLBACK index={account_index} "
                         f"reason={str(exc)[:160]}",
                         flush=True,
                     )
             if task_id is None or selected_account is None:
                 raise RuntimeError(
-                    "All eligible Kling accounts explicitly rejected the task before "
-                    "acceptance. " + "; ".join(account_errors)
+                    "All eligible Kling accounts rejected the character element or "
+                    "video task before acceptance. " + "; ".join(account_errors)
                 )
+
             active_key = selected_account["key"]
-            report["credential_index"] = selected_account["credential_index"]
-            report["selected_model"] = selected_account["model_name"]
+            report["last_credential_index"] = selected_account["credential_index"]
+            report["last_model"] = selected_account["model_name"]
+            report["results"].append({
+                "segment": index,
+                "content": segment,
+                "task_id": task_id,
+                "credential_index": selected_account["credential_index"],
+                "model": selected_account["model_name"],
+                "status": "submitted",
+            })
             report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
             print(
-                f"KLING_TASK_SUBMITTED scene={scene.name} "
+                f"KLING_TASK_SUBMITTED clip={index} "
                 f"key_index={selected_account['credential_index']} "
-                f"model={selected_account['model_name']} task_id={task_id}"
+                f"model={selected_account['model_name']} task_id={task_id}",
+                flush=True,
             )
-            out_file = output_dir / f"{scene.stem}_speaking.mp4"
+
+            out_file = output_dir / f"content_scene_{index:02d}.mp4"
             try:
                 result = wait_for_task(active_key, task_id, out_file)
             except Exception as exc:
@@ -647,27 +818,31 @@ def main() -> int:
                 report["error"] = f"{type(exc).__name__}: {str(exc)[:240]}"
                 report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
                 raise
-            report["results"].append(result)
+            report["results"][-1].update(result)
+            report["results"][-1]["status"] = "completed"
             report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+            print(
+                f"KLING_TASK_COMPLETE clip={index} "
+                f"output={out_file.name} duration={result.get('duration')}",
+                flush=True,
+            )
             charge_types = {
                 str(item.get("charge_type", "")).lower()
                 for item in (result.get("billing") or [])
                 if isinstance(item, dict)
             }
-            print(
-                f"KLING_TASK_COMPLETE scene={scene.name} "
-                f"output={out_file.name} duration={result.get('duration')}"
-            )
             if "cash" in charge_types:
-                report["warning"] = "Kling used monetary API balance; this was explicitly authorized for this run."
+                report["warning"] = (
+                    "Kling used monetary API balance; this was explicitly authorized for this run."
+                )
                 report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
-                print("CASH_BALANCE_USED; PAID_USAGE_RECORDED_IN_REPORT.")
+                print("CASH_BALANCE_USED; PAID_USAGE_RECORDED_IN_REPORT.", flush=True)
+
     report["status"] = "completed"
     report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(f"ANIMATION_BATCH_COMPLETE count={len(report['results'])}")
     print(f"REPORT={report_path}")
     return 0
-
 
 if __name__ == "__main__":
     try:

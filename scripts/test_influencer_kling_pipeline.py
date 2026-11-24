@@ -8,6 +8,9 @@ from scripts.influencer_kling_pipeline import (
     parse_key_pool,
     select_eligible_accounts,
     supported_model_endpoints,
+    split_content_segments,
+    build_content_prompt,
+    create_task,
 )
 
 
@@ -30,6 +33,42 @@ class InfluencerKlingPipelineTests(unittest.TestCase):
 
     def test_parse_json_key_pool(self):
         self.assertEqual(parse_key_pool('["key-a", "key-b"]'), ["key-a", "key-b"])
+
+    def test_content_segments_preserve_script_order(self):
+        segments = split_content_segments(
+            "First event happens. Second event follows. Third event ends. Fourth event concludes.",
+            2,
+        )
+        self.assertIn("First event", segments[0])
+        self.assertIn("Second event", segments[0])
+        self.assertIn("Third event", segments[1])
+        self.assertIn("Fourth event", segments[1])
+
+    def test_content_prompt_requires_real_moving_footage_and_same_host(self):
+        prompt = build_content_prompt("A scientist explains a new discovery.", 1, 2)
+        self.assertIn("@host", prompt)
+        self.assertIn("moving footage", prompt)
+        self.assertIn("not a still image", prompt)
+        self.assertIn("discovery", prompt)
+
+    @patch("scripts.influencer_kling_pipeline.requests.post")
+    def test_generation_uses_persistent_character_element_not_still_frames(self, post):
+        post.return_value = _Response({"code": 0, "data": {"id": "task-123"}})
+        task_id = create_task(
+            "masked-test-key",
+            "Create a documentary scene based on this narration.",
+            "element-456",
+            "test-task-001",
+            "/omni-video/kling-3.0-omni",
+            "kling-3.0-omni",
+        )
+        body = post.call_args.kwargs["json"]
+        self.assertEqual(task_id, "task-123")
+        self.assertEqual(body["contents"][1]["type"], "element")
+        self.assertEqual(body["contents"][1]["element_id"], "element-456")
+        self.assertFalse(any(x["type"] == "first_frame" for x in body["contents"]))
+        self.assertTrue(body["settings"]["multi_shot"])
+        self.assertEqual(body["settings"]["shot_type"], "intelligence")
 
     def test_models_include_kling_4_and_3_omni_without_4_only_restriction(self):
         endpoints = supported_model_endpoints({
