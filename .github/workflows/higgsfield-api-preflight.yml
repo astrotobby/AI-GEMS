@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      HIGGSFIELD_API: ${{ secrets.HIGGSFIELD_API }}
+      HIGGSFILED_API: ${{ secrets.HIGGSFILED_API }}
       PYTHONUNBUFFERED: "1"
     steps:
       - name: Authenticate and estimate Kling 4.0 video cost (no generation)
@@ -26,10 +26,10 @@ jobs:
           import sys
           import requests
 
-          credential = (os.environ.get("HIGGSFIELD_API") or "").strip()
+          credential = (os.environ.get("HIGGSFILED_API") or "").strip()
           if not credential:
               print("RESULT=SECRET_MISSING")
-              print("Add the repository Actions secret named HIGGSFIELD_API.")
+              print("Add the repository Actions secret named HIGGSFILED_API.")
               sys.exit(1)
 
           if ":" not in credential or not all(credential.split(":", 1)):
@@ -79,7 +79,7 @@ jobs:
 
           if response.status_code == 401:
               print("RESULT=AUTHENTICATION_FAILED_401")
-              print("Check that HIGGSFIELD_API contains the complete key ID and secret, joined by one colon.")
+              print("Check that HIGGSFILED_API contains the complete key ID and secret, joined by one colon.")
           elif response.status_code == 403:
               print("RESULT=FORBIDDEN_403")
               print("The account or credential lacks access to this operation.")
