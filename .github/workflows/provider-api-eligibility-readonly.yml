@@ -1,6 +1,11 @@
-name: Provider API eligibility checks (read-only)
+name: Runware account check (read-only)
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/provider-api-eligibility-readonly.yml
   workflow_dispatch:
 
 permissions:
@@ -12,87 +17,51 @@ jobs:
     timeout-minutes: 5
     env:
       RUNWARE_API_KEY: ${{ secrets.RUNWARE_API_KEY || secrets.RUNWARE_API }}
-      REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
     steps:
-      - name: Check provider credentials and balances without generating
+      - name: Read Runware account balance without generating
         shell: bash
         run: |
           python - <<'PY'
-          import json
-          import os
-          import sys
-          import uuid
-          import urllib.request
-          import urllib.error
+          import json, os, uuid, urllib.request, urllib.error
 
-          def request(url, method="GET", headers=None, body=None):
-              data = None if body is None else json.dumps(body).encode("utf-8")
-              req = urllib.request.Request(url, data=data, headers=headers or {}, method=method)
-              try:
-                  with urllib.request.urlopen(req, timeout=25) as response:
-                      raw = response.read().decode("utf-8")
-                      return response.status, json.loads(raw) if raw else {}
-              except urllib.error.HTTPError as exc:
-                  return exc.code, {}
-              except Exception as exc:
-                  print(f"NETWORK_ERROR: {type(exc).__name__}")
-                  return 0, {}
+          key = os.environ.get("RUNWARE_API_KEY", "").strip()
+          if not key:
+              print("RUNWARE_CREDENTIAL_NOT_CONFIGURED")
+              raise SystemExit(2)
 
-          runware = os.environ.get("RUNWARE_API_KEY", "").strip()
-          replicate = os.environ.get("REPLICATE_API_TOKEN", "").strip()
+          request = [{
+              "taskType": "accountManagement",
+              "taskUUID": str(uuid.uuid4()),
+              "operation": "getDetails"
+          }]
+          req = urllib.request.Request(
+              "https://api.runware.ai/v1",
+              data=json.dumps(request).encode("utf-8"),
+              headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+              method="POST"
+          )
+          try:
+              with urllib.request.urlopen(req, timeout=25) as response:
+                  payload = json.loads(response.read().decode("utf-8"))
+                  print(f"RUNWARE_HTTP_STATUS={response.status}")
+          except urllib.error.HTTPError as exc:
+              print(f"RUNWARE_HTTP_STATUS={exc.code}")
+              print("Runware rejected the credential or account read request.")
+              raise SystemExit(3)
+          except Exception as exc:
+              print(f"RUNWARE_NETWORK_ERROR={type(exc).__name__}")
+              raise SystemExit(4)
 
-          print("=== RUNWARE ===")
-          if not runware:
-              print("Credential: NOT_CONFIGURED (expected secret RUNWARE_API_KEY)")
-          else:
-              status, payload = request(
-                  "https://api.runware.ai/v1",
-                  method="POST",
-                  headers={
-                      "Authorization": f"Bearer {runware}",
-                      "Content-Type": "application/json",
-                  },
-                  body=[{
-                      "taskType": "accountManagement",
-                      "taskUUID": str(uuid.uuid4()),
-                      "operation": "getDetails",
-                  }],
-              )
-              print(f"Read-only account API HTTP status: {status}")
-              data = payload.get("data", []) if isinstance(payload, dict) else []
-              first = data[0] if data and isinstance(data[0], dict) else {}
-              if status == 200 and "balance" in first:
-                  try:
-                      balance = float(first["balance"])
-                      print(f"Account balance (USD): {balance:.4f}")
-                      print("Seedance 2.5 funding: AVAILABLE" if balance > 0 else "Seedance 2.5 funding: NO AVAILABLE BALANCE")
-                  except (TypeError, ValueError):
-                      print("Balance field returned but could not be parsed.")
-              else:
-                  print("Could not confirm Runware account balance. Check credential, account role, and API response.")
+          first = payload[0] if isinstance(payload, list) and payload else payload
+          if not isinstance(first, dict) or first.get("taskType") != "accountManagement":
+              print("RUNWARE_RESPONSE_UNEXPECTED")
+              raise SystemExit(5)
 
-          print("=== REPLICATE ===")
-          if not replicate:
-              print("Credential: NOT_CONFIGURED (expected secret REPLICATE_API_TOKEN)")
-          else:
-              headers = {"Authorization": f"Bearer {replicate}"}
-              status, account = request("https://api.replicate.com/v1/account", headers=headers)
-              print(f"Read-only account API HTTP status: {status}")
-              if status == 200 and isinstance(account, dict):
-                  print("Credential authentication: VALID")
-                  model_status, model = request(
-                      "https://api.replicate.com/v1/models/bytedance/seedance-2.5",
-                      headers=headers,
-                  )
-                  print(f"Seedance 2.5 model metadata HTTP status: {model_status}")
-                  if model_status == 200:
-                      print("Seedance 2.5 metadata access: AVAILABLE")
-                  else:
-                      print("Seedance 2.5 metadata access: NOT CONFIRMED")
-                  print("Billing/free-credit balance: NOT EXPOSED by Replicate's documented account endpoint; check the Replicate billing page.")
-              else:
-                  print("Credential authentication: NOT CONFIRMED (invalid token, missing permission, or provider error).")
-
-          print("=== SAFETY ===")
-          print("No prediction, video generation, model invocation, top-up, or billing change was made.")
+          print(f"RUNWARE_ACCOUNT_NAME={first.get('organizationName', 'not returned')}")
+          print(f"RUNWARE_BALANCE_USD={first.get('balance', 'not returned')}")
+          usage = first.get("usage", {})
+          today = usage.get("today", {}) if isinstance(usage, dict) else {}
+          print(f"RUNWARE_TODAY_CREDITS_USED={today.get('credits', 'not returned')}")
+          print(f"RUNWARE_TODAY_REQUESTS={today.get('requests', 'not returned')}")
+          print("NO_VIDEO_GENERATION_OR_BILLING_ACTION_PERFORMED")
           PY
