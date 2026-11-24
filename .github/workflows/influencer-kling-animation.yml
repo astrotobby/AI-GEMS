@@ -48,10 +48,23 @@ jobs:
           ref: main
           persist-credentials: false
 
+      - name: Create isolated Python environment
+        shell: powershell
+        run: |
+          $venv = Join-Path $env:RUNNER_TEMP 'influencer-venv'
+          python -m venv $venv
+          $py = Join-Path $venv 'Scripts\python.exe'
+          & $py -m pip install --disable-pip-version-check "requests>=2.32,<3" "Pillow>=10,<13"
+          if ($LASTEXITCODE -ne 0) { throw "Could not install pipeline dependencies." }
+          if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
+            throw "ffmpeg is required to remove generated Kling audio before narration."
+          }
+          "INFLUENCER_PYTHON=$py" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
       - name: Verify local assets and Python dependencies
         shell: powershell
         run: |
-          python -c "import requests, PIL; print('PYTHON_DEPENDENCIES_OK')"
+          & $env:INFLUENCER_PYTHON -c "import requests, PIL; print('PYTHON_DEPENDENCIES_OK')"
           if (-not (Test-Path "$env:INFLUENCER_ROOT\Kling_Animations\ApprovedImages\master_studio_reference.jpg")) {
             throw "Missing approved master studio image."
           }
@@ -69,7 +82,7 @@ jobs:
           CREDENTIAL_INDEX: ${{ inputs.credential_index }}
           MAX_JOBS: ${{ inputs.max_jobs }}
         run: |
-          python scripts\influencer_kling_pipeline.py --mode "$env:PIPELINE_MODE" --credential-index "$env:CREDENTIAL_INDEX" --max-jobs "$env:MAX_JOBS"
+          & $env:INFLUENCER_PYTHON scripts\influencer_kling_pipeline.py --mode "$env:PIPELINE_MODE" --credential-index "$env:CREDENTIAL_INDEX" --max-jobs "$env:MAX_JOBS"
 
       - name: Confirm local outputs
         if: always()
