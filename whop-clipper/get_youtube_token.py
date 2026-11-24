@@ -18,7 +18,7 @@ import urllib.request
 import webbrowser
 
 PORT = 8765
-SCOPES = "https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly"
+SCOPES = "https://www.googleapis.com/auth/youtube"  # upload + status read + thumbnail + scheduled publishAt management
 
 
 def main() -> None:
