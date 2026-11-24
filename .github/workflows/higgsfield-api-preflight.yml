@@ -1,0 +1,97 @@
+name: Higgsfield API credential preflight (estimate only)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: higgsfield-api-preflight
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      HIGGSFIELD_API: ${{ secrets.HIGGSFIELD_API }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Authenticate and estimate Kling 4.0 video cost (no generation)
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import sys
+          import requests
+
+          credential = (os.environ.get("HIGGSFIELD_API") or "").strip()
+          if not credential:
+              print("RESULT=SECRET_MISSING")
+              print("Add the repository Actions secret named HIGGSFIELD_API.")
+              sys.exit(1)
+
+          if ":" not in credential or not all(credential.split(":", 1)):
+              print("RESULT=CREDENTIAL_FORMAT_UNVERIFIED")
+              print("Expected the complete KEY_ID:KEY_SECRET pair as one secret value.")
+              sys.exit(1)
+
+          url = "https://api.higgsfield.ai/estimate/kling-video/v4.0/text-to-video"
+          body = {
+              "prompt": "A cinematic coastal road at sunrise, slow tracking camera movement",
+              "duration": 3,
+              "resolution": "720p",
+              "aspect_ratio": "16:9"
+          }
+          try:
+              response = requests.post(
+                  url,
+                  headers={
+                      "Authorization": f"Key {credential}",
+                      "Content-Type": "application/json"
+                  },
+                  json=body,
+                  timeout=40
+              )
+          except requests.RequestException as exc:
+              print(f"RESULT=NETWORK_ERROR; TYPE={type(exc).__name__}")
+              sys.exit(1)
+
+          print(f"HTTP_STATUS={response.status_code}")
+          if response.status_code == 200:
+              try:
+                  data = response.json()
+              except ValueError:
+                  print("RESULT=UNEXPECTED_NON_JSON_RESPONSE")
+                  sys.exit(1)
+              usd = data.get("usd")
+              if usd is None:
+                  print("RESULT=AUTHENTICATED_BUT_ESTIMATE_FIELD_MISSING")
+                  print("RESPONSE_FIELDS=" + ",".join(sorted(map(str, data.keys()))))
+                  sys.exit(1)
+              print("AUTHENTICATION=SUCCESS")
+              print("VIDEO_MODEL_ESTIMATE=SUCCESS")
+              print(f"ESTIMATED_USD={usd}")
+              print("GENERATION_REQUESTS_SUBMITTED=0")
+              print("PAID_GENERATION_CREDITS_SPENT=0")
+              sys.exit(0)
+
+          if response.status_code == 401:
+              print("RESULT=AUTHENTICATION_FAILED_401")
+              print("Check that HIGGSFIELD_API contains the complete key ID and secret, joined by one colon.")
+          elif response.status_code == 403:
+              print("RESULT=AUTHENTICATED_OR_RECOGNIZED_BUT_FORBIDDEN_403")
+              print("The account or credential lacks access to this operation.")
+          elif response.status_code == 404:
+              print("RESULT=ESTIMATE_ROUTE_OR_MODEL_NOT_FOUND_404")
+              print("This alone does not prove the credential is invalid.")
+          elif response.status_code == 422:
+              print("RESULT=REQUEST_VALIDATION_FAILED_422")
+              print("Credential may be valid; check model estimate schema.")
+          else:
+              print(f"RESULT=API_ERROR_{response.status_code}")
+              print("Response body suppressed to avoid accidentally exposing sensitive data.")
+          sys.exit(1)
+          PY
