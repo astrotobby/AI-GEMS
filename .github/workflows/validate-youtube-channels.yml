@@ -15,19 +15,6 @@ jobs:
       - name: Checkout AI-GEMS (credential owner)
         uses: actions/checkout@v4
 
-      # The YouTube auth workflow persists each channel's issuing OAuth client
-      # beside its refresh token. Restore that cache so refreshes use the exact
-      # client that minted the token instead of guessing across current client IDs.
-      - name: Restore YouTube OAuth token/client cache
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            whop-clipper/work
-            ~/.cache/huggingface
-          key: clipper-auth-restore
-          restore-keys: |
-            clipper-
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
