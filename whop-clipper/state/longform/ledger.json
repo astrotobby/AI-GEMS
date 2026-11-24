@@ -8292,7 +8292,7 @@
       "channel_title": "Astro Tobby",
       "owner_account": "goodlucktobby@gmail.com",
       "slot": "15:00",
-      "publish_at": "2026-11-24T12:00:00+00:00",
+      "publish_at": "2026-11-24T12:00:00Z",
       "workflow_run_id": "45259738476",
       "artifact_name": "longform-astrotobby-45259738476",
       "title": "BAFTA Loses EE Sponsor as Record 38 Films Chase Oscar Glory",
@@ -8387,9 +8387,9 @@
         "word_count": 1953,
         "model": "claude-sonnet-5"
       },
-      "status": "uploading",
+      "status": "scheduled",
       "created_at": "2026-11-23T20:33:56.996226+00:00",
-      "updated_at": "2026-11-24T09:06:08.506635+00:00",
+      "updated_at": "2026-11-24T09:06:16.619249+00:00",
       "media": {
         "duration_seconds": 687.62,
         "width": 1920,
@@ -9306,7 +9306,8 @@
       "url": "https://youtu.be/rIRK5IXyzms",
       "upload_response_received_at": "2026-11-24T09:06:00.972486+00:00",
       "thumbnail_verified": true,
-      "thumbnail_verified_at": "2026-11-24T09:06:08.506490+00:00"
+      "thumbnail_verified_at": "2026-11-24T09:06:08.506490+00:00",
+      "scheduled_at": "2026-11-24T09:06:16.619078+00:00"
     },
     "20261125_digital_nomad_1800": {
       "job_id": "20261125_digital_nomad_1800",
