@@ -70,12 +70,8 @@ def main() -> int:
         )
 
     packs = data.get("resource_pack_subscribe_infos") or []
-    video_packs = [
-        p for p in packs
-        if "video" in str(p.get("resource_pack_name", "")).lower()
-    ]
     eligible = [
-        p for p in video_packs
+        p for p in packs
         if str(p.get("resource_pack_tier", "")).lower() == "flagship"
         and str(p.get("status", "")).lower() == "online"
         and float(p.get("remaining_quantity") or 0) > 0
@@ -83,8 +79,15 @@ def main() -> int:
     ]
     print(f"SECRET_ENTRIES={len(keys)}")
     print(f"SELECTED_CREDENTIAL_INDEX={args.credential_index}")
-    print(f"VIDEO_PACKS_FOUND={len(video_packs)}")
+    print(f"RESOURCE_PACKS_TOTAL={len(packs)}")
     print(f"FLAGSHIP_KLING_4_PACKS_ACTIVE={len(eligible)}")
+    for i, pack in enumerate(packs, start=1):
+        print(
+            f"RESOURCE_PACK_{i}: name={pack.get('resource_pack_name')} "
+            f"tier={pack.get('resource_pack_tier')} status={pack.get('status')} "
+            f"models={pack.get('resource_pack_applicable_models')} "
+            f"remaining_units={pack.get('remaining_quantity')}"
+        )
     for i, pack in enumerate(eligible, start=1):
         expiry = pack.get("invalid_time")
         expiry_text = (
