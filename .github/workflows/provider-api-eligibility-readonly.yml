@@ -1,0 +1,103 @@
+name: Provider API eligibility checks (read-only)
+
+on:
+  push:
+    branches:
+      - feature/kling-11-key-failover
+    paths:
+      - .github/workflows/provider-api-eligibility-readonly.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  account-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      RUNWARE_API_KEY: ${{ secrets.RUNWARE_API_KEY }}
+      REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
+    steps:
+      - name: Check provider credentials and balances without generating
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import sys
+          import uuid
+          import urllib.request
+          import urllib.error
+
+          def request(url, method="GET", headers=None, body=None):
+              data = None if body is None else json.dumps(body).encode("utf-8")
+              req = urllib.request.Request(url, data=data, headers=headers or {}, method=method)
+              try:
+                  with urllib.request.urlopen(req, timeout=25) as response:
+                      raw = response.read().decode("utf-8")
+                      return response.status, json.loads(raw) if raw else {}
+              except urllib.error.HTTPError as exc:
+                  return exc.code, {}
+              except Exception as exc:
+                  print(f"NETWORK_ERROR: {type(exc).__name__}")
+                  return 0, {}
+
+          runware = os.environ.get("RUNWARE_API_KEY", "").strip()
+          replicate = os.environ.get("REPLICATE_API_TOKEN", "").strip()
+
+          print("=== RUNWARE ===")
+          if not runware:
+              print("Credential: NOT_CONFIGURED (expected secret RUNWARE_API_KEY)")
+          else:
+              status, payload = request(
+                  "https://api.runware.ai/v1",
+                  method="POST",
+                  headers={
+                      "Authorization": f"Bearer {runware}",
+                      "Content-Type": "application/json",
+                  },
+                  body=[{
+                      "taskType": "accountManagement",
+                      "taskUUID": str(uuid.uuid4()),
+                      "operation": "getDetails",
+                  }],
+              )
+              print(f"Read-only account API HTTP status: {status}")
+              data = payload.get("data", []) if isinstance(payload, dict) else []
+              first = data[0] if data and isinstance(data[0], dict) else {}
+              if status == 200 and "balance" in first:
+                  try:
+                      balance = float(first["balance"])
+                      print(f"Account balance (USD): {balance:.4f}")
+                      print("Seedance 2.5 funding: AVAILABLE" if balance > 0 else "Seedance 2.5 funding: NO AVAILABLE BALANCE")
+                  except (TypeError, ValueError):
+                      print("Balance field returned but could not be parsed.")
+              else:
+                  print("Could not confirm Runware account balance. Check credential, account role, and API response.")
+
+          print("=== REPLICATE ===")
+          if not replicate:
+              print("Credential: NOT_CONFIGURED (expected secret REPLICATE_API_TOKEN)")
+          else:
+              headers = {"Authorization": f"Bearer {replicate}"}
+              status, account = request("https://api.replicate.com/v1/account", headers=headers)
+              print(f"Read-only account API HTTP status: {status}")
+              if status == 200 and isinstance(account, dict):
+                  print("Credential authentication: VALID")
+                  model_status, model = request(
+                      "https://api.replicate.com/v1/models/bytedance/seedance-2.5",
+                      headers=headers,
+                  )
+                  print(f"Seedance 2.5 model metadata HTTP status: {model_status}")
+                  if model_status == 200:
+                      print("Seedance 2.5 metadata access: AVAILABLE")
+                  else:
+                      print("Seedance 2.5 metadata access: NOT CONFIRMED")
+                  print("Billing/free-credit balance: NOT EXPOSED by Replicate's documented account endpoint; check the Replicate billing page.")
+              else:
+                  print("Credential authentication: NOT CONFIRMED (invalid token, missing permission, or provider error).")
+
+          print("=== SAFETY ===")
+          print("No prediction, video generation, model invocation, top-up, or billing change was made.")
+          PY
