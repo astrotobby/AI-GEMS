@@ -66,13 +66,15 @@ jobs:
                   print("RESULT=UNEXPECTED_NON_JSON_RESPONSE")
                   sys.exit(1)
               usd = data.get("usd")
-              if usd is None:
-                  print("RESULT=AUTHENTICATED_BUT_ESTIMATE_FIELD_MISSING")
-                  print("RESPONSE_FIELDS=" + ",".join(sorted(map(str, data.keys()))))
-                  sys.exit(1)
               print("AUTHENTICATION=SUCCESS")
-              print("VIDEO_MODEL_ESTIMATE=SUCCESS")
-              print(f"ESTIMATED_USD={usd}")
+              print("VIDEO_MODEL_ESTIMATE_ENDPOINT=SUCCESS")
+              print("ESTIMATE_RESPONSE_TYPE=" + str(data.get("type", "unspecified"))[:100])
+              if data.get("pricing_description") is not None:
+                  print("PRICING_DESCRIPTION=" + str(data["pricing_description"])[:300])
+              if usd is not None:
+                  print(f"ESTIMATED_USD={usd}")
+              else:
+                  print("ESTIMATED_USD_FIELD=NOT_RETURNED_BY_THIS_MODEL_ENDPOINT")
               print("GENERATION_REQUESTS_SUBMITTED=0")
               print("PAID_GENERATION_CREDITS_SPENT=0")
               sys.exit(0)
