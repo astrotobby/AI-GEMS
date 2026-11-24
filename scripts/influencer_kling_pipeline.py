@@ -111,21 +111,19 @@ def account_video_pack(key: str) -> dict[str, Any]:
     packs = data.get("resource_pack_subscribe_infos") or []
     eligible = []
     for pack in packs:
-        tier = str(pack.get("resource_pack_tier", "")).lower()
         status = str(pack.get("status", "")).lower()
         remaining = float(pack.get("remaining_quantity") or 0)
         models = str(pack.get("resource_pack_applicable_models", "")).lower()
         if (
             status == "online"
-            and tier == "flagship"
             and remaining > 0
             and ("kling 4.0" in models or "kling-4.0" in models)
         ):
             eligible.append(pack)
     if not eligible:
         raise RuntimeError(
-            "This selected Kling account has no active Flagship video resource "
-            "package for Kling 4.0. No video task was submitted and no cash "
+            "This selected Kling account has no active video resource package "
+            "applicable to Kling 4.0. No video task was submitted and no cash "
             "balance fallback was attempted."
         )
     eligible.sort(key=lambda p: float(p.get("remaining_quantity") or 0), reverse=True)
