@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      RUNWARE_API_KEY: ${{ secrets.RUNWARE_API_KEY }}
+      RUNWARE_API_KEY: ${{ secrets.RUNWARE_API_KEY || secrets.RUNWARE_API }}
       REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
     steps:
       - name: Check provider credentials and balances without generating
