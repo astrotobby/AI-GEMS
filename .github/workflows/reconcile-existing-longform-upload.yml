@@ -47,10 +47,12 @@ jobs:
       - name: Restore existing channel-specific YouTube OAuth credentials
         uses: actions/cache/restore@v4
         with:
-          path: whop-clipper/work
-          key: longform-reconcile-${{ github.run_id }}
+          path: |
+            whop-clipper/work
+            ~/.cache/huggingface
+          key: clipper-auth-restore
           restore-keys: |
-            clipper-auth-
+            clipper-
 
       - name: Download the original render and thumbnail artifact
         uses: actions/download-artifact@v4
