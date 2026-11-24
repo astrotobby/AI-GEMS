@@ -8387,9 +8387,9 @@
         "word_count": 1953,
         "model": "claude-sonnet-5"
       },
-      "status": "rendered",
+      "status": "validated",
       "created_at": "2026-11-23T20:33:56.996226+00:00",
-      "updated_at": "2026-11-24T09:05:45.501941+00:00",
+      "updated_at": "2026-11-24T09:05:48.455086+00:00",
       "media": {
         "duration_seconds": 687.62,
         "width": 1920,
@@ -9298,7 +9298,9 @@
           ]
         }
       ],
-      "rendered_at": "2026-11-24T09:05:45.501832+00:00"
+      "rendered_at": "2026-11-24T09:05:45.501832+00:00",
+      "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A",
+      "validated_at": "2026-11-24T09:05:48.454949+00:00"
     },
     "20261125_digital_nomad_1800": {
       "job_id": "20261125_digital_nomad_1800",
