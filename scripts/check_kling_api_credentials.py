@@ -8,6 +8,10 @@ from __future__ import annotations
 
 import os
 import sys
+from pathlib import Path
+
+# Make the repository root importable when this file is invoked as a script.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.influencer_kling_pipeline import (
     account_video_pack,
