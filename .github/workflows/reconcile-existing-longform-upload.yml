@@ -15,10 +15,10 @@ on:
         required: true
         default: "20261125_astrotobby_1000"
       video_id:
-        description: "Existing YouTube video ID from the failed upload run"
+        description: "Existing YouTube video ID; leave blank to discover one exact-title private upload safely"
         type: string
-        required: true
-        default: "DXCfKFfPRtc"
+        required: false
+        default: ""
       source_run_id:
         description: "Original Daily long-form YouTube workflow run ID (for its thumbnail artifact)"
         type: string
