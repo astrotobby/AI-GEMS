@@ -78,15 +78,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Restore channel-specific YouTube OAuth credentials
+      - name: Restore non-sensitive Hugging Face model cache
         uses: actions/cache/restore@v4
         with:
-          path: |
-            whop-clipper/work
-            ~/.cache/huggingface
-          key: longform-yt-${{ github.run_id }}
-          restore-keys: |
-            clipper-auth-
+          path: ~/.cache/huggingface
+          key: longform-models-v1
       - name: Checkout astro-blog production pipeline
         uses: actions/checkout@v4
         with:
