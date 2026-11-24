@@ -66,6 +66,78 @@ def private_unscheduled_status(current: dict) -> dict:
     return status
 
 
+def find_private_upload_for_job(yt, expected_channel_id: str, title: str, target_time: datetime, max_age_hours: int = 48) -> str:
+    """Find exactly one private upload for a ledger slot; never guess among duplicates."""
+    channels = yt.channels().list(part="contentDetails", mine=True).execute().get("items") or []
+    matching_channel = next((item for item in channels if item.get("id") == expected_channel_id), None)
+    uploads_playlist = (
+        (((matching_channel.get("contentDetails") or {}).get("relatedPlaylists") or {}).get("uploads"))
+        if matching_channel else None
+    )
+    if not uploads_playlist:
+        raise SystemExit("The selected YouTube channel has no readable uploads playlist")
+
+    cutoff = target_time.astimezone(timezone.utc) - __import__("datetime").timedelta(hours=max_age_hours)
+    upper = target_time.astimezone(timezone.utc) + __import__("datetime").timedelta(minutes=5)
+    page_token = None
+    candidates = []
+    exact_title_seen = []
+
+    # Recent uploads should be in the first pages; cap at five pages to bound recovery time.
+    for _ in range(5):
+        args = {"part": "snippet,contentDetails", "playlistId": uploads_playlist, "maxResults": 50}
+        if page_token:
+            args["pageToken"] = page_token
+        page = yt.playlistItems().list(**args).execute()
+        for item in page.get("items") or []:
+            snippet = item.get("snippet") or {}
+            if str(snippet.get("title") or "").strip().casefold() != title.strip().casefold():
+                continue
+            video_id = (item.get("contentDetails") or {}).get("videoId")
+            if not video_id:
+                continue
+            rows = yt.videos().list(part="snippet,status", id=video_id).execute().get("items") or []
+            if not rows:
+                continue
+            video = rows[0]
+            video_snippet = video.get("snippet") or {}
+            status = video.get("status") or {}
+            if str(video_snippet.get("title") or "").strip().casefold() != title.strip().casefold():
+                continue
+            if video_snippet.get("channelId") != expected_channel_id:
+                continue
+            published_at = video_snippet.get("publishedAt")
+            try:
+                uploaded = parse_time(published_at) if published_at else None
+            except (TypeError, ValueError, OverflowError):
+                uploaded = None
+            if not uploaded or not (cutoff <= uploaded <= upper):
+                continue
+            exact_title_seen.append({"video_id": video_id, "status": status.get("privacyStatus")})
+            if status.get("privacyStatus") != "private":
+                raise SystemExit(
+                    f"An exact-title candidate {video_id} is not private "
+                    f"({status.get('privacyStatus')!r}); refusing automatic recovery"
+                )
+            if status.get("publishAt") and not same_time(status.get("publishAt"), target_time.isoformat()):
+                raise SystemExit(
+                    f"An exact-title candidate {video_id} has a conflicting publishAt "
+                    f"({status.get('publishAt')!r}); refusing automatic recovery"
+                )
+            candidates.append(video_id)
+        page_token = page.get("nextPageToken")
+        if not page_token:
+            break
+
+    unique = sorted(set(candidates))
+    if len(unique) != 1:
+        raise SystemExit(
+            f"Expected exactly one private recent upload for ledger title {title!r}; "
+            f"found {len(unique)} candidates: {unique or exact_title_seen}"
+        )
+    return unique[0]
+
+
 def main() -> int:
     channel_key = os.environ["CHANNEL"].strip()
     job_id = os.environ["JOB_ID"].strip()
@@ -73,8 +145,8 @@ def main() -> int:
     source_run_id = os.environ["SOURCE_RUN_ID"].strip()
     if channel_key not in CHANNELS:
         raise SystemExit("Unknown channel")
-    if not job_id or not video_id or not source_run_id:
-        raise SystemExit("JOB_ID, VIDEO_ID, and SOURCE_RUN_ID are required")
+    if not job_id or not source_run_id:
+        raise SystemExit("JOB_ID and SOURCE_RUN_ID are required")
 
     expected_channel = CHANNELS[channel_key]
     ledger_path = Path("state/longform/ledger.json")
@@ -86,8 +158,13 @@ def main() -> int:
         raise SystemExit(f"Job {job_id} is not present in the long-form ledger")
     if job.get("channel") != channel_key:
         raise SystemExit("Ledger channel does not match the selected channel")
-    if job.get("video_id") != video_id:
+    if video_id and job.get("video_id") and job.get("video_id") != video_id:
         raise SystemExit("Supplied video ID does not match the ledger; refusing to touch another video")
+    if not video_id:
+        if job.get("video_id"):
+            video_id = str(job["video_id"])
+        else:
+            video_id = ""
     if job.get("workflow_run_id") and str(job["workflow_run_id"]) != source_run_id:
         raise SystemExit("Source workflow run ID does not match the ledger")
     if job.get("status") not in ("uploading", "scheduled"):
@@ -131,6 +208,17 @@ def main() -> int:
     channels = yt.channels().list(part="id,snippet", mine=True).execute().get("items") or []
     if not any(item.get("id") == expected_channel["channel_id"] for item in channels):
         raise SystemExit("OAuth identity does not match the selected YouTube channel")
+
+    if not video_id:
+        video_id = find_private_upload_for_job(
+            yt,
+            expected_channel["channel_id"],
+            str(job.get("title") or ""),
+            expected_dt,
+        )
+        job["video_id"] = video_id
+        job["url"] = f"https://youtu.be/{video_id}"
+        job["reconciled_video_discovered_at"] = datetime.now(timezone.utc).isoformat()
 
     rows = yt.videos().list(part="id,snippet,status", id=video_id).execute().get("items") or []
     if not rows:
