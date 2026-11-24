@@ -1,7 +1,7 @@
 name: YouTube auth
 # One-time per channel. Run 1 (code empty): sends a Google sign-in link to Telegram. Run 2: paste the
-# localhost address you end up on into "code"; credentials are kept in the clipper's run cache
-# (work/yt_tokens). Nothing secret is printed.
+# localhost address you end up on into "code"; credentials are stored in encrypted repository secrets
+# when YOUTUBE_SECRETS_MIGRATION_TOKEN is configured. The legacy cache remains only as bootstrap fallback.
 on:
   workflow_dispatch:
     inputs:
@@ -59,6 +59,25 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           CHANNEL: ${{ inputs.channel }}
         run: python yt_auth.py "$CHANNEL"
+
+      - name: Persist newly authorized credentials as encrypted repository secrets
+        id: durable_storage
+        if: ${{ success() && inputs.publish_video_id == '' && inputs.code != '' }}
+        env:
+          YOUTUBE_SECRETS_MIGRATION_TOKEN: ${{ secrets.YOUTUBE_SECRETS_MIGRATION_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          CHANNEL: ${{ inputs.channel }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${YOUTUBE_SECRETS_MIGRATION_TOKEN:-}" ]; then
+            echo "::warning::YOUTUBE_SECRETS_MIGRATION_TOKEN is not set; this authorization remains in the legacy bootstrap cache."
+            echo "stored=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python -m pip install --disable-pip-version-check pynacl
+          python ../.github/scripts/youtube_oauth_secret_storage.py --persist-channel "$CHANNEL"
+          echo "stored=true" >> "$GITHUB_OUTPUT"
 
       - name: Upload one-time Google sign-in link
         if: ${{ success() && inputs.publish_video_id == '' && inputs.code == '' }}
@@ -194,7 +213,7 @@ jobs:
           PY
 
       - uses: actions/cache/save@v4
-        if: success() && inputs.code != ''
+        if: success() && inputs.publish_video_id == '' && inputs.code != '' && steps.durable_storage.outputs.stored != 'true'
         with:
           path: |
             whop-clipper/work

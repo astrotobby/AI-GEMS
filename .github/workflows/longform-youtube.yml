@@ -62,6 +62,8 @@ jobs:
       ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
       PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
       PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+      YOUTUBE_OAUTH_ASTRO_TOBBY_JSON: ${{ secrets.YOUTUBE_OAUTH_ASTRO_TOBBY_JSON }}
+      YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON: ${{ secrets.YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON }}
       YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY: ${{ secrets.YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY }}
       YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD: ${{ secrets.YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD }}
       REFRESHTOKEN_DIJITOLNOMAD: ${{ secrets.REFRESHTOKEN_DIJITOLNOMAD }}
@@ -78,7 +80,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Restore channel-specific YouTube OAuth credentials
+      - name: Restore legacy YouTube OAuth cache (temporary fallback)
         uses: actions/cache/restore@v4
         with:
           path: |
@@ -87,6 +89,13 @@ jobs:
           key: longform-yt-${{ github.run_id }}
           restore-keys: |
             clipper-auth-
+
+      - name: Restore permanent encrypted YouTube OAuth secrets when configured
+        env:
+          YOUTUBE_OAUTH_ASTRO_TOBBY_JSON: ${{ secrets.YOUTUBE_OAUTH_ASTRO_TOBBY_JSON }}
+          YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON: ${{ secrets.YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON }}
+        run: python .github/scripts/youtube_oauth_secret_storage.py --restore
+
       - name: Checkout astro-blog production pipeline
         uses: actions/checkout@v4
         with:
