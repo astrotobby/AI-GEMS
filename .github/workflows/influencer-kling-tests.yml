@@ -1,6 +1,16 @@
 name: Influencer Kling pipeline tests
 
 on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/influencer_kling_pipeline.py"
+      - "scripts/test_influencer_kling_pipeline.py"
+      - "scripts/check_kling_api_credentials.py"
+      - ".github/workflows/influencer-kling-animation.yml"
+      - ".github/workflows/influencer-kling-tests.yml"
   pull_request:
     paths:
       - "scripts/influencer_kling_pipeline.py"
