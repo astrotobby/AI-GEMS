@@ -1,116 +1,30 @@
 #!/usr/bin/env python3
-"""Zero-credit check of one explicitly selected Kling API credential."""
-import argparse
-import json
+"""Read-only preflight over the complete configured Kling API key pool."""
+from __future__ import annotations
+
 import os
-import re
 import sys
-import time
-from datetime import datetime, timezone
 
-import requests
-
-API = "https://api-singapore.klingai.com"
-
-
-def parse_keys(raw: str) -> list[str]:
-    if not raw.strip():
-        raise RuntimeError("KLING_API_KEYS secret is empty.")
-    try:
-        value = json.loads(raw)
-        if isinstance(value, list):
-            values = [str(item) for item in value]
-        elif isinstance(value, dict):
-            values = [str(item) for item in value.values() if isinstance(item, str)]
-        elif isinstance(value, str):
-            values = value.splitlines()
-        else:
-            values = []
-    except json.JSONDecodeError:
-        values = re.split(r"[\r\n,;]+", raw)
-    return list(dict.fromkeys(x.strip().strip('"').strip("'") for x in values if x.strip()))
+from scripts.influencer_kling_pipeline import (
+    mask_keys,
+    parse_key_pool,
+    select_eligible_accounts,
+)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--credential-index", type=int, default=1)
-    args = parser.parse_args()
-
-    keys = parse_keys(os.environ.get("KLING_API_KEYS", ""))
-    for key in keys:
-        print(f"::add-mask::{key}")
-    if not 1 <= args.credential_index <= len(keys):
-        raise RuntimeError(
-            f"credential_index must be 1..{len(keys)}; found {len(keys)} secret entries."
-        )
-    key = keys[args.credential_index - 1]
-
-    now_ms = int(time.time() * 1000)
-    response = requests.get(
-        f"{API}/account/costs",
-        params={
-            "start_time": now_ms - 90 * 24 * 60 * 60 * 1000,
-            "end_time": now_ms,
-        },
-        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-        timeout=30,
-    )
-    response.raise_for_status()
-    payload = response.json()
-    if payload.get("code") != 0:
-        raise RuntimeError(
-            f"Kling returned code={payload.get('code')}: "
-            f"{str(payload.get('message', ''))[:180]}"
-        )
-    data = payload.get("data") or {}
-    if data.get("code") not in (None, 0):
-        raise RuntimeError(
-            f"Kling account-costs response code={data.get('code')}: "
-            f"{str(data.get('msg', ''))[:180]}"
-        )
-
-    packs = data.get("resource_pack_subscribe_infos") or []
-    eligible = [
-        p for p in packs
-        if str(p.get("resource_pack_tier", "")).lower() == "flagship"
-        and str(p.get("status", "")).lower() == "online"
-        and float(p.get("remaining_quantity") or 0) > 0
-        and "kling 4.0" in str(p.get("resource_pack_applicable_models", "")).lower()
-    ]
+    keys = parse_key_pool(os.environ.get("KLING_API_KEYS", ""))
+    mask_keys(keys)
     print(f"SECRET_ENTRIES={len(keys)}")
-    print(f"SELECTED_CREDENTIAL_INDEX={args.credential_index}")
-    print(f"RESOURCE_PACKS_TOTAL={len(packs)}")
-    print(f"FLAGSHIP_KLING_4_PACKS_ACTIVE={len(eligible)}")
-    for i, pack in enumerate(packs, start=1):
-        print(
-            f"RESOURCE_PACK_{i}: name={pack.get('resource_pack_name')} "
-            f"tier={pack.get('resource_pack_tier')} status={pack.get('status')} "
-            f"models={pack.get('resource_pack_applicable_models')} "
-            f"remaining_units={pack.get('remaining_quantity')}"
-        )
-    for i, pack in enumerate(eligible, start=1):
-        expiry = pack.get("invalid_time")
-        expiry_text = (
-            datetime.fromtimestamp(expiry / 1000, timezone.utc).isoformat()
-            if expiry else "not specified"
-        )
-        print(
-            f"ELIGIBLE_PACK_{i}: name={pack.get('resource_pack_name')} "
-            f"tier={pack.get('resource_pack_tier')} status={pack.get('status')} "
-            f"remaining_units={pack.get('remaining_quantity')} "
-            f"expires_utc={expiry_text}"
-        )
-    print("BALANCE_FALLBACK=DISABLED")
+    if len(keys) != 11:
+        print(f"WARNING_EXPECTED_11_KEYS; found={len(keys)}")
+    accounts = select_eligible_accounts(keys)
+    print(f"ELIGIBLE_ACCOUNT_COUNT={len(accounts)}")
+    print(f"FIRST_ELIGIBLE_KEY_INDEX={accounts[0]['credential_index']}")
+    print(f"FIRST_ELIGIBLE_MODEL={accounts[0]['model_name']}")
+    print("SUPPORTED_MODELS=Kling 4.0; Kling 3.0 Omni")
     print("GENERATION_TASKS_SUBMITTED=0")
-    if not eligible:
-        print("PREFLIGHT_RESULT=BLOCKED_NO_ACTIVE_FLAGSHIP_KLING_4_VIDEO_PACK")
-        with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
-            handle.write("eligible=false\n")
-        return 0
-    print(
-        "PREFLIGHT_RESULT=ELIGIBLE; Kling reports remaining-quantity statistics "
-        "may be delayed by up to 12 hours."
-    )
+    print("PREFLIGHT_RESULT=ELIGIBLE")
     with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
         handle.write("eligible=true\n")
     return 0
@@ -120,5 +34,7 @@ if __name__ == "__main__":
     try:
         raise SystemExit(main())
     except Exception as error:
-        print(f"PREFLIGHT_ERROR: {type(error).__name__}: {error}", file=sys.stderr)
+        print(f"PREFLIGHT_ERROR: {type(error).__name__}: {str(error)[:240]}", file=sys.stderr)
+        with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
+            handle.write("eligible=false\n")
         raise SystemExit(1)

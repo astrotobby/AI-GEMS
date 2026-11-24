@@ -28,7 +28,15 @@ import requests
 from PIL import Image
 
 API = "https://api-singapore.klingai.com"
-VIDEO_MODEL = "/omni-video/kling-4.0"
+# Model-specific Omni endpoints supported by the current Kling API.
+# Kling 3.0 uses the Omni endpoint because this workflow supplies a motion video
+# plus identity and scene images as references.
+MODEL_ENDPOINTS = (
+    ("kling-4.0", "/omni-video/kling-4.0"),
+    ("kling-4.0-flash", "/omni-video/kling-4.0-flash"),
+    ("kling-3.0-omni", "/omni-video/kling-3.0-omni"),
+)
+MODEL_PRIORITY = {name: index for index, (name, _) in enumerate(MODEL_ENDPOINTS)}
 MOTION_NAME = "kling_20261124_VIDEO_Subtle_slo_4117_0.mp4"
 IDENTITY_IMAGES = [
     "IMG_20261124_135816.jpg",
@@ -79,17 +87,6 @@ def mask_keys(keys: list[str]) -> None:
         print(f"::add-mask::{key}", flush=True)
 
 
-def select_one_key(keys: list[str], one_based_index: int) -> str:
-    if not keys:
-        raise RuntimeError("No Kling API credential is available.")
-    if one_based_index != 1:
-        raise RuntimeError(
-            "Only the single designated primary Kling account is supported. "
-            "Multi-account rotation or credit pooling is disabled."
-        )
-    return keys[0]
-
-
 def require_billing_authorization(mode: str, allow_cash_billing: bool) -> None:
     if mode == "animate" and not allow_cash_billing:
         raise RuntimeError(
@@ -98,7 +95,22 @@ def require_billing_authorization(mode: str, allow_cash_billing: bool) -> None:
         )
 
 
-def account_video_pack(key: str) -> dict[str, Any]:
+def supported_model_endpoints(pack: dict[str, Any]) -> list[tuple[str, str]]:
+    """Return only Omni models explicitly listed as applicable to this package."""
+    raw = str(pack.get("resource_pack_applicable_models", "")).lower()
+    compact = re.sub(r"[^a-z0-9.]+", "", raw)
+    result: list[tuple[str, str]] = []
+    if "kling4.0" in compact:
+        result.append(("kling-4.0", "/omni-video/kling-4.0"))
+    if "kling4.0flash" in compact:
+        result.append(("kling-4.0-flash", "/omni-video/kling-4.0-flash"))
+    if any(token in compact for token in ("kling3.0omni", "klingv3omni")):
+        result.append(("kling-3.0-omni", "/omni-video/kling-3.0-omni"))
+    return result
+
+
+def account_video_pack(key: str) -> list[dict[str, Any]]:
+    """Find all active resource-pack/model combinations available to one key."""
     now_ms = int(time.time() * 1000)
     params = {
         "start_time": now_ms - 90 * 24 * 60 * 60 * 1000,
@@ -118,28 +130,100 @@ def account_video_pack(key: str) -> dict[str, Any]:
             f"message={str(payload.get('message', ''))[:160]}"
         )
     data = payload.get("data") or {}
-    packs = data.get("resource_pack_subscribe_infos") or []
-    eligible = []
-    for pack in packs:
-        tier = str(pack.get("resource_pack_tier", "")).lower()
+    if data.get("code") not in (None, 0):
+        raise RuntimeError(
+            f"Kling account-costs response code={data.get('code')}: "
+            f"{str(data.get('msg', ''))[:160]}"
+        )
+
+    best_by_model: dict[str, dict[str, Any]] = {}
+    for pack in data.get("resource_pack_subscribe_infos") or []:
         status = str(pack.get("status", "")).lower()
         remaining = float(pack.get("remaining_quantity") or 0)
-        models = str(pack.get("resource_pack_applicable_models", "")).lower()
-        if (
-            status == "online"
-            and tier == "flagship"
-            and remaining > 0
-            and ("kling 4.0" in models or "kling-4.0" in models)
-        ):
-            eligible.append(pack)
-    if not eligible:
+        if status != "online" or remaining <= 0:
+            continue
+        for model_name, endpoint in supported_model_endpoints(pack):
+            current = best_by_model.get(model_name)
+            if current is None or remaining > float(current["remaining_quantity"] or 0):
+                best_by_model[model_name] = {
+                    "pack": pack,
+                    "model_name": model_name,
+                    "endpoint": endpoint,
+                    "remaining_quantity": pack.get("remaining_quantity"),
+                }
+
+    if not best_by_model:
         raise RuntimeError(
-            "This selected Kling account has no active Flagship video resource "
-            "package for Kling 4.0. No video task was submitted and no cash "
-            "balance fallback was attempted."
+            "This account has no active video resource package for a supported "
+            "Kling Omni model (Kling 4.0, 4.0 Flash, or 3.0 Omni)."
         )
-    eligible.sort(key=lambda p: float(p.get("remaining_quantity") or 0), reverse=True)
-    return eligible[0]
+    return sorted(
+        best_by_model.values(),
+        key=lambda item: MODEL_PRIORITY.get(item["model_name"], 99),
+    )
+
+
+def select_eligible_accounts(keys: list[str]) -> list[dict[str, Any]]:
+    """Check each stored key in order and keep every usable key/model pairing."""
+    selections: list[dict[str, Any]] = []
+    failures: list[str] = []
+    for index, key in enumerate(keys, start=1):
+        if index > 1:
+            # Kling documents QPS <= 1 for the account resource-pack endpoint.
+            time.sleep(1.1)
+        try:
+            models = account_video_pack(key)
+            for selected in models:
+                selections.append({
+                    "credential_index": index,
+                    "key": key,
+                    **selected,
+                })
+                print(
+                    f"KLING_ACCOUNT_READY index={index} model={selected['model_name']} "
+                    f"remaining_units={selected['remaining_quantity']}",
+                    flush=True,
+                )
+        except requests.HTTPError as exc:
+            status = exc.response.status_code if exc.response is not None else None
+            if status == 429:
+                raise RuntimeError(
+                    f"Kling rate-limited account check at key index {index}; "
+                    "stopping instead of rotating around a rate limit."
+                ) from exc
+            if status is not None and 500 <= status <= 599:
+                raise RuntimeError(
+                    f"Kling account check returned HTTP {status}; outcome is uncertain, "
+                    "so key rotation is paused."
+                ) from exc
+            failures.append(f"key {index}: HTTP {status or 'unknown'}")
+            print(f"KLING_ACCOUNT_SKIPPED index={index} reason=HTTP_{status}", flush=True)
+        except requests.Timeout as exc:
+            raise RuntimeError(
+                f"Kling account check timed out at key index {index}; stopping safely."
+            ) from exc
+        except requests.ConnectionError as exc:
+            raise RuntimeError(
+                f"Network connection failed while checking key index {index}; stopping safely."
+            ) from exc
+        except RuntimeError as exc:
+            failures.append(f"key {index}: {str(exc)[:160]}")
+            print(
+                f"KLING_ACCOUNT_SKIPPED index={index} reason={str(exc)[:160]}",
+                flush=True,
+            )
+
+    if not selections:
+        detail = "; ".join(failures[-11:])
+        raise RuntimeError(
+            "None of the stored Kling accounts has an active supported Omni "
+            f"video package. Checked {len(keys)} keys. {detail}"
+        )
+    return selections
+
+
+class AccountFallbackError(RuntimeError):
+    """Explicit per-account rejection received before a task was accepted."""
 
 
 class OneFileHandler(BaseHTTPRequestHandler):
@@ -290,6 +374,7 @@ def create_task(
     identity_two: Path,
     motion_url: str,
     external_id: str,
+    model_endpoint: str,
 ) -> str:
     scene_data = image_data_url(scene_file)
     identity_one_data = image_data_url(identity_one)
@@ -322,6 +407,11 @@ def create_task(
             "resolution": "720p",
             "aspect_ratio": "16:9",
             "duration": 5,
+            **(
+                {"audio": "off", "multi_shot": False}
+                if "kling-3.0-omni" in model_endpoint
+                else {}
+            ),
         },
         "options": {
             "watermark_info": {"enabled": False},
@@ -329,17 +419,44 @@ def create_task(
         },
     }
     response = requests.post(
-        f"{API}{VIDEO_MODEL}",
+        f"{API}{model_endpoint}",
         headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
         json=body,
         timeout=90,
     )
+    if response.status_code == 429:
+        raise RuntimeError(
+            "Kling returned HTTP 429 during task submission; stopping instead of "
+            "rotating around a rate limit."
+        )
+    if response.status_code in (401, 403, 402):
+        raise AccountFallbackError(
+            f"Kling rejected this account before accepting a task (HTTP {response.status_code})."
+        )
+    if response.status_code >= 500:
+        raise RuntimeError(
+            f"Kling returned HTTP {response.status_code}; task acceptance is uncertain, "
+            "so no second submission was attempted."
+        )
     response.raise_for_status()
     payload = response.json()
     if payload.get("code") != 0:
+        message = str(payload.get("message", ""))[:240]
+        normalized = message.lower()
+        if any(term in normalized for term in ("rate limit", "too many requests", "qps")):
+            raise RuntimeError(
+                f"Kling rate-limited task submission: {message}; no key rotation attempted."
+            )
+        if any(term in normalized for term in (
+            "unauthorized", "invalid api key", "invalid token", "insufficient balance",
+            "insufficient resource", "resource package", "no available resource",
+            "quota exhausted", "account disabled",
+        )):
+            raise AccountFallbackError(
+                f"Kling rejected this account before accepting a task: {message}"
+            )
         raise RuntimeError(
-            f"Kling task submission failed: code={payload.get('code')} "
-            f"message={str(payload.get('message', ''))[:240]}"
+            f"Kling task submission failed: code={payload.get('code')} message={message}"
         )
     task_id = (payload.get("data") or {}).get("id")
     if not task_id:
@@ -405,7 +522,6 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", choices=("check", "animate"), default="check")
     parser.add_argument("--max-jobs", type=int, default=2)
-    parser.add_argument("--credential-index", type=int, default=1)
     parser.add_argument(
         "--allow-cash-billing",
         action="store_true",
@@ -418,7 +534,14 @@ def main() -> int:
     raw_secret = os.environ.get("KLING_API_KEYS", "")
     keys = parse_key_pool(raw_secret)
     mask_keys(keys)
-    key = select_one_key(keys, args.credential_index)
+    if len(keys) != 11:
+        print(f"KLING_KEY_POOL_COUNT={len(keys)} (expected 11)", flush=True)
+    accounts = select_eligible_accounts(keys)
+    print(
+        f"KLING_ELIGIBLE_ACCOUNTS={len(accounts)}; "
+        f"KEY_POOL_ENTRIES={len(keys)}; MODEL_FALLBACK=Kling 4.0 then Kling 3.0 Omni",
+        flush=True,
+    )
 
     root_text = os.environ.get("INFLUENCER_ROOT", "").strip()
     root = Path(root_text).expanduser() if root_text else (Path.home() / "OneDrive" / "Desktop" / "INFLUENCER")
@@ -439,35 +562,29 @@ def main() -> int:
 
     print(f"LOCAL_ASSETS_OK scenes={len(scenes)} identity_photos={len(identities)} motion_video=yes")
     print(f"SELECTED_CREDENTIAL_INDEX={args.credential_index}; total_stored_entries={len(keys)}; one_account_for_this_run=yes")
-    pack = None
-    try:
-        pack = account_video_pack(key)
-    except RuntimeError as exc:
-        # A missing package can be acceptable only after the user has explicitly
-        # authorized monetary balance use for a generation run.
-        if not (
-            args.mode == "animate"
-            and args.allow_cash_billing
-            and "no active Flagship" in str(exc)
-        ):
-            raise
-        print("NO_ELIGIBLE_FLAGSHIP_PACKAGE; PAID_BALANCE_USE_EXPLICITLY_AUTHORIZED.")
-    if pack:
-        print(
-            "API_RESOURCE_PACKAGE_OK "
-            f"tier={pack.get('resource_pack_tier')} "
-            f"status={pack.get('status')} "
-            f"remaining_units={pack.get('remaining_quantity')}"
-        )
-        print("NOTE: Kling states resource-package remaining-quantity statistics may be delayed by up to 12 hours.")
+    first_account = accounts[0]
+    pack = first_account["pack"]
+    print(
+        "API_RESOURCE_PACKAGE_OK "
+        f"credential_index={first_account['credential_index']} "
+        f"model={first_account['model_name']} "
+        f"tier={pack.get('resource_pack_tier')} "
+        f"status={pack.get('status')} "
+        f"remaining_units={pack.get('remaining_quantity')}"
+    )
+    print("NOTE: Kling states resource-package remaining-quantity statistics may be delayed by up to 12 hours.")
     require_billing_authorization(args.mode, args.allow_cash_billing)
 
     report_path = output_dir / "last_run_report.json"
     report: dict[str, Any] = {
         "created_at": datetime.now(timezone.utc).isoformat(),
         "mode": args.mode,
-        "credential_index": 1,
-        "account_rotation": False,
+        "credential_index": first_account["credential_index"],
+        "account_rotation": True,
+        "eligible_accounts": [
+            {"credential_index": a["credential_index"], "model": a["model_name"]}
+            for a in accounts
+        ],
         "paid_balance_authorized": args.allow_cash_billing,
         "scene_files": [x.name for x in scenes],
         "identity_files": [x.name for x in identities],
@@ -486,13 +603,45 @@ def main() -> int:
         print("TEMPORARY_MOTION_REFERENCE_TUNNEL_READY; URL VALUE REDACTED.")
         for index, scene in enumerate(scenes[: args.max_jobs], start=1):
             external_id = f"{external_prefix}-{index}"
-            task_id = create_task(
-                key, scene, identities[0], identities[1], motion_url, external_id
+            task_id = None
+            selected_account = None
+            account_errors: list[str] = []
+            # Rotate only after a definite per-account rejection received before
+            # Kling returns a task ID. Never retry on 429 or ambiguous timeouts/5xx.
+            for account in accounts:
+                try:
+                    task_id = create_task(
+                        account["key"], scene, identities[0], identities[1],
+                        motion_url, external_id, account["endpoint"]
+                    )
+                    selected_account = account
+                    break
+                except AccountFallbackError as exc:
+                    account_errors.append(
+                        f"key {account['credential_index']}: {str(exc)[:160]}"
+                    )
+                    print(
+                        f"KLING_SUBMISSION_FALLBACK index={account['credential_index']} "
+                        f"reason={str(exc)[:160]}",
+                        flush=True,
+                    )
+            if task_id is None or selected_account is None:
+                raise RuntimeError(
+                    "All eligible Kling accounts explicitly rejected the task before "
+                    "acceptance. " + "; ".join(account_errors)
+                )
+            active_key = selected_account["key"]
+            report["credential_index"] = selected_account["credential_index"]
+            report["selected_model"] = selected_account["model_name"]
+            report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+            print(
+                f"KLING_TASK_SUBMITTED scene={scene.name} "
+                f"key_index={selected_account['credential_index']} "
+                f"model={selected_account['model_name']} task_id={task_id}"
             )
-            print(f"KLING_TASK_SUBMITTED scene={scene.name} task_id={task_id}")
             out_file = output_dir / f"{scene.stem}_speaking.mp4"
             try:
-                result = wait_for_task(key, task_id, out_file)
+                result = wait_for_task(active_key, task_id, out_file)
             except Exception as exc:
                 report["status"] = "failed"
                 report["error"] = f"{type(exc).__name__}: {str(exc)[:240]}"

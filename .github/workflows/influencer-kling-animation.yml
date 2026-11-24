@@ -82,7 +82,7 @@ jobs:
           ALLOW_CASH_BILLING: ${{ inputs.allow_cash_billing }}
           MAX_JOBS: ${{ inputs.max_jobs }}
         run: |
-          $arguments = @("--mode", "$env:PIPELINE_MODE", "--credential-index", "1", "--max-jobs", "$env:MAX_JOBS")
+          $arguments = @("--mode", "$env:PIPELINE_MODE", "--max-jobs", "$env:MAX_JOBS")
           if ($env:ALLOW_CASH_BILLING -eq "true") { $arguments += "--allow-cash-billing" }
           & $env:INFLUENCER_PYTHON scripts\influencer_kling_pipeline.py @arguments
 
