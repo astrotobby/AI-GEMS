@@ -80,12 +80,22 @@ def mask_keys(keys: list[str]) -> None:
 
 
 def select_one_key(keys: list[str], one_based_index: int) -> str:
-    if one_based_index < 1 or one_based_index > len(keys):
+    if not keys:
+        raise RuntimeError("No Kling API credential is available.")
+    if one_based_index != 1:
         raise RuntimeError(
-            f"credential_index must be between 1 and {len(keys)}; "
-            "no key rotation or cross-account credit pooling is performed."
+            "Only the single designated primary Kling account is supported. "
+            "Multi-account rotation or credit pooling is disabled."
         )
-    return keys[one_based_index - 1]
+    return keys[0]
+
+
+def require_billing_authorization(mode: str, allow_cash_billing: bool) -> None:
+    if mode == "animate" and not allow_cash_billing:
+        raise RuntimeError(
+            "Generation is blocked until paid API-balance use is explicitly authorized. "
+            "Kling may prioritize monetary account balance even when a resource package exists."
+        )
 
 
 def account_video_pack(key: str) -> dict[str, Any]:
@@ -396,6 +406,11 @@ def main() -> int:
     parser.add_argument("--mode", choices=("check", "animate"), default="check")
     parser.add_argument("--max-jobs", type=int, default=2)
     parser.add_argument("--credential-index", type=int, default=1)
+    parser.add_argument(
+        "--allow-cash-billing",
+        action="store_true",
+        help="Explicitly authorize Kling to use the selected account's monetary API balance.",
+    )
     args = parser.parse_args()
     if args.max_jobs < 1 or args.max_jobs > 2:
         raise RuntimeError("max-jobs must be 1 or 2 for the initial controlled batch.")
@@ -424,21 +439,36 @@ def main() -> int:
 
     print(f"LOCAL_ASSETS_OK scenes={len(scenes)} identity_photos={len(identities)} motion_video=yes")
     print(f"SELECTED_CREDENTIAL_INDEX={args.credential_index}; total_stored_entries={len(keys)}; one_account_for_this_run=yes")
-    pack = account_video_pack(key)
-    print(
-        "API_RESOURCE_PACKAGE_OK "
-        f"tier={pack.get('resource_pack_tier')} "
-        f"status={pack.get('status')} "
-        f"remaining_units={pack.get('remaining_quantity')}"
-    )
-    print("NOTE: Kling states resource-package remaining-quantity statistics may be delayed by up to 12 hours.")
+    pack = None
+    try:
+        pack = account_video_pack(key)
+    except RuntimeError as exc:
+        # A missing package can be acceptable only after the user has explicitly
+        # authorized monetary balance use for a generation run.
+        if not (
+            args.mode == "animate"
+            and args.allow_cash_billing
+            and "no active Flagship" in str(exc)
+        ):
+            raise
+        print("NO_ELIGIBLE_FLAGSHIP_PACKAGE; PAID_BALANCE_USE_EXPLICITLY_AUTHORIZED.")
+    if pack:
+        print(
+            "API_RESOURCE_PACKAGE_OK "
+            f"tier={pack.get('resource_pack_tier')} "
+            f"status={pack.get('status')} "
+            f"remaining_units={pack.get('remaining_quantity')}"
+        )
+        print("NOTE: Kling states resource-package remaining-quantity statistics may be delayed by up to 12 hours.")
+    require_billing_authorization(args.mode, args.allow_cash_billing)
 
     report_path = output_dir / "last_run_report.json"
     report: dict[str, Any] = {
         "created_at": datetime.now(timezone.utc).isoformat(),
         "mode": args.mode,
-        "credential_index": args.credential_index,
+        "credential_index": 1,
         "account_rotation": False,
+        "paid_balance_authorized": args.allow_cash_billing,
         "scene_files": [x.name for x in scenes],
         "identity_files": [x.name for x in identities],
         "motion_reference": motion_file.name,
@@ -480,12 +510,9 @@ def main() -> int:
                 f"output={out_file.name} duration={result.get('duration')}"
             )
             if "cash" in charge_types:
-                report["status"] = "stopped_unexpected_cash_billing"
-                report["warning"] = "Kling reported cash billing; no further tasks submitted."
+                report["warning"] = "Kling used monetary API balance; this was explicitly authorized for this run."
                 report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
-                raise RuntimeError(
-                    "Kling reported cash billing for this task; stopping the batch before any further task."
-                )
+                print("CASH_BALANCE_USED; PAID_USAGE_RECORDED_IN_REPORT.")
     report["status"] = "completed"
     report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(f"ANIMATION_BATCH_COMPLETE count={len(report['results'])}")
