@@ -5,7 +5,7 @@ import json
 import os
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from google.oauth2.credentials import Credentials
@@ -77,8 +77,8 @@ def find_private_upload_for_job(yt, expected_channel_id: str, title: str, target
     if not uploads_playlist:
         raise SystemExit("The selected YouTube channel has no readable uploads playlist")
 
-    cutoff = target_time.astimezone(timezone.utc) - __import__("datetime").timedelta(hours=max_age_hours)
-    upper = target_time.astimezone(timezone.utc) + __import__("datetime").timedelta(minutes=5)
+    cutoff = target_time.astimezone(timezone.utc) - timedelta(hours=max_age_hours)
+    upper = target_time.astimezone(timezone.utc) + timedelta(minutes=5)
     page_token = None
     candidates = []
     exact_title_seen = []
