@@ -33,7 +33,7 @@ def main() -> int:
     except RuntimeError as exc:
         message = str(exc)
         if "no active Flagship" in message:
-            print("KLLING_API_PREFLIGHT=AUTHENTICATED_BUT_NO_ELIGIBLE_FLAGSHIP_PACKAGE")
+            print("KLING_API_PREFLIGHT=AUTHENTICATED_BUT_NO_ELIGIBLE_FLAGSHIP_PACKAGE")
         else:
             print("KLING_API_PREFLIGHT=BLOCKED")
         print(f"DETAIL={message[:240]}")
