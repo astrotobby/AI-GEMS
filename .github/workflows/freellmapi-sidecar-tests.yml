@@ -12,6 +12,10 @@ on:
       - ".github/scripts/test_reconcile_longform_schedule.py"
       - ".github/scripts/merge_visual_registry.py"
       - ".github/scripts/test_merge_visual_registry.py"
+      - "whop-clipper/validate_youtube_channels.py"
+      - "whop-clipper/get_youtube_token.py"
+      - "whop-clipper/yt_auth.py"
+      - "whop-clipper/tests/test_validate_youtube_channels.py"
   workflow_dispatch:
 
 permissions:
@@ -39,6 +43,10 @@ jobs:
           .github/scripts/test_reconcile_longform_schedule.py
           .github/scripts/merge_visual_registry.py
           .github/scripts/test_merge_visual_registry.py
+          whop-clipper/validate_youtube_channels.py
+          whop-clipper/get_youtube_token.py
+          whop-clipper/yt_auth.py
+          whop-clipper/tests/test_validate_youtube_channels.py
 
       - name: Run offline sidecar safety tests
         run: python -m unittest discover -s scripts -p "test_freellmapi_sidecar.py"
@@ -48,3 +56,7 @@ jobs:
 
       - name: Run visual registry merge safety tests
         run: python -m unittest discover -s .github/scripts -p "test_merge_visual_registry.py"
+
+      - name: Run YouTube OAuth management scope tests
+        working-directory: whop-clipper
+        run: python -m unittest discover -s tests -p "test_validate_youtube_channels.py"
