@@ -9405,6 +9405,111 @@
       "channel_id": "UCE_cklDludc6nkU1_4K6JzA",
       "validated_at": "2026-11-23T23:37:58.651322+00:00",
       "upload_started_at": "2026-11-23T23:38:00.521773+00:00"
+    },
+    "20261125_astrotobby_1000": {
+      "job_id": "20261125_astrotobby_1000",
+      "channel": "astrotobby",
+      "channel_title": "Astro Tobby",
+      "owner_account": "goodlucktobby@gmail.com",
+      "slot": "10:00",
+      "publish_at": "2026-11-25T07:00:00+00:00",
+      "workflow_run_id": "45342374900",
+      "artifact_name": "longform-astrotobby-45342374900",
+      "title": "Kent Singer’s Music Video Highlights Violence Against Women",
+      "topic_title": "Music video by Kent singer highlights violence against women - BBC",
+      "lead": {
+        "title": "Music video by Kent singer highlights violence against women - BBC",
+        "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE52TG16WWNUUEFWbTI5Vk8yWmdJUWs2aG5ORmRPYVFMQXVxelZJNnZnaFotdTJ4U0FRTVo0NEpERFJ6YXNobGF0bjVrQ0hyY2dQMEh0WHZJWEM5RUU?oc=5",
+        "summary": "Music video by Kent singer highlights violence against women BBC",
+        "publisher": "BBC",
+        "publisher_url": "https://www.bbc.com",
+        "published_at": "2026-11-24T06:10:19+00:00"
+      },
+      "sources": [
+        {
+          "title": "Music video by Kent singer highlights violence against women - BBC",
+          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE52TG16WWNUUEFWbTI5Vk8yWmdJUWs2aG5ORmRPYVFMQXVxelZJNnZnaFotdTJ4U0FRTVo0NEpERFJ6YXNobGF0bjVrQ0hyY2dQMEh0WHZJWEM5RUU?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "Music video by Kent singer highlights violence against women BBC",
+          "publisher": "BBC",
+          "publisher_url": "https://www.bbc.com",
+          "published_at": "2026-11-24T06:10:19+00:00"
+        },
+        {
+          "title": "The Narcissistic Descent of Pop Music - Chronicles Magazine",
+          "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE1BZUwzYjhZOHRqZ2M0bDVVdUkwNVc1c0x6X0tFRVJWQkkzamFiX21Db2lyX0h3OUR3aWVsTXd0ODFUTUduWmI2R1pBdVFUM0dVcDEyZlFqdjhUV1RmcWJsNmNiR0JRVU5IUk9qUUVLajFzQm1haEc4MTVHTmh4UQ?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "The Narcissistic Descent of Pop Music Chronicles Magazine",
+          "publisher": "Chronicles Magazine",
+          "publisher_url": "https://chroniclesmagazine.org",
+          "published_at": "2026-11-24T06:02:00+00:00"
+        },
+        {
+          "title": "Waynesboro celebrates tree lighting with music, holiday treats - LocalNews1",
+          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxQbGdOdmpiOTJXd1pTNy1FZ01EUERES0VUb3Vtal82MFA1WHRaS2o5c1l5WmZDeGp0dDA3STBzX3MyaFJHSnZ5ekRKSG9jbUs4TENLdS1YZmFZMll2NkZRSWdhX1kta2d2d3A4dU9pWHgyWUNoN0VQQ0xqUk5yQzc0STl4cF9mSzgwTVNoWkN3?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "Waynesboro celebrates tree lighting with music, holiday treats LocalNews1",
+          "publisher": "LocalNews1",
+          "publisher_url": "https://localnews1.org",
+          "published_at": "2026-11-24T05:58:18+00:00"
+        },
+        {
+          "title": "Why music has the power to transport us into a daydream - KGOU",
+          "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPeVZnaVJCX0VKaEFFeTA3cFZmQXo3WVowQ05UWkF6NW1Lb0tDYzRnQmpXeDh1ZC0tdU1XRVBDX1owNUNJSC0zSE9CeGFoVzBCZml3NEt2RDF5Q0JvbmQySU1wRmhjN200N2pXUFFOUTVCU0RxYzgzR2F6RFZNOXBHc2dWMVRBV05wbEZhR0xOdmU?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "Why music has the power to transport us into a daydream KGOU",
+          "publisher": "KGOU",
+          "publisher_url": "https://www.kgou.org",
+          "published_at": "2026-11-24T03:48:38+00:00"
+        },
+        {
+          "title": "The Dare at Knockdown Center on December 19 - mxdwn Music",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPMlRnQnU0NFY4NXJRV3VrTUVTVDkzeWlwY2VySkRGQ3RPZTU4dGdEd1dOamFkc3c0QTQ3cHliTXRLWFhvZjBicVRoRHM4YUFWVmQwX3lKOHRhb05kcVJKNE9fMUZoTlJhUmY2eXFoRG9zMnB6RXVKNVJRdVFQdFpCZGxJZEMwc2p6cEJncDZIRU1qUmFQUGpIUtIBngFBVV95cUxONXdiMk1jWENiTXFjN0dWWS1UMXBKazE1M0JDaVhvQmV1SFRCUFhtVFBsRThoV3ZhWThfdkMtX3FoRVRySEV3LXl4WGpGUjZ5V2dMR0VEUzJuSElsX3B2bURlb2NMbVZJbGhaN3NKc0VyQ05QWE42d1B5cVYzYXJxbFhjSE0yUkpUcjE0NzJGci1Jc0JBTjd4b21KcVRnQQ?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "The Dare at Knockdown Center on December 19 mxdwn Music",
+          "publisher": "mxdwn Music",
+          "publisher_url": "https://music.mxdwn.com",
+          "published_at": "2026-11-24T03:44:09+00:00"
+        },
+        {
+          "title": "West Boise singer-songwriter competes for spot in national Next Music Star competition finals - Idaho News 6",
+          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQTy1IUlBXeTdyN3lsTjRMcy03dnUzTFFQNC1aUC1KWWIwYVVwRHJGcVpjRkFVWmVVcGRNTXBqbkVSZ05femx5NklyQ2l3VTJQRlBvQ3RiY0dmNHp5eEFiNUVSZWpoa3JqUkRQSDNNbi14TGJZZXM5bjFfdzJwcjFvTnFkZWFLUlhqRmZEY1h5amV4UkF0Ri1zcFJXa2FwdFphNC1PZFhwVXJmZkhvQjlrR19EenFyekZtRjU2LTJBbHNicFpGWXc?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "West Boise singer-songwriter competes for spot in national Next Music Star competition finals Idaho News 6",
+          "publisher": "Idaho News 6",
+          "publisher_url": "https://www.kivitv.com",
+          "published_at": "2026-11-24T00:54:35+00:00"
+        },
+        {
+          "title": "In Memoriam: Delano Smith, a Pillar of Detroit House Music - Beatportal",
+          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNV0g3SVhSaFZNZ3k4X3FYWF82bEhCWk0zRkprekVUb1d4UEdEQmQxWWRkM0tYRW90ZjNhTk05UGVpWVZJalV6OEV0eW5KQ2x3WXVROUtBbHZvQVA0SzZ5QmJvUFZzdkp2MkI2WmxGNXVVeFBiVWRFY1o2T2xCdjlvVlZYS2Z4bUZOblZJaWh0Mk9jTks3Zk83cTBjNFh4XzFtN0E?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "In Memoriam: Delano Smith, a Pillar of Detroit House Music Beatportal",
+          "publisher": "Beatportal",
+          "publisher_url": "https://www.beatportal.com",
+          "published_at": "2026-11-24T00:38:30+00:00"
+        }
+      ],
+      "package": {
+        "title": "Kent Singer’s Music Video Highlights Violence Against Women",
+        "description": "Daisy Foster turns a street attack into a song, charity single, and music video premiering in Ramsgate. The episode examines the verified timeline, the people behind it, and the statistics shaping the debate",
+        "tags": [
+          "DaisyFoster",
+          "Kent",
+          "violenceagainstwomen",
+          "musicvideo",
+          "SWaN",
+          "womenssafety",
+          "Broadstairs",
+          "Ramsgate",
+          "charitysingle",
+          "Nia",
+          "OasisDomesticAbuseService",
+          "BBCNews",
+          "musicandsociety",
+          "survivortestimony",
+          "communityevent"
+        ],
+        "narration": "A music video from Kent is trying to make the fear and aftermath of violence against women feel immediate, personal, and impossible to scroll past. The story centers on Daisy Foster, a twenty-three-year-old singer-songwriter from Broadstairs, who turned an attack she suffered in the street into a song, a charity single, and now a music video premiering alongside a community event in Ramsgate. According to the reporting, Foster was attacked in twenty twenty-three while walking with friends, suffered facial injuries requiring hospital treatment, and later wrote Safety for Women at Night. The video is being released to coincide with the United Nations International Day for the Elimination of Violence Against Women, and it arrives in a media landscape where music is also discussed as a force for memory, imagination, and emotional transport. This episode examines what is verified, who is involved, what the numbers say, and where the debate about culture, safety, and storytelling goes next. The verified timeline begins in October twenty twenty-three. Foster was a student in Birmingham, walking down a street with three friends, when a group of men passed them. One man stormed past and attacked one of her friends; in defending that friend, Foster was pushed to the ground and injured. The attack took place on Allison Street, at its junction with Bordesley Street, on the twenty-fifth of October twenty twenty-three. She received hospital treatment for facial injuries. Despite investigations, West Midlands Police said it had been unable to identify the suspect, while stating that tackling violence against women and girls was a priority. Foster said she was still wary of her surroundings, and that the lack of help from passers-by shocked her as much as the attack. She said people did not really bat an eyelid, intervene, or help when they saw these things go on. The next major point came in January twenty twenty-five, when she released the song, Safety for Women at Night, abbreviated SWaN. It focused on women's safety, especially walking alone at night and the precautions women take. Any profits were to be given to Nia, a London charity supporting women subjected to sexual and domestic violence and abuse. In February twenty twenty-five, BBC News published an interview in which Foster called the attack very personal but also a universal experience for women worldwide. Then, in twenty twenty-six, Foster, now twenty-three, produced a music video for the song with local students. It is set to be shown at a Ramsgate event bringing together charities, politicians, and stakeholders, with a premiere that includes a panel discussion. The release and event are timed to coincide with the United Nations International Day for the Elimination of Violence Against Women. The context is both local and national. Broadstairs and Ramsgate are in Kent, so the project sits in a regional setting while addressing a national and international issue. The BBC reporting notes that violence against women and girls is much higher on the public agenda than ten years ago, according to Danielle Georgiou, children and young person's service manager at Oasis Domestic Abuse Service. It also notes that local agencies, schools, charities, and community organisations are working more closely together, especially across Kent, while victims, survivors, and practitioners agree there is still so much more to do. That tension between progress and unfinished work is central. The BBC's Kent coverage around the same period also included a football club holding a silence for abuse victims and a Kent County Council summit on violence against women, showing the issue's local prominence. There is also a wider cultural context. On the same day, a Chronicles Magazine essay appeared under the headline The Narcissistic Descent of Pop Music, signalling that criticism of pop music's direction remains part of public conversation, although the headline alone does not reveal the essay's full argument. Elsewhere, a public radio feature carried by KGOU explored why music has the power to transport us into a daydream, drawing on Princeton professor Elizabeth Margulis and her book Transported. That piece, originally published by WBUR and aired in a segment hosted by Scott Tong, suggests music can move listeners into memory or fictional places, and that many people have surprisingly similar daydreams. The contrast is useful: the same medium that can transport a listener inward can also push a difficult subject outward into public view. The KGOU page credited WBUR and noted the article was originally published on WBUR.org, with copyright in twenty twenty-six; Margulis's book is published by Liveright. The key people and organisations are clearly identified. Daisy Foster is the singer-songwriter at the center, described as twenty-three and from Broadstairs, Kent. She was twenty-one at the time of the earlier reporting, when she was a student in Birmingham. She collected testimonies of women's real experiences, which feature in the film, and hopes to take the work into local schools. Two collaborators from the earlier phase are named: Sinade Gilbert and Jamie Mcgregor co-wrote and produced the song. The charity partner is Nia, represented by chief executive Jodie Woodward, who said women's voices must be foregrounded when talking about men's violence against women, so experiences can be heard and understood. Woodward called Foster's use of her talent inspiring and courageous, and said it would resonate with many women. The community partner is Oasis Domestic Abuse Service, represented by Danielle Georgiou, its children and young person's service manager, who joins the panel discussion at the Ramsgate premiere. West Midlands Police is connected to the investigation. The National Audit Office supplies statistics, and the United Nations International Day provides the timing anchor. BBC News, particularly South East and Kent coverage, reported the story; the earlier article credited Claire Starr and Emily Coady-Stemp. The video was made with local students, though they are not named. SWaN stands for Safety for Women at Night. The single's profits were directed to Nia, although the reporting does not state how much was raised. The verified specifics make the project concrete. The video shows a representation of an interview setting where girls have been invited to talk about their experiences, and actresses representing women coming together to share them. Foster collected real testimonies, and she said you can tell by how the women talk that they want to see change, want to help others, and often previously felt there was no one to go to. The video is being shown at a Ramsgate event bringing together charities, politicians, and stakeholders, with a panel discussion including Georgiou. The release coincides with the United Nations International Day for the Elimination of Violence Against Women. The single was released in early twenty twenty-five, and Foster then worked with local students on the video. The song focuses on women's safety, especially walking alone at night and the precautions women take. The attack left Foster with facial injuries requiring hospital treatment; she has said she is more wary and conscious of her surroundings since the attack three years ago, and that the attack will always be in the back of her mind, but speaking about it helps her get closure she never got from the crime itself. The National Audit Office estimates that more than one in four women are victims of sexual assault or attempted assault in their lifetime, and one in twelve women are victims of violence against women and girls each year, with the actual number likely much higher. Separately, July twenty twenty-four data from the National Police Chiefs' Council and the College of Policing found a thirty-seven percent increase in violence against women and girls related crime between twenty eighteen and twenty twenty-three. Those figures are not interchangeable: one estimates lifetime and annual victimisation, the other measures recorded crime growth. Both suggest a large and, by at least one measure, growing problem. West Midlands Police also asked witnesses or anyone with fresh information about the October twenty twenty-three attack to contact the force, citing Allison Street at its junction with Bordesley Street in Birmingham. Several perspectives compete in the story, and they should be separated. Foster's is that talking more is necessary, not excessive: she said we can never get to a point where we are talking too much about it, and that consistent conversations across friends, families, generations, and backgrounds are needed to make progress. That is advocacy, presented as her view. Georgiou's is more institutional: violence against women and girls is higher on the public agenda than ten years ago, agencies are working more closely, especially across Kent, but victims, survivors, and practitioners agree there is still so much more to do. Woodward's centers on foregrounding women's voices so experiences can be heard and understood. A skeptical note appears in Foster's account of public indifference: people do not really bat an eyelid, intervene, or help when they see these things go on, suggesting a gap between awareness campaigns and everyday bystander behaviour. There is also a tension between personal closure and public advocacy, since Foster says speaking about the attack helps her get closure she never got from the crime. Another tension is between art and evidence. A music video can carry testimony and emotion, but it does not by itself establish prevalence or policy solutions. The statistics do some of that work. The Chronicles headline about a narcissistic descent of pop music raises a separate question about whether mainstream pop is becoming more self-focused while artists like Foster use music to direct attention outward, but that is interpretation, not a finding, and the available material does not give the essay's reasoning. The KGOU feature on musical daydreams suggests music can transport listeners, which can be read as supporting music's power as a vehicle for empathy, but that is analysis, not proof that a particular video changes behaviour. Why this matters depends on the lens. From a public safety lens, the figures are stark: more than one in four women estimated victims of sexual assault or attempted assault in their lifetime, one in twelve women victims of violence against women and girls each year, and a thirty-seven percent increase in related crime between twenty eighteen and twenty twenty-three. From a community lens, the project is local collaboration across music, education, charity, and politics, with a Ramsgate premiere and a panel including a domestic abuse service manager. From a cultural lens, it shows a young artist converting a violent experience into a song, a charity single, and a video built from women's testimonies, with proceeds supporting a charity that works with survivors. From an individual lens, Foster describes the project as a way to get closure and continue a conversation she believes cannot happen too often. What happens next is partly stated and partly implied. Foster hopes to take her work into local schools, extending the project into education. The event's timing may help it reach a wider audience than a standalone release. The panel may generate further local discussion, though the reporting does not specify expected commitments or outcomes. West Midlands Police had been unable to identify the suspect, so there is no indication the investigation has progressed. The single's profits were directed to Nia, but the amount raised is not stated. The video's longer-term reach is not yet documented. What is documented is the intention: to raise awareness, make a statement, and create something people can relate to and listen to. That keeps the project's claims proportionate to what a music video can realistically do. In the end, this is a story about an artist who refused to let a violent night in Birmingham become only a private wound. Daisy Foster turned it into a song, then a charity single, then a music video built from other women's testimonies, and she is now taking it to a public stage in Ramsgate. The reporting gives the facts: the date and place of the attack, the injuries, the song, the charity, the statistics, the organisations, and the plans for schools. It also gives voices: Foster's insistence that the conversation cannot happen too often, Woodward's that women's voices must be foregrounded, and Georgiou's that progress and unfinished work can both be true. Analysis can note the gap between awareness and bystander action, and the possibility that music's emotional power makes it a credible vehicle for testimony, but it cannot claim this video will reduce violence on its own. What it can do, based on the reporting, is keep the issue visible, give survivors' words a platform, and invite the next generation into the conversation. That is the stakes, that is the verified record, and that is where this story stands today.",
+        "word_count": 2090,
+        "model": "claude-sonnet-5"
+      },
+      "status": "scripted",
+      "created_at": "2026-11-24T06:53:10.077013+00:00",
+      "updated_at": "2026-11-24T06:53:10.077215+00:00"
     }
   },
   "recent_topics": [
@@ -9459,6 +9564,10 @@
     {
       "title": "US to blacklist Asian AI firm Megaspeed after Nvidia scandal",
       "job_id": "20261125_digital_nomad_1800"
+    },
+    {
+      "title": "Music video by Kent singer highlights violence against women - BBC",
+      "job_id": "20261125_astrotobby_1000"
     }
   ]
 }
