@@ -1,0 +1,38 @@
+name: Kling API account preflight (no credits spent)
+
+on:
+  workflow_dispatch:
+    inputs:
+      credential_index:
+        description: "One selected API key entry to check (1-based); no account rotation"
+        type: string
+        default: "1"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kling-api-preflight
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      KLING_API_KEYS: ${{ secrets.KLING_API_KEYS }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/influencer-kling-pipeline
+          persist-credentials: false
+
+      - name: Install request client
+        run: python -m pip install --disable-pip-version-check requests
+
+      - name: Check one selected account only (no generation calls)
+        env:
+          CREDENTIAL_INDEX: ${{ inputs.credential_index }}
+        run: python scripts/kling_api_preflight.py --credential-index "$CREDENTIAL_INDEX"
