@@ -26,11 +26,18 @@ class InfluencerKlingPipelineTests(unittest.TestCase):
     def test_parse_json_key_pool(self):
         self.assertEqual(parse_key_pool('["key-a", "key-b"]'), ["key-a", "key-b"])
 
-    def test_select_exactly_one_credential_without_rotation(self):
-        keys = ["account-one", "account-two", "account-three"]
-        self.assertEqual(select_one_key(keys, 2), "account-two")
-        with self.assertRaises(RuntimeError):
-            select_one_key(keys, 4)
+    def test_uses_only_the_designated_primary_account(self):
+        keys = ["primary-account", "secondary-account", "third-account"]
+        self.assertEqual(select_one_key(keys, 1), "primary-account")
+        with self.assertRaisesRegex(RuntimeError, "single designated primary"):
+            select_one_key(keys, 2)
+
+    def test_blocks_animation_without_explicit_paid_balance_authorization(self):
+        from scripts.influencer_kling_pipeline import require_billing_authorization
+        with self.assertRaisesRegex(RuntimeError, "explicitly authorized"):
+            require_billing_authorization("animate", False)
+        require_billing_authorization("check", False)
+        require_billing_authorization("animate", True)
 
     @patch("scripts.influencer_kling_pipeline.requests.get")
     def test_requires_active_flagship_kling_4_package(self, get):
