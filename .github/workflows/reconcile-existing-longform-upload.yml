@@ -1,0 +1,97 @@
+name: Reconcile an existing private long-form YouTube upload
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: "Channel that owns the existing upload"
+        type: choice
+        required: true
+        options: [astrotobby, digital_nomad]
+        default: astrotobby
+      job_id:
+        description: "Exact long-form ledger job ID"
+        type: string
+        required: true
+        default: "20261125_astrotobby_1000"
+      video_id:
+        description: "Existing YouTube video ID from the failed upload run"
+        type: string
+        required: true
+        default: "DXCfKFfPRtc"
+      source_run_id:
+        description: "Original Daily long-form YouTube workflow run ID (for its thumbnail artifact)"
+        type: string
+        required: true
+        default: "45342374900"
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: longform-global-visual-history
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout AI-GEMS main ledger and OAuth cache owner
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Restore existing channel-specific YouTube OAuth credentials
+        uses: actions/cache/restore@v4
+        with:
+          path: whop-clipper/work
+          key: longform-reconcile-${{ github.run_id }}
+          restore-keys: |
+            clipper-auth-
+
+      - name: Download the original render and thumbnail artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: longform-${{ inputs.channel }}-${{ inputs.source_run_id }}
+          path: recovery-artifact
+          repository: astrotobby/AI-GEMS
+          run-id: ${{ inputs.source_run_id }}
+          github-token: ${{ github.token }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install YouTube API dependencies
+        run: |
+          python -m pip install --disable-pip-version-check google-api-python-client google-auth google-auth-httplib2
+
+      - name: Verify the existing video, restore its thumbnail, and schedule once
+        working-directory: whop-clipper
+        env:
+          CHANNEL: ${{ inputs.channel }}
+          JOB_ID: ${{ inputs.job_id }}
+          VIDEO_ID: ${{ inputs.video_id }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+        run: python ../.github/scripts/reconcile_existing_longform_upload.py
+
+      - name: Commit the reconciled ledger state
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add whop-clipper/state/longform/ledger.json
+          if git diff --cached --quiet; then
+            echo "Ledger already reflects the verified state."
+            exit 0
+          fi
+          git commit -m "Reconcile verified long-form YouTube upload"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
