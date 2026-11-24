@@ -12460,7 +12460,7 @@
       },
       "status": "uploading",
       "created_at": "2026-11-24T19:42:42.388301+00:00",
-      "updated_at": "2026-11-24T20:15:50.044133+00:00",
+      "updated_at": "2026-11-24T20:15:54.936709+00:00",
       "media": {
         "duration_seconds": 729.73,
         "width": 1920,
@@ -13377,7 +13377,9 @@
       "upload_started_at": "2026-11-24T20:15:41.040207+00:00",
       "video_id": "b-Cvc3JUIR4",
       "url": "https://youtu.be/b-Cvc3JUIR4",
-      "upload_response_received_at": "2026-11-24T20:15:50.043874+00:00"
+      "upload_response_received_at": "2026-11-24T20:15:50.043874+00:00",
+      "thumbnail_verified": true,
+      "thumbnail_verified_at": "2026-11-24T20:15:54.936549+00:00"
     }
   },
   "recent_topics": [
