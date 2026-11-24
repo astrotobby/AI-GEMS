@@ -1,0 +1,83 @@
+name: Influencer - Kling animation (isolated)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Check API eligibility without spending credits, or animate the two approved scenes"
+        type: choice
+        options:
+          - check
+          - animate
+        default: check
+        required: true
+      credential_index:
+        description: "One selected API credential entry (1-based). One account is used for the entire run; no rotation."
+        type: string
+        default: "1"
+        required: true
+      max_jobs:
+        description: "Maximum scene animations in this batch (1 or 2)"
+        type: choice
+        options:
+          - "1"
+          - "2"
+        default: "2"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: influencer-kling-production
+  cancel-in-progress: false
+
+jobs:
+  animate:
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, windows, influencer-runner]
+    timeout-minutes: 75
+    env:
+      KLING_API_KEYS: ${{ secrets.KLING_API_KEYS }}
+      INFLUENCER_ROOT: 'C:\Users\chanz\OneDrive\Desktop\INFLUENCER'
+      PYTHONUTF8: '1'
+    steps:
+      - name: Checkout trusted main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Verify local assets and Python dependencies
+        shell: powershell
+        run: |
+          python -c "import requests, PIL; print('PYTHON_DEPENDENCIES_OK')"
+          if (-not (Test-Path "$env:INFLUENCER_ROOT\Kling_Animations\ApprovedImages\master_studio_reference.jpg")) {
+            throw "Missing approved master studio image."
+          }
+          if (-not (Test-Path "$env:INFLUENCER_ROOT\Kling_Animations\ApprovedImages\office_studio_reference.jpg")) {
+            throw "Missing approved office studio image."
+          }
+          if (-not (Test-Path "$env:INFLUENCER_ROOT\kling_20261124_VIDEO_Subtle_slo_4117_0.mp4")) {
+            throw "Missing local Kling motion reference."
+          }
+
+      - name: Run isolated Kling influencer pipeline
+        shell: powershell
+        env:
+          PIPELINE_MODE: ${{ inputs.mode }}
+          CREDENTIAL_INDEX: ${{ inputs.credential_index }}
+          MAX_JOBS: ${{ inputs.max_jobs }}
+        run: |
+          python scripts\influencer_kling_pipeline.py --mode "$env:PIPELINE_MODE" --credential-index "$env:CREDENTIAL_INDEX" --max-jobs "$env:MAX_JOBS"
+
+      - name: Confirm local outputs
+        if: always()
+        shell: powershell
+        run: |
+          $out = Join-Path $env:INFLUENCER_ROOT 'Kling_Animations'
+          if (Test-Path $out) {
+            Get-ChildItem -LiteralPath $out -File |
+              Select-Object Name, Length, LastWriteTime |
+              Format-Table -AutoSize
+          }
