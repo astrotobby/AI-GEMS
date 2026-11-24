@@ -11,6 +11,9 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
+# This script runs from the whop-clipper working directory in GitHub Actions.
+# Add that directory explicitly because Python otherwise prioritizes .github/scripts.
+sys.path.insert(0, str(Path.cwd().resolve()))
 from clipper import publish
 
 
