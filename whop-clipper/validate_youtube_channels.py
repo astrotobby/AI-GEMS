@@ -25,6 +25,10 @@ MANAGEMENT_SCOPES = {
 }
 
 
+def has_video_management_scope(scope_value: str) -> bool:
+    return bool(MANAGEMENT_SCOPES.intersection(set(str(scope_value or "").split())))
+
+
 def verify_video_management_scope(access_token: str) -> None:
     """Reject upload-only OAuth grants before spending time rendering a long-form video."""
     url = "https://oauth2.googleapis.com/tokeninfo?" + urllib.parse.urlencode(
@@ -39,8 +43,7 @@ def verify_video_management_scope(access_token: str) -> None:
             "Google could not verify the YouTube OAuth scopes. Re-run the YouTube auth workflow "
             "for this channel and approve full YouTube account management access."
         ) from exc
-    scopes = set(str(info.get("scope") or "").split())
-    if not scopes.intersection(MANAGEMENT_SCOPES):
+    if not has_video_management_scope(info.get("scope", "")):
         raise RuntimeError(
             "YouTube OAuth token is upload-only or read-only. Long-form publishing also needs to "
             "read video status, set thumbnails, and set publishAt. Re-run Actions > YouTube auth "
