@@ -150,10 +150,14 @@ def main() -> int:
         raise SystemExit(f"Video processing is not complete: {status.get('uploadStatus')!r}")
 
     artifact_root = Path("../recovery-artifact")
-    thumbnails = sorted(artifact_root.rglob("thumb-*.jpg"))
-    if len(thumbnails) != 1:
-        raise SystemExit(f"Expected exactly one saved thumbnail in the source run artifact; found {len(thumbnails)}")
-    thumbnail_path = thumbnails[0]
+    # The production renderer saves both an intermediate frame named
+    # thumb-frame-<job_id>.jpg and the final designed thumbnail named
+    # thumb-<job_id>.jpg. Restore only the final designed thumbnail.
+    thumbnail_path = next(artifact_root.rglob(f"thumb-{job_id}.jpg"), None)
+    if thumbnail_path is None or not thumbnail_path.is_file():
+        raise SystemExit(
+            f"Final designed thumbnail thumb-{job_id}.jpg was not found in the source run artifact"
+        )
     thumb_bytes = thumbnail_path.read_bytes()
     if len(thumb_bytes) < 1024 or len(thumb_bytes) > 2_000_000 or not thumb_bytes.startswith(b"\xff\xd8\xff"):
         raise SystemExit("Saved thumbnail is not a valid JPEG within YouTube's 2 MB limit")
