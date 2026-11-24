@@ -72,6 +72,7 @@ def select_next_slot(
     """Return dispatch/wait/blocked/complete for the first unfilled target slot."""
     current = (now or datetime.now(EAT)).astimezone(EAT)
     jobs = ledger.get("jobs") or {}
+    blocked_slots: list[dict] = []
 
     for channel, slot in SLOTS:
         key = job_id(target_date, channel, slot)
@@ -84,13 +85,15 @@ def select_next_slot(
         # An interrupted upload is intentionally not auto-retried. It needs a
         # manual YouTube check so the recovery service can never duplicate it.
         if status == "uploading":
-            return {
-                "action": "blocked",
+            # Quarantine this one slot, but keep the daily queue moving. Never
+            # retry it automatically; a later safe slot may still be dispatched.
+            blocked_slots.append({
                 "channel": channel,
                 "slot": slot,
                 "job_id": key,
                 "reason": "uploading state is ambiguous; inspect the private YouTube upload before retrying",
-            }
+            })
+            continue
 
         # A recent non-terminal ledger record may belong to a run that has not
         # appeared in the Actions run list yet, or has just failed. Allow three
@@ -104,6 +107,7 @@ def select_next_slot(
                     "slot": slot,
                     "job_id": key,
                     "reason": f"ledger status is {status}; waiting for the active render window",
+                    "blocked_slots": blocked_slots,
                 }
 
         return {
@@ -111,8 +115,15 @@ def select_next_slot(
             "channel": channel,
             "slot": slot,
             "job_id": key,
+            "blocked_slots": blocked_slots,
         }
 
+    if blocked_slots:
+        return {
+            "action": "blocked",
+            "blocked_slots": blocked_slots,
+            "reason": "all remaining incomplete slots are ambiguous uploads and were not retried",
+        }
     return {"action": "complete", "reason": "all four next-day slots are already scheduled"}
 
 
@@ -191,9 +202,11 @@ def main() -> int:
         )
         return 0
     if decision["action"] == "blocked":
+        blocked = decision.get("blocked_slots") or []
+        details = "; ".join(f"{row['channel']} {row['slot']} ({row['job_id']})" for row in blocked)
         write_summary(
-            f"Blocked {decision['channel']} {decision['slot']} for {target_date}: "
-            f"{decision['reason']}. No upload was retried."
+            f"Blocked {len(blocked)} ambiguous upload slot(s) for {target_date}: "
+            f"{details or decision['reason']}. No upload was retried."
         )
         return 0
 
@@ -212,9 +225,14 @@ def main() -> int:
             },
         },
     )
+    blocked = decision.get("blocked_slots") or []
+    blocked_note = ""
+    if blocked:
+        details = "; ".join(f"{row['channel']} {row['slot']}" for row in blocked)
+        blocked_note = f" Earlier ambiguous slot(s) left untouched: {details}."
     write_summary(
         f"Dispatched missing slot: {decision['channel']} at {decision['slot']} EAT "
-        f"for {target_date} (job {decision['job_id']})."
+        f"for {target_date} (job {decision['job_id']}).{blocked_note}"
     )
     return 0
 

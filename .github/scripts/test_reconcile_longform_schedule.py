@@ -89,7 +89,7 @@ class LongformScheduleRecoveryTests(unittest.TestCase):
         self.assertEqual(result["action"], "dispatch")
         self.assertEqual((result["channel"], result["slot"]), ("astrotobby", "10:00"))
 
-    def test_ambiguous_upload_is_blocked(self):
+    def test_ambiguous_upload_is_quarantined_while_later_slot_can_run(self):
         ledger = {
             "jobs": {
                 self.key("astrotobby", "10:00"): {
@@ -99,8 +99,31 @@ class LongformScheduleRecoveryTests(unittest.TestCase):
             }
         }
         result = select_next_slot(ledger, self.target, self.now)
+        self.assertEqual(result["action"], "dispatch")
+        self.assertEqual((result["channel"], result["slot"]), ("digital_nomad", "12:00"))
+        self.assertEqual(len(result["blocked_slots"]), 1)
+        self.assertEqual(result["blocked_slots"][0]["job_id"], self.key("astrotobby", "10:00"))
+        self.assertIn("ambiguous", result["blocked_slots"][0]["reason"])
+
+    def test_all_ambiguous_uploads_are_blocked_without_dispatch(self):
+        ledger = {
+            "jobs": {
+                self.key(channel, slot): {
+                    "status": "uploading",
+                    "updated_at": (self.now - timedelta(hours=4)).isoformat(),
+                }
+                for channel, slot in (
+                    ("astrotobby", "10:00"),
+                    ("digital_nomad", "12:00"),
+                    ("astrotobby", "15:00"),
+                    ("digital_nomad", "18:00"),
+                )
+            }
+        }
+        result = select_next_slot(ledger, self.target, self.now)
         self.assertEqual(result["action"], "blocked")
-        self.assertIn("ambiguous", result["reason"])
+        self.assertEqual(len(result["blocked_slots"]), 4)
+        self.assertIn("ambiguous uploads", result["reason"])
 
     def test_dry_run_record_is_not_mistaken_for_a_live_schedule(self):
         ledger = {
