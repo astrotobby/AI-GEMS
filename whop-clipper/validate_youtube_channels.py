@@ -6,6 +6,7 @@ Run from the whop-clipper directory so clipper.publish can read work/yt_tokens/*
 from __future__ import annotations
 
 import json
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -18,11 +19,39 @@ OWNER_BY_CHANNEL = {
 }
 
 
-def channel_identity(creds: tuple[str, str, str]) -> tuple[str, str]:
-    token = publish._yt_access_token(creds)
+MANAGEMENT_SCOPES = {
+    "https://www.googleapis.com/auth/youtube",
+    "https://www.googleapis.com/auth/youtube.force-ssl",
+}
+
+
+def verify_video_management_scope(access_token: str) -> None:
+    """Reject upload-only OAuth grants before spending time rendering a long-form video."""
+    url = "https://oauth2.googleapis.com/tokeninfo?" + urllib.parse.urlencode(
+        {"access_token": access_token}
+    )
+    req = urllib.request.Request(url, headers={"Accept": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as response:
+            info = json.load(response)
+    except Exception as exc:
+        raise RuntimeError(
+            "Google could not verify the YouTube OAuth scopes. Re-run the YouTube auth workflow "
+            "for this channel and approve full YouTube account management access."
+        ) from exc
+    scopes = set(str(info.get("scope") or "").split())
+    if not scopes.intersection(MANAGEMENT_SCOPES):
+        raise RuntimeError(
+            "YouTube OAuth token is upload-only or read-only. Long-form publishing also needs to "
+            "read video status, set thumbnails, and set publishAt. Re-run Actions > YouTube auth "
+            "for this channel and approve https://www.googleapis.com/auth/youtube."
+        )
+
+
+def channel_identity(access_token: str) -> tuple[str, str]:
     req = urllib.request.Request(
         "https://www.googleapis.com/youtube/v3/channels?part=id,snippet&mine=true",
-        headers={"Authorization": "Bearer " + token},
+        headers={"Authorization": "Bearer " + access_token},
     )
     with urllib.request.urlopen(req, timeout=60) as response:
         items = json.load(response).get("items") or []
@@ -54,8 +83,10 @@ def main() -> int:
             creds = publish._yt_creds(target)
             if not creds:
                 raise publish.yt_not_configured(target)
-            verified_title = publish.yt_verify_channel(target, creds)
-            channel_id, actual_title = channel_identity(creds)
+            access_token = publish._yt_access_token(creds)
+            verify_video_management_scope(access_token)
+            channel_id, actual_title = channel_identity(access_token)
+            verified_title = actual_title
             expected_id = str(target.get("channel_id") or "").strip()
             if expected_id and channel_id != expected_id:
                 raise RuntimeError(
@@ -67,7 +98,7 @@ def main() -> int:
                 )
             print(
                 f"VERIFIED channel={verified_title!r} channel_id={channel_id!r} "
-                f"owner_account_mapping={owner!r}"
+                f"owner_account_mapping={owner!r}; YouTube video-management scope verified"
             )
         except Exception as exc:  # noqa: never expose the credential material
             failures += 1
