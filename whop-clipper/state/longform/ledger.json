@@ -9507,9 +9507,9 @@
         "word_count": 2090,
         "model": "claude-sonnet-5"
       },
-      "status": "rendered",
+      "status": "validated",
       "created_at": "2026-11-24T06:53:10.077013+00:00",
-      "updated_at": "2026-11-24T07:27:13.720755+00:00",
+      "updated_at": "2026-11-24T07:27:15.804867+00:00",
       "media": {
         "duration_seconds": 757.92,
         "width": 1920,
@@ -10413,7 +10413,9 @@
           ]
         }
       ],
-      "rendered_at": "2026-11-24T07:27:13.720622+00:00"
+      "rendered_at": "2026-11-24T07:27:13.720622+00:00",
+      "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A",
+      "validated_at": "2026-11-24T07:27:15.804701+00:00"
     }
   },
   "recent_topics": [
