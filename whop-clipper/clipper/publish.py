@@ -196,6 +196,17 @@ def _yt_creds(target: dict) -> tuple[str, str, str] | None:
        environment; when several id/secret combinations exist, the first one Google accepts is used.
     """
     slug = _slug(target)
+
+    # Encrypted GitHub Actions secrets are the durable source of truth. The JSON
+    # secret carries its issuing OAuth client alongside the refresh token, so it
+    # remains usable even if other legacy client-id/secret names are stale.
+    env_refreshes = _env_refresh_all(slug)
+    for refresh, stored_client in env_refreshes:
+        if stored_client:
+            return stored_client[0], stored_client[1], refresh
+
+    # Backward-compatible fallback for older local runs. New workflows must not
+    # place OAuth tokens in Actions caches.
     f = TOKEN_DIR / f"{slug}.json"
     if slug and f.exists():
         try:
@@ -206,7 +217,7 @@ def _yt_creds(target: dict) -> tuple[str, str, str] | None:
             pass
     env_pairs = _client_from_env()
     combos: list[tuple[str, str, str, str]] = []  # (client id, client secret, refresh token, label)
-    for n, (refresh, stored_client) in enumerate(_env_refresh_all(slug), 1):
+    for n, (refresh, stored_client) in enumerate(env_refreshes, 1):
         pairs = list(env_pairs)
         if stored_client:  # the client that issued it, when the secret carried one
             pairs.insert(0, (*stored_client, "stored beside the refresh token"))
