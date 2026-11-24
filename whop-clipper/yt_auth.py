@@ -20,7 +20,7 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-SCOPE = "https://www.googleapis.com/auth/youtube"  # upload + read statistics
+SCOPE = "https://www.googleapis.com/auth/youtube"  # full scope: upload, status verification, thumbnails, and publishAt scheduling
 REDIRECT = "http://localhost"
 OUT = Path("work/yt_tokens")
 CHANNELS = {
