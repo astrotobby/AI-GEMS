@@ -183,6 +183,7 @@ jobs:
         working-directory: astro-blog
         run: |
           set -euo pipefail
+          python -m pip install --disable-pip-version-check PyYAML
           test -x .venv-wav2lip/bin/python
           test -s Wav2Lip/checkpoints/wav2lip_gan.pth
           test -s Wav2Lip/face_detection/detection/sfd/s3fd.pth
