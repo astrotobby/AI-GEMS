@@ -57,6 +57,9 @@ jobs:
           mkdir -p "$RUNNER_TEMP/dijitol-nomad-artifact"
           gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY"             --name "$ARTIFACT_NAME" --dir "$RUNNER_TEMP/dijitol-nomad-artifact"
 
+      - name: Install FFmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
       - name: Install YouTube API and image verification dependencies
         run: python -m pip install --disable-pip-version-check google-api-python-client google-auth Pillow
 
