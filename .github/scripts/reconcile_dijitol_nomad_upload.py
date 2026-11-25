@@ -2,9 +2,11 @@
 """Safely finish thumbnail QA and scheduling for the known private DIJITOL NOMAD upload."""
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 import time
 from datetime import datetime, timedelta, timezone
@@ -35,6 +37,52 @@ def same_time(left: str | None, right: str) -> bool:
     except (TypeError, ValueError):
         return False
 
+
+
+def rebuild_thumbnail_from_saved_video(video_path: Path, title: str, job_id: str, channel: str, output: Path) -> Path:
+    """Recreate the exact thumbnail recipe from the original rendered MP4 if the jpg was not in the artifact."""
+    probe = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+         "-of", "default=nw=1:nk=1", str(video_path)],
+        check=True, capture_output=True, text=True, timeout=60,
+    )
+    duration = float(probe.stdout.strip())
+    if duration < 2:
+        raise RuntimeError("The saved render is too short to rebuild its thumbnail")
+    seed = int(hashlib.sha256(f"digital_nomad:{job_id}".encode()).hexdigest()[:8], 16)
+    timestamp = max(0.5, min(duration - 0.5, duration * (0.18 + (seed % 6000) / 10000)))
+    frame = output.with_name("thumb-rebuild-frame.jpg")
+    subprocess.run(
+        ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-ss", f"{timestamp:.3f}",
+         "-i", str(video_path), "-frames:v", "1", "-vf",
+         "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,setsar=1",
+         "-q:v", "2", str(frame)],
+        check=True, timeout=120,
+    )
+    image = Image.open(frame).convert("RGB")
+    if image.size != (1280, 720):
+        raise RuntimeError("Rebuilt thumbnail frame has unexpected dimensions")
+    overlay = Image.new("RGBA", image.size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(overlay)
+    for x in range(1280):
+        alpha = int(190 * max(0, 1 - x / 1280) ** 0.72)
+        draw.line((x, 0, x, 720), fill=(5, 9, 18, alpha))
+    draw.rounded_rectangle((48, 48, 420, 104), radius=18,
+                           fill=(255, 255, 255, 35), outline=(255, 255, 255, 100), width=2)
+    font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+    small = ImageFont.truetype(font_path, 25)
+    draw.text((72, 62), "DIJITOL NOMAD", font=small, fill=(255, 255, 255, 255))
+    label = " ".join(re.findall(r"[A-Za-z0-9$%']+", title.upper())[:7])
+    font = ImageFont.truetype(font_path, 66)
+    while draw.textbbox((0, 0), label, font=font, stroke_width=1)[2] > 900 and font.size > 38:
+        font = ImageFont.truetype(font_path, font.size - 3)
+    draw.text((64, 475), label, font=font, fill=(255, 255, 255, 255),
+              stroke_width=2, stroke_fill=(0, 0, 0, 220))
+    Image.alpha_composite(image.convert("RGBA"), overlay).convert("RGB").save(
+        output, "JPEG", quality=91, optimize=True
+    )
+    frame.unlink(missing_ok=True)
+    return output
 
 def main() -> int:
     raw = os.environ.get("YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON", "").strip()
@@ -113,9 +161,23 @@ def main() -> int:
 
     artifact_dir = Path(os.environ["LONGFORM_ARTIFACT_DIR"])
     matches = list(artifact_dir.rglob(EXPECTED_ARTIFACT_THUMB))
-    if len(matches) != 1:
-        raise RuntimeError(f"Expected exactly one saved thumbnail in the original run artifact; found {len(matches)}")
-    thumbnail = matches[0]
+    if len(matches) > 1:
+        raise RuntimeError(f"Found more than one saved thumbnail in the original run artifact: {len(matches)}")
+    if matches:
+        thumbnail = matches[0]
+        print("THUMBNAIL_SOURCE=ORIGINAL_ARTIFACT")
+    else:
+        videos = list(artifact_dir.rglob("video_16x9.mp4"))
+        if len(videos) != 1:
+            raise RuntimeError(
+                f"Original artifact did not contain the expected thumbnail or exactly one master video; "
+                f"thumbnail_matches=0 video_matches={len(videos)}"
+            )
+        thumbnail = rebuild_thumbnail_from_saved_video(
+            videos[0], EXPECTED_TITLE, JOB_ID, "digital_nomad",
+            artifact_dir / EXPECTED_ARTIFACT_THUMB,
+        )
+        print("THUMBNAIL_SOURCE=REBUILT_FROM_ORIGINAL_RENDER")
     with Image.open(thumbnail) as image:
         if image.format != "JPEG" or image.size != (1280, 720):
             raise RuntimeError("Saved thumbnail is not a 1280x720 JPEG")
