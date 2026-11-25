@@ -128,8 +128,8 @@ def main() -> int:
             videoId=VIDEO_ID,
             media_body=MediaFileUpload(str(thumbnail), mimetype="image/jpeg", resumable=False),
         ).execute()
-        if response.get("videoId") != VIDEO_ID:
-            raise RuntimeError("YouTube did not confirm the thumbnail upload for this video")
+        if response.get("kind") != "youtube#thumbnailSetResponse" or not response.get("items"):
+            raise RuntimeError("YouTube did not return a valid thumbnailSetResponse")
         refreshed = yt.videos().list(part="snippet,status", id=VIDEO_ID).execute().get("items") or []
         if not refreshed:
             raise RuntimeError("Could not read the video after thumbnail upload")
