@@ -43,7 +43,8 @@ jobs:
   render-and-publish:
     # The owner-approved LONGFORM_LIVE_ENABLED repository variable is the single live-publishing master switch.
     # Scheduled runs fail closed while it is unset or anything other than the literal string 'true'.
-    if: ${{ github.event_name != 'schedule' || vars.LONGFORM_LIVE_ENABLED == 'true' }}
+    # Scheduled production stays skipped until live publishing and a positive Sync-3 budget are both enabled.
+    if: ${{ github.event_name != 'schedule' || (vars.LONGFORM_LIVE_ENABLED == 'true' && vars.SYNC_LABS_MAX_SPEND_USD_PER_RUN != '' && vars.SYNC_LABS_MAX_SPEND_USD_PER_RUN != '0') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 180
     env:
