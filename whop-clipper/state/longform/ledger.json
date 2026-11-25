@@ -9315,7 +9315,7 @@
       "channel_title": "DIJITOL NOMAD",
       "owner_account": "chanzera3@gmail.com",
       "slot": "18:00",
-      "publish_at": "2026-11-25T15:00:00+00:00",
+      "publish_at": "2026-11-25T15:00:00Z",
       "workflow_run_id": "45283891922",
       "artifact_name": "longform-digital_nomad-45283891922",
       "title": "US to Blacklist Megaspeed After Nvidia Scandal: The Full Inside Story",
@@ -9407,9 +9407,9 @@
         "word_count": 1945,
         "model": "claude-sonnet-5"
       },
-      "status": "uploading",
+      "status": "scheduled",
       "created_at": "2026-11-23T22:56:31.297865+00:00",
-      "updated_at": "2026-11-25T05:12:05.092206+00:00",
+      "updated_at": "2026-11-25T05:18:26.480042+00:00",
       "media": {
         "duration_seconds": 819.04,
         "width": 1920,
@@ -10326,7 +10326,11 @@
       "video_id": "LMv7PLnHDXI",
       "url": "https://youtu.be/LMv7PLnHDXI",
       "existing_private_upload": true,
-      "upload_reconciled_at": "2026-11-25T05:12:05.092052+00:00"
+      "upload_reconciled_at": "2026-11-25T05:12:05.092052+00:00",
+      "thumbnail_verified": true,
+      "thumbnail_verified_at": "2026-11-25T05:18:20.674734+00:00",
+      "reconciled": true,
+      "scheduled_at": "2026-11-25T05:18:26.480042+00:00"
     },
     "20261125_astrotobby_1000": {
       "job_id": "20261125_astrotobby_1000",
