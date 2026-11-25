@@ -1,0 +1,75 @@
+name: Sync Labs Sync-3 free-trial preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_free_trial:
+        description: "I confirm one free Sync-3 generation remains this month and the Sync Labs account has no prepaid balance that could be spent."
+        type: boolean
+        required: true
+        default: false
+      look:
+        description: "Existing Kling presenter clip to test"
+        type: choice
+        required: true
+        default: kling_studio_front
+        options:
+          - kling_studio_front
+          - kling_studio_monitor
+
+permissions:
+  contents: read
+
+jobs:
+  sync3-preview:
+    if: ${{ inputs.confirm_free_trial == true }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      SYNC_API_KEY: ${{ secrets.SYNC_API_KEY }}
+    steps:
+      - name: Check out AI-GEMS
+        uses: actions/checkout@v4
+
+      - name: Check out the influencer pipeline
+        uses: actions/checkout@v4
+        with:
+          repository: astrotobby/astro-blog
+          ref: ${{ github.ref_name }}
+          path: astro-blog
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install FFmpeg and free test dependencies
+        uses: AnimMouse/setup-ffmpeg@178e0b4a408f06ce40d896c3cd79f50fa6f8b0c3
+        with:
+          version: release
+          token: ${{ github.token }}
+
+      - name: Install Sync-3 smoke-test dependencies
+        run: python -m pip install --disable-pip-version-check requests PyYAML edge-tts
+
+      - name: Require explicit free-trial confirmation and submit exactly one Sync-3 preview
+        working-directory: astro-blog
+        run: |
+          set -euo pipefail
+          test -n "$SYNC_API_KEY"
+          python scripts/sync_labs_smoke_test.py \
+            --look "${{ inputs.look }}" \
+            --confirm-free-trial \
+            --output-dir .pipeline/out/sync3-smoke
+
+      - name: Upload private Sync-3 preview for quality review
+        uses: actions/upload-artifact@v4
+        with:
+          name: sync3-free-trial-preview-${{ github.run_id }}
+          path: |
+            astro-blog/.pipeline/out/sync3-smoke/sync3_smoke_preview.mp4
+            astro-blog/.pipeline/out/sync3-smoke/sync3_smoke_audio.mp3
+            astro-blog/.pipeline/out/sync3-smoke/sync3_smoke_report.json
+          if-no-files-found: error
+          retention-days: 7
