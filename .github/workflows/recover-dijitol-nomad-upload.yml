@@ -1,0 +1,81 @@
+name: Recover DIJITOL NOMAD private upload
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: dijitol-nomad-private-upload-recovery
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON: ${{ secrets.YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON }}
+    steps:
+      - name: Checkout AI-GEMS
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Locate the exact prior run artifact
+        id: artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          ledger=json.loads(Path("whop-clipper/state/longform/ledger.json").read_text(encoding="utf-8"))
+          job=(ledger.get("jobs") or {}).get("20261125_digital_nomad_1800")
+          if not job or job.get("video_id") != "LMv7PLnHDXI":
+              raise SystemExit("Saved ledger does not contain the verified existing DIJITOL NOMAD video ID")
+          if job.get("status") != "uploading":
+              raise SystemExit("Job is no longer in the expected uploading recovery state")
+          print("ARTIFACT_RUN_ID="+str(job.get("workflow_run_id") or ""))
+          print("ARTIFACT_NAME="+str(job.get("artifact_name") or ""))
+          PY
+          RUN_ID="$(python -c 'import json; d=json.load(open("whop-clipper/state/longform/ledger.json")); print(d["jobs"]["20261125_digital_nomad_1800"]["workflow_run_id"])')"
+          NAME="$(python -c 'import json; d=json.load(open("whop-clipper/state/longform/ledger.json")); print(d["jobs"]["20261125_digital_nomad_1800"]["artifact_name"])')"
+          test -n "$RUN_ID" && test -n "$NAME"
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Download the original render artifact
+        env:
+          RUN_ID: ${{ steps.artifact.outputs.run_id }}
+          ARTIFACT_NAME: ${{ steps.artifact.outputs.name }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/dijitol-nomad-artifact"
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY"             --name "$ARTIFACT_NAME" --dir "$RUNNER_TEMP/dijitol-nomad-artifact"
+
+      - name: Install YouTube API and image verification dependencies
+        run: python -m pip install --disable-pip-version-check google-api-python-client google-auth Pillow
+
+      - name: Verify thumbnail and schedule the existing private video
+        env:
+          LONGFORM_ARTIFACT_DIR: ${{ runner.temp }}/dijitol-nomad-artifact
+          YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON: ${{ secrets.YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON }}
+        run: python .github/scripts/reconcile_dijitol_nomad_upload.py
+
+      - name: Persist recovered schedule in the long-form ledger
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add whop-clipper/state/longform/ledger.json
+          if git diff --cached --quiet; then
+            echo "No ledger update required."
+          else
+            git commit -m "longform: reconcile DIJITOL NOMAD private upload [skip ci]"
+            git push origin HEAD:main
+          fi
