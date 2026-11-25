@@ -208,6 +208,8 @@ jobs:
         working-directory: astro-blog
         run: |
           python -m py_compile scripts/generate_video.py scripts/build_script.py scripts/seed_footage_history.py
+          python -m py_compile scripts/influencer.py scripts/tbdub_lipsync.py scripts/tbdub_worker.py scripts/test_tbdub_integration.py
+          python scripts/test_tbdub_integration.py
           python scripts/test_video_pipeline.py VisualDuplicateGuardTests
 
       - name: Resolve the channel and publication slot
