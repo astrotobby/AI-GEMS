@@ -44,7 +44,9 @@ jobs:
     # The owner-approved LONGFORM_LIVE_ENABLED repository variable is the single live-publishing master switch.
     # Scheduled runs fail closed while it is unset or anything other than the literal string 'true'.
     if: ${{ github.event_name != 'schedule' || vars.LONGFORM_LIVE_ENABLED == 'true' }}
-    runs-on: ubuntu-24.04
+    # Set LONGFORM_RUNNER_LABELS to a JSON array matching a persistent Linux NVIDIA GPU runner.
+    # Default remains GitHub-hosted CPU and will fail the TBDub hardware gate without a GPU.
+    runs-on: ${{ fromJSON(vars.LONGFORM_RUNNER_LABELS || '["ubuntu-24.04"]') }}
     timeout-minutes: 180
     env:
       LONGFORM_STATE_DIR: ${{ github.workspace }}/whop-clipper/state/longform
@@ -155,44 +157,48 @@ jobs:
       - name: Install long-form Python dependencies
         run: python -m pip install --disable-pip-version-check -r astro-blog/requirements-longform.txt
 
-      # The recurring Kling presenter is lip-synced to the long-form narration locally.
-      # Keep Wav2Lip in an isolated Python 3.11 environment so the main renderer stays on 3.12.
-      - name: Cache Wav2Lip CPU runtime and presenter face boxes
-        id: wav2lip-cache
+      # TBDub Student is free/open-source, but its inference requires an NVIDIA GPU.
+      # Set LONGFORM_RUNNER_LABELS to the labels of a persistent self-hosted GPU runner.
+      # The large public model weights live outside Git in TBDUB_CHECKPOINT_DIR.
+      - name: Set up Python 3.10 for TBDub Student
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Cache the TBDub Python environment and source checkout
         uses: actions/cache@v4
         with:
           path: |
-            astro-blog/.venv-wav2lip
-            astro-blog/Wav2Lip
-            astro-blog/assets/influencer/facecache
-          key: wav2lip-cpu-py311-v1-${{ hashFiles('astro-blog/scripts/setup_wav2lip.sh') }}
+            astro-blog/.venv-tbdub
+            astro-blog/third_party/TBDub
+          key: tbdub-v1.1-py310-${{ hashFiles('astro-blog/scripts/setup_tbdub.sh', 'astro-blog/third_party/TBDub/requirements.txt') }}
 
-      - name: Set up Python 3.11 for presenter lip-sync
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install isolated Wav2Lip runtime
-        if: steps.wav2lip-cache.outputs.cache-hit != 'true'
+      - name: Install free TBDub Student runtime and public model weights
         working-directory: astro-blog
         env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: bash scripts/setup_wav2lip.sh
-
-      - name: Validate and warm the two approved Kling presenter clips
-        working-directory: astro-blog
+          TBDUB_CHECKPOINT_DIR: ${{ vars.TBDUB_CHECKPOINT_DIR }}
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check PyYAML
-          test -x .venv-wav2lip/bin/python
-          test -s Wav2Lip/checkpoints/wav2lip_gan.pth
-          test -s Wav2Lip/face_detection/detection/sfd/s3fd.pth
-          python scripts/influencer.py --warm-face-cache
+          if [[ -z "${TBDUB_CHECKPOINT_DIR}" ]]; then
+            echo "Set AI-GEMS repository variable TBDUB_CHECKPOINT_DIR to persistent storage with at least 26 GB free on the GPU runner." >&2
+            exit 1
+          fi
+          bash scripts/setup_tbdub.sh
 
       - name: Restore Python 3.12 for the long-form renderer
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Validate TBDub GPU, model files and both existing Kling face crops
+        working-directory: astro-blog
+        env:
+          TBDUB_CHECKPOINT_DIR: ${{ vars.TBDUB_CHECKPOINT_DIR }}
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/influencer.py scripts/tbdub_lipsync.py scripts/tbdub_worker.py
+          python -m pip install --disable-pip-version-check PyYAML
+          python scripts/influencer.py --warm-face-cache
 
       - name: Validate both YouTube channel credentials before rendering
         working-directory: whop-clipper
