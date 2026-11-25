@@ -179,7 +179,7 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: bash scripts/setup_wav2lip.sh
 
-      - name: Validate and warm the three approved Kling presenter clips
+      - name: Validate and warm the two approved Kling presenter clips
         working-directory: astro-blog
         run: |
           set -euo pipefail
