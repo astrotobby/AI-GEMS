@@ -9409,7 +9409,7 @@
       },
       "status": "uploading",
       "created_at": "2026-11-23T22:56:31.297865+00:00",
-      "updated_at": "2026-11-23T23:38:00.521933+00:00",
+      "updated_at": "2026-11-25T05:12:05.092206+00:00",
       "media": {
         "duration_seconds": 819.04,
         "width": 1920,
@@ -10322,7 +10322,11 @@
       "rendered_at": "2026-11-23T23:37:55.818762+00:00",
       "channel_id": "UCE_cklDludc6nkU1_4K6JzA",
       "validated_at": "2026-11-23T23:37:58.651322+00:00",
-      "upload_started_at": "2026-11-23T23:38:00.521773+00:00"
+      "upload_started_at": "2026-11-23T23:38:00.521773+00:00",
+      "video_id": "LMv7PLnHDXI",
+      "url": "https://youtu.be/LMv7PLnHDXI",
+      "existing_private_upload": true,
+      "upload_reconciled_at": "2026-11-25T05:12:05.092052+00:00"
     },
     "20261125_astrotobby_1000": {
       "job_id": "20261125_astrotobby_1000",
