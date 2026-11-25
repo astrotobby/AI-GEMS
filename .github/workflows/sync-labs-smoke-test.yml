@@ -57,6 +57,10 @@ jobs:
         working-directory: astro-blog
         run: |
           set -euo pipefail
+          if [[ "${{ inputs.confirm_free_trial }}" != "true" ]]; then
+            echo "Free-trial confirmation is required; no API request was sent." >&2
+            exit 1
+          fi
           test -n "$SYNC_API_KEY"
           python scripts/sync_labs_smoke_test.py \
             --look "${{ inputs.look }}" \
