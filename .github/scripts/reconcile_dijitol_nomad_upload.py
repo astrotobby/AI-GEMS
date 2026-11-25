@@ -16,7 +16,7 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 LEDGER = Path("whop-clipper/state/longform/ledger.json")
 JOB_ID = "20261125_digital_nomad_1800"
