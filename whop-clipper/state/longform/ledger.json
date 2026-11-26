@@ -19673,7 +19673,7 @@
       },
       "status": "uploading",
       "created_at": "2026-11-26T10:36:13.049496+00:00",
-      "updated_at": "2026-11-26T11:26:15.246581+00:00",
+      "updated_at": "2026-11-26T11:26:25.163943+00:00",
       "media": {
         "duration_seconds": 959.0,
         "width": 1920,
@@ -20587,7 +20587,10 @@
       "rendered_at": "2026-11-26T11:26:10.959053+00:00",
       "channel_id": "UCxndvpcFaVhN1bJxgWIjG_A",
       "validated_at": "2026-11-26T11:26:13.406448+00:00",
-      "upload_started_at": "2026-11-26T11:26:15.246422+00:00"
+      "upload_started_at": "2026-11-26T11:26:15.246422+00:00",
+      "video_id": "UiE4qnYDTGc",
+      "url": "https://youtu.be/UiE4qnYDTGc",
+      "upload_response_received_at": "2026-11-26T11:26:25.163756+00:00"
     }
   },
   "recent_topics": [
