@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from verify_youtube_publications import (
     CHANNELS,
     decide_video_action,
+    has_due_jobs,
     run_verification,
 )
 
@@ -133,6 +134,32 @@ class YouTubePublicationDecisionTests(unittest.TestCase):
 
 
 class YouTubePublicationExecutionTests(unittest.TestCase):
+    def test_ledger_channel_id_mismatch_is_not_sent_to_youtube(self):
+        youtube = FakeYouTube(video())
+        ledger_job = job(channel_id="UC_WRONG")
+        ledger = {"jobs": {"job123": ledger_job}}
+        result = run_verification(ledger, {"astrotobby": youtube}, NOW, apply_publication=True)
+
+        self.assertEqual(youtube.videos()._videos.update_calls, [])
+        self.assertEqual(ledger_job["status"], "scheduled")
+        self.assertEqual(ledger_job["publication_check"]["state"], "manual_review")
+        self.assertIn("ledger channel_id", ledger_job["publication_check"]["reason"])
+        self.assertEqual(result["counts"]["manual_review"], 1)
+
+    def test_due_preflight_skips_future_jobs_and_quarantined_manual_reviews(self):
+        future = NOW + timedelta(hours=1)
+        ledger = {"jobs": {
+            "future": job(publish_at=future.isoformat()),
+            "quarantined": job(publication_check={
+                "state": "manual_review",
+                "reason": "mismatched publishAt",
+            }),
+        }}
+        self.assertFalse(has_due_jobs(ledger, NOW))
+
+    def test_due_preflight_finds_overdue_scheduled_video(self):
+        self.assertTrue(has_due_jobs({"jobs": {"job123": job()}}, NOW))
+
     def test_promote_only_after_all_checks_and_verify_public_result(self):
         youtube = FakeYouTube(video())
         ledger = {"jobs": {"job123": job()}}
