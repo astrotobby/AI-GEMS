@@ -220,7 +220,7 @@ class YouTubePublicationExecutionTests(unittest.TestCase):
 
         self.assertEqual(youtube._videos.update_calls, [])
         self.assertEqual(ledger["jobs"]["job123"]["status"], "scheduled")
-        self.assertEqual(ledger["jobs"]["job123"]["publication_check"]["state"], "manual_review")
+        self.assertEqual(ledger["jobs"]["job123"]["publication_check"]["state"], "stale_manual_review")
         self.assertEqual(result["counts"]["stale"], 1)
 
 
