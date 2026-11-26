@@ -188,7 +188,7 @@ jobs:
       # MuseTalk 1.5 is the required production presenter engine. It runs
       # on Kaggle's free NvidiaTeslaT4 pool, not on the GitHub CPU runner.
       - name: Install Kaggle CLI for private MuseTalk GPU batches
-        run: python -m pip install --disable-pip-version-check "kaggle==2.2.5"
+        run: python -m pip install --disable-pip-version-check six "kaggle==2.2.5"
 
       - name: Require Kaggle credentials before research or rendering
         env:
