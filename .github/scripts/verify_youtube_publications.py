@@ -108,7 +108,9 @@ def has_due_jobs(ledger: dict[str, Any], now: datetime) -> bool:
         if not isinstance(job, dict) or str(job.get("status") or "").casefold() != "scheduled":
             continue
         check = job.get("publication_check") or {}
-        if check.get("state") in {"manual_review", "stale_manual_review"}:
+        if check.get("state") in {
+            "manual_review", "stale_public_verified", "stale_private_review", "stale_api_error"
+        }:
             continue
         channel = str(job.get("channel") or "").casefold()
         target = parse_utc(job.get("publish_at"))
@@ -191,13 +193,15 @@ def run_verification(
     apply_publication: bool,
 ) -> dict[str, Any]:
     jobs = ledger["jobs"]
-    due: list[tuple[str, dict[str, Any], str]] = []
+    due: list[tuple[str, dict[str, Any], str, bool]] = []
     stale_count = 0
     for job_id, job in jobs.items():
         if not isinstance(job, dict) or str(job.get("status") or "").casefold() != "scheduled":
             continue
         prior_check = job.get("publication_check") or {}
-        if prior_check.get("state") in {"manual_review", "stale_manual_review"}:
+        if prior_check.get("state") in {
+            "manual_review", "stale_public_verified", "stale_private_review", "stale_api_error"
+        }:
             continue
         channel_key = str(job.get("channel") or "").casefold()
         if channel_key not in CHANNELS or not job.get("video_id"):
@@ -205,16 +209,16 @@ def run_verification(
         target = parse_utc(job.get("publish_at"))
         if target is None or target > now.astimezone(timezone.utc) - GRACE:
             continue
-        if now.astimezone(timezone.utc) - target > MAX_LATE:
+        is_stale = now.astimezone(timezone.utc) - target > MAX_LATE
+        if is_stale:
             set_publication_check(
                 job,
                 "stale_manual_review",
                 now.astimezone(timezone.utc).isoformat(),
-                "release is more than 24 hours overdue; no automatic privacy change",
+                "release is more than 24 hours overdue; read-only visibility audit only",
             )
             stale_count += 1
-            continue
-        due.append((job_id, job, channel_key))
+        due.append((job_id, job, channel_key, is_stale))
 
     due.sort(key=lambda item: parse_utc(item[1].get("publish_at")) or datetime.max.replace(tzinfo=timezone.utc))
     due = due[:MAX_JOBS_PER_RUN]
@@ -222,27 +226,50 @@ def run_verification(
     counts = {
         "checked": 0, "already_public": 0, "promoted_public": 0,
         "waiting": 0, "manual_review": 0, "would_promote": 0, "errors": 0,
-        "stale": stale_count,
+        "stale": stale_count, "stale_public_verified": 0, "stale_private_review": 0,
     }
     reports: list[dict[str, Any]] = []
-    for job_id, job, channel_key in due:
+    for job_id, job, channel_key, is_stale in due:
         spec = CHANNELS[channel_key]
         video_id = str(job["video_id"])
         checked_at = now.astimezone(timezone.utc).isoformat()
         try:
             if job.get("channel_id") != spec["channel_id"]:
                 action, reason = "manual_review", "ledger channel_id does not match the configured channel"
+                video = None
             else:
                 youtube = youtube_clients[channel_key]
                 video = _list_video(youtube, video_id)
-                action, reason = decide_video_action(job, video, spec["channel_id"], now)
+                if is_stale:
+                    actual_channel = (video.get("snippet") or {}).get("channelId")
+                    privacy = str((video.get("status") or {}).get("privacyStatus") or "").casefold()
+                    if actual_channel != spec["channel_id"]:
+                        action, reason = "manual_review", "stale video belongs to a different YouTube channel"
+                    elif privacy == "public":
+                        action, reason = "stale_public_verified", "older video is already public; read-only audit confirmed it"
+                    elif privacy == "private":
+                        action, reason = "stale_private_review", "older video is still private; it was not promoted"
+                    else:
+                        action, reason = "manual_review", f"older video privacyStatus is {privacy or 'missing'}; no change made"
+                else:
+                    action, reason = decide_video_action(job, video, spec["channel_id"], now)
             counts["checked"] += 1
 
-            if action == "verify_public":
+            if action in {"verify_public", "stale_public_verified"}:
                 job["status"] = "published"
                 job["published_verified_at"] = checked_at
-                set_publication_check(job, "public_verified", checked_at, reason)
+                set_publication_check(
+                    job,
+                    "public_verified",
+                    checked_at,
+                    reason,
+                )
                 counts["already_public"] += 1
+                if action == "stale_public_verified":
+                    counts["stale_public_verified"] += 1
+            elif action == "stale_private_review":
+                set_publication_check(job, "stale_private_review", checked_at, reason)
+                counts["stale_private_review"] += 1
             elif action == "promote_public" and not apply_publication:
                 set_publication_check(job, "would_promote", checked_at, reason)
                 counts["would_promote"] += 1
@@ -321,7 +348,10 @@ def write_summary(result: dict[str, Any], apply_publication: bool) -> None:
         "",
         f"- Mode: {'automatic repair enabled' if apply_publication else 'read-only'}",
     ]
-    for key in ("checked", "already_public", "promoted_public", "waiting", "manual_review", "would_promote", "stale", "errors"):
+    for key in (
+        "checked", "already_public", "promoted_public", "waiting", "manual_review",
+        "would_promote", "stale", "stale_public_verified", "stale_private_review", "errors",
+    ):
         lines.append(f"- {key.replace('_', ' ').title()}: {counts[key]}")
     lines.append("")
     for report in result["reports"]:
@@ -356,7 +386,9 @@ def main() -> int:
         if not isinstance(job, dict) or str(job.get("status") or "").casefold() != "scheduled":
             continue
         check = job.get("publication_check") or {}
-        if check.get("state") in {"manual_review", "stale_manual_review"}:
+        if check.get("state") in {
+            "manual_review", "stale_public_verified", "stale_private_review", "stale_api_error"
+        }:
             continue
         channel_key = str(job.get("channel") or "").casefold()
         target = parse_utc(job.get("publish_at"))
@@ -366,7 +398,6 @@ def main() -> int:
             and job.get("channel_id") == CHANNELS[channel_key]["channel_id"]
             and target is not None
             and now >= target + GRACE
-            and now - target <= MAX_LATE
         ):
             due_channels.add(channel_key)
 
