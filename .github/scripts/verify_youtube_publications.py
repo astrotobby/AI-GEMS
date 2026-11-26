@@ -172,6 +172,13 @@ def _list_video(youtube, video_id: str) -> dict[str, Any]:
     return rows[0]
 
 
+def set_publication_check(job: dict[str, Any], state: str, checked_at: str, reason: str) -> None:
+    previous = job.get("publication_check") or {}
+    if previous.get("state") == state and previous.get("reason") == reason:
+        return
+    job["publication_check"] = {"state": state, "checked_at": checked_at, "reason": reason}
+
+
 def run_verification(
     ledger: dict[str, Any],
     youtube_clients: dict[str, Any],
@@ -194,11 +201,12 @@ def run_verification(
         if target is None or target > now.astimezone(timezone.utc) - GRACE:
             continue
         if now.astimezone(timezone.utc) - target > MAX_LATE:
-            job["publication_check"] = {
-                "state": "stale_manual_review",
-                "checked_at": now.astimezone(timezone.utc).isoformat(),
-                "reason": "release is more than 24 hours overdue; no automatic privacy change",
-            }
+            set_publication_check(
+                job,
+                "stale_manual_review",
+                now.astimezone(timezone.utc).isoformat(),
+                "release is more than 24 hours overdue; no automatic privacy change",
+            )
             stale_count += 1
             continue
         due.append((job_id, job, channel_key))
@@ -218,19 +226,20 @@ def run_verification(
         checked_at = now.astimezone(timezone.utc).isoformat()
         try:
             if job.get("channel_id") != spec["channel_id"]:
-                raise RuntimeError("ledger channel_id does not match the configured channel")
-            youtube = youtube_clients[channel_key]
-            video = _list_video(youtube, video_id)
-            action, reason = decide_video_action(job, video, spec["channel_id"], now)
+                action, reason = "manual_review", "ledger channel_id does not match the configured channel"
+            else:
+                youtube = youtube_clients[channel_key]
+                video = _list_video(youtube, video_id)
+                action, reason = decide_video_action(job, video, spec["channel_id"], now)
             counts["checked"] += 1
 
             if action == "verify_public":
                 job["status"] = "published"
                 job["published_verified_at"] = checked_at
-                job["publication_check"] = {"state": "public_verified", "checked_at": checked_at, "reason": reason}
+                set_publication_check(job, "public_verified", checked_at, reason)
                 counts["already_public"] += 1
             elif action == "promote_public" and not apply_publication:
-                job["publication_check"] = {"state": "would_promote", "checked_at": checked_at, "reason": reason}
+                set_publication_check(job, "would_promote", checked_at, reason)
                 counts["would_promote"] += 1
             elif action == "promote_public":
                 current_status = video.get("status") or {}
@@ -251,26 +260,28 @@ def run_verification(
                     verified_snippet.get("channelId") != spec["channel_id"]
                     or str(verified_status.get("privacyStatus") or "").casefold() != "public"
                 ):
-                    job["publication_check"] = {
-                        "state": "verification_pending",
-                        "checked_at": checked_at,
-                        "reason": "privacy update was sent but YouTube has not yet confirmed public visibility",
-                    }
+                    set_publication_check(
+                        job,
+                        "verification_pending",
+                        checked_at,
+                        "privacy update was sent but YouTube has not yet confirmed public visibility",
+                    )
                     counts["waiting"] += 1
                 else:
                     job["status"] = "published"
                     job["published_verified_at"] = checked_at
-                    job["publication_check"] = {
-                        "state": "public_verified",
-                        "checked_at": checked_at,
-                        "reason": "overdue private video promoted and verified public",
-                    }
+                    set_publication_check(
+                        job,
+                        "public_verified",
+                        checked_at,
+                        "overdue private video promoted and verified public",
+                    )
                     counts["promoted_public"] += 1
             elif action == "wait":
-                job["publication_check"] = {"state": "waiting", "checked_at": checked_at, "reason": reason}
+                set_publication_check(job, "waiting", checked_at, reason)
                 counts["waiting"] += 1
             else:
-                job["publication_check"] = {"state": "manual_review", "checked_at": checked_at, "reason": reason}
+                set_publication_check(job, "manual_review", checked_at, reason)
                 counts["manual_review"] += 1
             reports.append({
                 "job_id": job_id,
@@ -280,11 +291,12 @@ def run_verification(
                 "reason": reason,
             })
         except Exception as exc:
-            job["publication_check"] = {
-                "state": "api_error",
-                "checked_at": checked_at,
-                "reason": f"YouTube API verification failed ({type(exc).__name__})",
-            }
+            set_publication_check(
+                job,
+                "api_error",
+                checked_at,
+                f"YouTube API verification failed ({type(exc).__name__})",
+            )
             counts["errors"] += 1
             reports.append({
                 "job_id": job_id,
