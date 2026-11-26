@@ -32,20 +32,20 @@ jobs:
           python-version: "3.11"
       - name: Hold video private and remove its scheduled publication
         env:
-          VIDEO_ID: \${{ inputs.video_id }}
-          EXPECTED_CHANNEL: \${{ inputs.channel }}
-          YOUTUBE_OAUTH_ASTRO_TOBBY_JSON: \${{ secrets.YOUTUBE_OAUTH_ASTRO_TOBBY_JSON }}
-          YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON: \${{ secrets.YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON }}
-          YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY: \${{ secrets.YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY }}
-          YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD: \${{ secrets.YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD }}
-          REFRESHTOKEN_DIJITOLNOMAD: \${{ secrets.REFRESHTOKEN_DIJITOLNOMAD }}
-          YOUTUBE_REFRESH_TOKEN: \${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-          YOUTUBE_CLIENT_ID: \${{ secrets.YOUTUBE_CLIENT_ID }}
-          YOUTUBE_CLIENT_SECRET: \${{ secrets.YOUTUBE_CLIENT_SECRET }}
-          CLIENT_ID: \${{ secrets.CLIENT_ID }}
-          CLIENT_SECRET: \${{ secrets.CLIENT_SECRET }}
-          YOUTUBECLIENT_ID: \${{ secrets.YOUTUBECLIENT_ID }}
-          YOUTUBECLIENT_SECTRET: \${{ secrets.YOUTUBECLIENT_SECTRET }}
+          VIDEO_ID: ${{ inputs.video_id }}
+          EXPECTED_CHANNEL: ${{ inputs.channel }}
+          YOUTUBE_OAUTH_ASTRO_TOBBY_JSON: ${{ secrets.YOUTUBE_OAUTH_ASTRO_TOBBY_JSON }}
+          YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON: ${{ secrets.YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON }}
+          YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY: ${{ secrets.YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY }}
+          YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD: ${{ secrets.YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD }}
+          REFRESHTOKEN_DIJITOLNOMAD: ${{ secrets.REFRESHTOKEN_DIJITOLNOMAD }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          YOUTUBECLIENT_ID: ${{ secrets.YOUTUBECLIENT_ID }}
+          YOUTUBECLIENT_SECTRET: ${{ secrets.YOUTUBECLIENT_SECTRET }}
         run: |
           set -euo pipefail
           python - <<'PY'
