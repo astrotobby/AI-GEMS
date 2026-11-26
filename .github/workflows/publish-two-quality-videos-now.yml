@@ -1,0 +1,39 @@
+name: Publish two upgraded influencer quality videos now
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publish-two-quality-videos-now.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-two-upgraded-quality-videos
+  cancel-in-progress: false
+
+jobs:
+  astro_tobby:
+    name: Render and publish one fresh Astro Tobby video
+    uses: ./.github/workflows/longform-youtube.yml
+    with:
+      channel: astrotobby
+      slot: "10:00"
+      target_date: "2026-11-28"
+      dry_run: false
+      publish_now: true
+    secrets: inherit
+
+  dijitol_nomad:
+    name: Render and publish one fresh DIJITOL NOMAD video
+    needs: astro_tobby
+    if: ${{ always() }}
+    uses: ./.github/workflows/longform-youtube.yml
+    with:
+      channel: digital_nomad
+      slot: "12:00"
+      target_date: "2026-11-28"
+      dry_run: false
+      publish_now: true
+    secrets: inherit
