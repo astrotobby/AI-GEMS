@@ -1612,7 +1612,7 @@
         "word_count": 2110,
         "model": "claude-sonnet-5"
       },
-      "status": "scheduled",
+      "status": "published",
       "created_at": "2026-11-19T16:48:51.511792+00:00",
       "updated_at": "2026-11-19T17:17:52.880545+00:00",
       "media": {
@@ -2052,10 +2052,11 @@
       "url": "https://youtu.be/zS6vnIMy9jI",
       "scheduled_at": "2026-11-19T17:17:52.880398+00:00",
       "publication_check": {
-        "state": "stale_manual_review",
-        "checked_at": "2026-11-26T07:53:55.214798+00:00",
-        "reason": "release is more than 24 hours overdue; no automatic privacy change"
-      }
+        "state": "public_verified",
+        "checked_at": "2026-11-26T07:57:41.819056+00:00",
+        "reason": "older video is already public; read-only audit confirmed it"
+      },
+      "published_verified_at": "2026-11-26T07:57:41.819056+00:00"
     },
     "20261120_digital_nomad_1800": {
       "job_id": "20261120_digital_nomad_1800",
@@ -2137,7 +2138,7 @@
         "word_count": 2084,
         "model": "claude-sonnet-5"
       },
-      "status": "scheduled",
+      "status": "published",
       "created_at": "2026-11-20T03:59:48.245872+00:00",
       "updated_at": "2026-11-20T04:28:29.426499+00:00",
       "media": {
@@ -2577,10 +2578,11 @@
       "url": "https://youtu.be/kzESmzwZCsc",
       "scheduled_at": "2026-11-20T04:28:29.426353+00:00",
       "publication_check": {
-        "state": "stale_manual_review",
-        "checked_at": "2026-11-26T07:53:55.214798+00:00",
-        "reason": "release is more than 24 hours overdue; no automatic privacy change"
-      }
+        "state": "public_verified",
+        "checked_at": "2026-11-26T07:57:41.819056+00:00",
+        "reason": "older video is already public; read-only audit confirmed it"
+      },
+      "published_verified_at": "2026-11-26T07:57:41.819056+00:00"
     },
     "20261120_astrotobby_1500": {
       "job_id": "20261120_astrotobby_1500",
@@ -3708,7 +3710,7 @@
         "word_count": 1937,
         "model": "claude-sonnet-5"
       },
-      "status": "scheduled",
+      "status": "published",
       "created_at": "2026-11-20T04:39:05.028659+00:00",
       "updated_at": "2026-11-20T05:01:35.625049+00:00",
       "media": {
@@ -4662,10 +4664,11 @@
       "replacement_original_privacy": "private",
       "replacement_thumbnail": true,
       "publication_check": {
-        "state": "stale_manual_review",
-        "checked_at": "2026-11-26T07:53:55.214798+00:00",
-        "reason": "release is more than 24 hours overdue; no automatic privacy change"
-      }
+        "state": "public_verified",
+        "checked_at": "2026-11-26T07:57:41.819056+00:00",
+        "reason": "older video is already public; read-only audit confirmed it"
+      },
+      "published_verified_at": "2026-11-26T07:57:41.819056+00:00"
     },
     "20261121_astrotobby_1500": {
       "job_id": "20261121_astrotobby_1500",
@@ -4764,7 +4767,7 @@
         "word_count": 1968,
         "model": "claude-sonnet-5"
       },
-      "status": "scheduled",
+      "status": "published",
       "created_at": "2026-11-20T07:13:08.967450+00:00",
       "updated_at": "2026-11-20T07:41:59.347992+00:00",
       "media": {
@@ -5204,10 +5207,11 @@
       "url": "https://youtu.be/y8PzJLxDWm8",
       "scheduled_at": "2026-11-20T07:41:59.347855+00:00",
       "publication_check": {
-        "state": "stale_manual_review",
-        "checked_at": "2026-11-26T07:53:55.214798+00:00",
-        "reason": "release is more than 24 hours overdue; no automatic privacy change"
-      }
+        "state": "public_verified",
+        "checked_at": "2026-11-26T07:57:41.819056+00:00",
+        "reason": "older video is already public; read-only audit confirmed it"
+      },
+      "published_verified_at": "2026-11-26T07:57:41.819056+00:00"
     },
     "20261121_digital_nomad_1800": {
       "job_id": "20261121_digital_nomad_1800",
@@ -5307,7 +5311,7 @@
         "word_count": 2290,
         "model": "claude-sonnet-5"
       },
-      "status": "scheduled",
+      "status": "published",
       "created_at": "2026-11-20T07:13:13.451718+00:00",
       "updated_at": "2026-11-20T07:46:49.500972+00:00",
       "media": {
@@ -5747,10 +5751,11 @@
       "url": "https://youtu.be/WHlOmhcsMwQ",
       "scheduled_at": "2026-11-20T07:46:49.500800+00:00",
       "publication_check": {
-        "state": "stale_manual_review",
-        "checked_at": "2026-11-26T07:53:55.214798+00:00",
-        "reason": "release is more than 24 hours overdue; no automatic privacy change"
-      }
+        "state": "public_verified",
+        "checked_at": "2026-11-26T07:57:41.819056+00:00",
+        "reason": "older video is already public; read-only audit confirmed it"
+      },
+      "published_verified_at": "2026-11-26T07:57:41.819056+00:00"
     },
     "20261121_digital_nomad_1200": {
       "job_id": "20261121_digital_nomad_1200",
@@ -5847,7 +5852,7 @@
         "word_count": 1942,
         "model": "claude-sonnet-5"
       },
-      "status": "scheduled",
+      "status": "published",
       "created_at": "2026-11-20T07:13:48.255030+00:00",
       "updated_at": "2026-11-20T07:40:42.311585+00:00",
       "media": {
@@ -6287,10 +6292,11 @@
       "url": "https://youtu.be/SV-NpWsOXXE",
       "scheduled_at": "2026-11-20T07:40:42.311439+00:00",
       "publication_check": {
-        "state": "stale_manual_review",
-        "checked_at": "2026-11-26T07:53:55.214798+00:00",
-        "reason": "release is more than 24 hours overdue; no automatic privacy change"
-      }
+        "state": "public_verified",
+        "checked_at": "2026-11-26T07:57:41.819056+00:00",
+        "reason": "older video is already public; read-only audit confirmed it"
+      },
+      "published_verified_at": "2026-11-26T07:57:41.819056+00:00"
     },
     "20261124_astrotobby_1000": {
       "job_id": "20261124_astrotobby_1000",
@@ -8417,7 +8423,7 @@
         "word_count": 1953,
         "model": "claude-sonnet-5"
       },
-      "status": "scheduled",
+      "status": "published",
       "created_at": "2026-11-23T20:33:56.996226+00:00",
       "updated_at": "2026-11-24T09:06:16.619249+00:00",
       "media": {
@@ -9339,10 +9345,11 @@
       "thumbnail_verified_at": "2026-11-24T09:06:08.506490+00:00",
       "scheduled_at": "2026-11-24T09:06:16.619078+00:00",
       "publication_check": {
-        "state": "stale_manual_review",
-        "checked_at": "2026-11-26T07:53:55.214798+00:00",
-        "reason": "release is more than 24 hours overdue; no automatic privacy change"
-      }
+        "state": "public_verified",
+        "checked_at": "2026-11-26T07:57:41.819056+00:00",
+        "reason": "older video is already public; read-only audit confirmed it"
+      },
+      "published_verified_at": "2026-11-26T07:57:41.819056+00:00"
     },
     "20261125_digital_nomad_1800": {
       "job_id": "20261125_digital_nomad_1800",
@@ -10474,7 +10481,7 @@
         "word_count": 2090,
         "model": "claude-sonnet-5"
       },
-      "status": "scheduled",
+      "status": "published",
       "created_at": "2026-11-24T06:53:10.077013+00:00",
       "updated_at": "2026-11-24T07:27:25.916570+00:00",
       "media": {
@@ -11393,10 +11400,11 @@
       "reconciled": true,
       "reconciled_by_workflow_run": "45352130927",
       "publication_check": {
-        "state": "stale_manual_review",
-        "checked_at": "2026-11-26T07:53:55.214798+00:00",
-        "reason": "release is more than 24 hours overdue; no automatic privacy change"
-      }
+        "state": "public_verified",
+        "checked_at": "2026-11-26T07:57:41.819056+00:00",
+        "reason": "older video is already public; read-only audit confirmed it"
+      },
+      "published_verified_at": "2026-11-26T07:57:41.819056+00:00"
     },
     "20261125_digital_nomad_1200": {
       "job_id": "20261125_digital_nomad_1200",
