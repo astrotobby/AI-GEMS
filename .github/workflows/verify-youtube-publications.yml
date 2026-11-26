@@ -1,11 +1,7 @@
 name: Verify scheduled YouTube publications
 
 on:
-  # One-time path-scoped read-only audit of historical YouTube publication state.
-  push:
-    branches: [main]
-    paths:
-      - ".github/scripts/verify_youtube_publications.py"
+  # Verify every 15 minutes; allow deliberate manual checks.
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
