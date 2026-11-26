@@ -6,6 +6,24 @@ on:
     - cron: "23 5 * * *"  # 08:23 EAT start -> next-day DIJITOL NOMAD 12:00 EAT release
     - cron: "29 8 * * *"  # 11:29 EAT start -> next-day Astro Tobby 15:00 EAT release
     - cron: "37 11 * * *" # 14:37 EAT start -> next-day DIJITOL NOMAD 18:00 EAT release
+  workflow_call:
+    inputs:
+      channel:
+        description: "YouTube destination"
+        type: string
+        required: true
+      slot:
+        description: "Kenya publication time"
+        type: string
+        required: true
+      target_date:
+        description: "Kenya publication date (YYYY-MM-DD)"
+        type: string
+        required: false
+      dry_run:
+        description: "Render and validate but do not upload"
+        type: boolean
+        required: true
   workflow_dispatch:
     inputs:
       channel:
@@ -222,10 +240,10 @@ jobs:
             TARGET_DATE="$(TZ=Africa/Nairobi date -d tomorrow +%F)"
             DRY_RUN="false"
           else
-            CHANNEL="${{ github.event.inputs.channel }}"
-            SLOT="${{ github.event.inputs.slot }}"
-            TARGET_DATE="${{ github.event.inputs.target_date }}"
-            DRY_RUN="${{ github.event.inputs.dry_run }}"
+            CHANNEL="${{ inputs.channel || github.event.inputs.channel }}"
+            SLOT="${{ inputs.slot || github.event.inputs.slot }}"
+            TARGET_DATE="${{ inputs.target_date || github.event.inputs.target_date }}"
+            DRY_RUN="${{ inputs.dry_run || github.event.inputs.dry_run }}"
           fi
           echo "channel=$CHANNEL" >> "$GITHUB_OUTPUT"
           echo "slot=$SLOT" >> "$GITHUB_OUTPUT"
