@@ -1,6 +1,7 @@
 name: Publish two upgraded influencer quality videos now
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
@@ -15,7 +16,6 @@ concurrency:
 
 jobs:
   astro_tobby:
-    name: Render and publish one fresh Astro Tobby video
     uses: ./.github/workflows/longform-youtube.yml
     with:
       channel: astrotobby
@@ -26,9 +26,7 @@ jobs:
     secrets: inherit
 
   dijitol_nomad:
-    name: Render and publish one fresh DIJITOL NOMAD video
     needs: astro_tobby
-    if: ${{ always() }}
     uses: ./.github/workflows/longform-youtube.yml
     with:
       channel: digital_nomad
