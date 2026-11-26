@@ -1,11 +1,7 @@
 name: Verify scheduled YouTube publications
 
 on:
-  # Temporary one-time integration run for the first due YouTube release.
-  push:
-    branches: [main]
-    paths:
-      - ".github/scripts/verify_youtube_publications.py"
+  # Verify on schedule; dispatch manually only when needed.
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
