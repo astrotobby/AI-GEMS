@@ -59,6 +59,7 @@ jobs:
       OPENCODE_FALLBACK_MODELS: ${{ vars.OPENCODE_FALLBACK_MODELS || 'opencode/nemotron-3.5-lightning-free,opencode/deepseek-v4.1-flash-free,opencode/mimo-v2.6-flash-free,opencode/nemotron-3.5-super-vl-free,opencode/beam-free,opencode/big-pickle' }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+      KAGGLE_USERNAME: astrotobby
       ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
       ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
       PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
