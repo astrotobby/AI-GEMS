@@ -7,6 +7,7 @@ A video is promoted only when every safety check passes.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import sys
@@ -99,6 +100,22 @@ def decide_video_action(
     return "promote_public", "channel, publishAt and completed-processing checks all passed"
 
 
+def has_due_jobs(ledger: dict[str, Any], now: datetime) -> bool:
+    """Cheap preflight used by the 15-minute workflow before installing API dependencies."""
+    current = now.astimezone(timezone.utc)
+    for job in ledger.get("jobs", {}).values():
+        if not isinstance(job, dict) or str(job.get("status") or "").casefold() != "scheduled":
+            continue
+        check = job.get("publication_check") or {}
+        if check.get("state") in {"manual_review", "stale_manual_review"}:
+            continue
+        channel = str(job.get("channel") or "").casefold()
+        target = parse_utc(job.get("publish_at"))
+        if channel in CHANNELS and job.get("video_id") and target and current >= target + GRACE:
+            return True
+    return False
+
+
 def load_ledger(path: Path = LEDGER_PATH) -> dict[str, Any]:
     if not path.is_file():
         raise RuntimeError("Long-form ledger is missing; refusing publication changes")
@@ -167,6 +184,9 @@ def run_verification(
     for job_id, job in jobs.items():
         if not isinstance(job, dict) or str(job.get("status") or "").casefold() != "scheduled":
             continue
+        prior_check = job.get("publication_check") or {}
+        if prior_check.get("state") in {"manual_review", "stale_manual_review"}:
+            continue
         channel_key = str(job.get("channel") or "").casefold()
         if channel_key not in CHANNELS or not job.get("video_id"):
             continue
@@ -175,7 +195,7 @@ def run_verification(
             continue
         if now.astimezone(timezone.utc) - target > MAX_LATE:
             job["publication_check"] = {
-                "state": "manual_review",
+                "state": "stale_manual_review",
                 "checked_at": now.astimezone(timezone.utc).isoformat(),
                 "reason": "release is more than 24 hours overdue; no automatic privacy change",
             }
@@ -197,6 +217,8 @@ def run_verification(
         video_id = str(job["video_id"])
         checked_at = now.astimezone(timezone.utc).isoformat()
         try:
+            if job.get("channel_id") != spec["channel_id"]:
+                raise RuntimeError("ledger channel_id does not match the configured channel")
             youtube = youtube_clients[channel_key]
             video = _list_video(youtube, video_id)
             action, reason = decide_video_action(job, video, spec["channel_id"], now)
@@ -299,17 +321,32 @@ def write_summary(result: dict[str, Any], apply_publication: bool) -> None:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--has-due",
+        action="store_true",
+        help="print true/false only; does not import Google API dependencies or mutate the ledger",
+    )
+    args = parser.parse_args()
     ledger = load_ledger()
     now = datetime.now(timezone.utc)
+    if args.has_due:
+        print("true" if has_due_jobs(ledger, now) else "false")
+        return 0
+
     due_channels = set()
     for job in ledger["jobs"].values():
         if not isinstance(job, dict) or str(job.get("status") or "").casefold() != "scheduled":
+            continue
+        check = job.get("publication_check") or {}
+        if check.get("state") in {"manual_review", "stale_manual_review"}:
             continue
         channel_key = str(job.get("channel") or "").casefold()
         target = parse_utc(job.get("publish_at"))
         if (
             channel_key in CHANNELS
             and job.get("video_id")
+            and job.get("channel_id") == CHANNELS[channel_key]["channel_id"]
             and target is not None
             and now >= target + GRACE
             and now - target <= MAX_LATE
