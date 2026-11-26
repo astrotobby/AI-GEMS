@@ -58,6 +58,7 @@ jobs:
       OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
       OPENCODE_FALLBACK_MODELS: ${{ vars.OPENCODE_FALLBACK_MODELS || 'opencode/nemotron-3.5-lightning-free,opencode/deepseek-v4.1-flash-free,opencode/mimo-v2.6-flash-free,opencode/nemotron-3.5-super-vl-free,opencode/beam-free,opencode/big-pickle' }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
       ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
       ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
       PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
@@ -155,44 +156,43 @@ jobs:
       - name: Install long-form Python dependencies
         run: python -m pip install --disable-pip-version-check -r astro-blog/requirements-longform.txt
 
-      # The recurring Kling presenter is lip-synced to the long-form narration locally.
-      # Keep Wav2Lip in an isolated Python 3.11 environment so the main renderer stays on 3.12.
-      - name: Cache Wav2Lip CPU runtime and presenter face boxes
-        id: wav2lip-cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            astro-blog/.venv-wav2lip
-            astro-blog/Wav2Lip
-            astro-blog/assets/influencer/facecache
-          key: wav2lip-cpu-py311-v1-${{ hashFiles('astro-blog/scripts/setup_wav2lip.sh') }}
+      # MuseTalk 1.5 is the required production presenter engine. It runs
+      # on Kaggle's free NvidiaTeslaT4 pool, not on the GitHub CPU runner.
+      - name: Install Kaggle CLI for private MuseTalk GPU batches
+        run: python -m pip install --disable-pip-version-check "kaggle==2.2.5"
 
-      - name: Set up Python 3.11 for presenter lip-sync
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install isolated Wav2Lip runtime
-        if: steps.wav2lip-cache.outputs.cache-hit != 'true'
-        working-directory: astro-blog
+      - name: Require Kaggle credentials before research or rendering
         env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: bash scripts/setup_wav2lip.sh
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${KAGGLE_API_TOKEN:-}" ]; then
+            echo "::error::Missing KAGGLE_API_TOKEN in astrotobby/AI-GEMS Actions secrets."
+            echo "Add the same Kaggle token used by astro-blog under Settings > Secrets and variables > Actions."
+            echo "The long-form pipeline will not fall back to Wav2Lip or unsynchronized presenter footage."
+            exit 1
+          fi
+          echo "Kaggle token is present; its value is never printed."
 
-      - name: Validate and warm the two approved Kling presenter clips
+      - name: Validate the two approved presenter clips
         working-directory: astro-blog
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check PyYAML
-          test -x .venv-wav2lip/bin/python
-          test -s Wav2Lip/checkpoints/wav2lip_gan.pth
-          test -s Wav2Lip/face_detection/detection/sfd/s3fd.pth
-          python scripts/influencer.py --warm-face-cache
-
-      - name: Restore Python 3.12 for the long-form renderer
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+          data = yaml.safe_load(Path("assets/influencer/looks.yaml").read_text())
+          looks = data.get("looks", [])
+          approved = [item for item in looks if item.get("lip_sync") and item.get("clip")]
+          if len(approved) < 2:
+              raise SystemExit(f"Expected at least two approved moving presenter looks, found {len(approved)}.")
+          for look in approved:
+              clip = Path(look["clip"])
+              if not clip.is_file() or clip.stat().st_size < 100_000:
+                  raise SystemExit(f"Approved presenter clip is missing or too small: {clip}")
+              print(f"Presenter look ready: {look['id']} ({clip.stat().st_size:,} bytes)")
+          PY
 
       - name: Validate both YouTube channel credentials before rendering
         working-directory: whop-clipper
