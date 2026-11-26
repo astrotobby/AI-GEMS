@@ -140,7 +140,7 @@ class YouTubePublicationExecutionTests(unittest.TestCase):
         ledger = {"jobs": {"job123": ledger_job}}
         result = run_verification(ledger, {"astrotobby": youtube}, NOW, apply_publication=True)
 
-        self.assertEqual(youtube.videos()._videos.update_calls, [])
+        self.assertEqual(youtube._videos.update_calls, [])
         self.assertEqual(ledger_job["status"], "scheduled")
         self.assertEqual(ledger_job["publication_check"]["state"], "manual_review")
         self.assertIn("ledger channel_id", ledger_job["publication_check"]["reason"])
@@ -166,7 +166,7 @@ class YouTubePublicationExecutionTests(unittest.TestCase):
         result = run_verification(ledger, {"astrotobby": youtube}, NOW, apply_publication=True)
 
         saved = ledger["jobs"]["job123"]
-        self.assertEqual(youtube.videos()._videos.update_calls[0]["body"]["status"]["privacyStatus"], "public")
+        self.assertEqual(youtube._videos.update_calls[0]["body"]["status"]["privacyStatus"], "public")
         self.assertEqual(saved["status"], "published")
         self.assertEqual(saved["publication_check"]["state"], "public_verified")
         self.assertEqual(result["counts"]["promoted_public"], 1)
@@ -176,7 +176,7 @@ class YouTubePublicationExecutionTests(unittest.TestCase):
         ledger = {"jobs": {"job123": job()}}
         result = run_verification(ledger, {"astrotobby": youtube}, NOW, apply_publication=False)
 
-        self.assertEqual(youtube.videos()._videos.update_calls, [])
+        self.assertEqual(youtube._videos.update_calls, [])
         self.assertEqual(ledger["jobs"]["job123"]["status"], "scheduled")
         self.assertEqual(ledger["jobs"]["job123"]["publication_check"]["state"], "would_promote")
         self.assertEqual(result["counts"]["would_promote"], 1)
@@ -186,7 +186,7 @@ class YouTubePublicationExecutionTests(unittest.TestCase):
         ledger = {"jobs": {"job123": job()}}
         result = run_verification(ledger, {"astrotobby": youtube}, NOW, apply_publication=True)
 
-        self.assertEqual(youtube.videos()._videos.update_calls, [])
+        self.assertEqual(youtube._videos.update_calls, [])
         self.assertEqual(ledger["jobs"]["job123"]["status"], "published")
         self.assertEqual(result["counts"]["already_public"], 1)
 
@@ -195,7 +195,7 @@ class YouTubePublicationExecutionTests(unittest.TestCase):
         ledger = {"jobs": {"job123": job()}}
         result = run_verification(ledger, {"astrotobby": youtube}, NOW, apply_publication=True)
 
-        self.assertEqual(youtube.videos()._videos.update_calls, [])
+        self.assertEqual(youtube._videos.update_calls, [])
         self.assertEqual(ledger["jobs"]["job123"]["status"], "scheduled")
         self.assertEqual(ledger["jobs"]["job123"]["publication_check"]["state"], "manual_review")
         self.assertEqual(result["counts"]["manual_review"], 1)
@@ -207,7 +207,7 @@ class YouTubePublicationExecutionTests(unittest.TestCase):
         ledger = {"jobs": {"job123": future_job}}
         result = run_verification(ledger, {"astrotobby": youtube}, NOW, apply_publication=True)
 
-        self.assertEqual(youtube.videos()._videos.update_calls, [])
+        self.assertEqual(youtube._videos.update_calls, [])
         self.assertNotIn("publication_check", ledger["jobs"]["job123"])
         self.assertEqual(result["counts"]["checked"], 0)
 
@@ -218,7 +218,7 @@ class YouTubePublicationExecutionTests(unittest.TestCase):
         ledger = {"jobs": {"job123": old_job}}
         result = run_verification(ledger, {"astrotobby": youtube}, NOW, apply_publication=True)
 
-        self.assertEqual(youtube.videos()._videos.update_calls, [])
+        self.assertEqual(youtube._videos.update_calls, [])
         self.assertEqual(ledger["jobs"]["job123"]["status"], "scheduled")
         self.assertEqual(ledger["jobs"]["job123"]["publication_check"]["state"], "manual_review")
         self.assertEqual(result["counts"]["stale"], 1)
