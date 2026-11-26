@@ -13555,7 +13555,7 @@
         "word_count": 2339,
         "model": "claude-sonnet-5"
       },
-      "status": "scheduled",
+      "status": "published",
       "created_at": "2026-11-24T21:31:06.117706+00:00",
       "updated_at": "2026-11-24T22:03:26.709529+00:00",
       "media": {
@@ -14479,7 +14479,13 @@
       "upload_response_received_at": "2026-11-24T22:03:14.977672+00:00",
       "thumbnail_verified": true,
       "thumbnail_verified_at": "2026-11-24T22:03:19.272482+00:00",
-      "scheduled_at": "2026-11-24T22:03:26.709377+00:00"
+      "scheduled_at": "2026-11-24T22:03:26.709377+00:00",
+      "published_verified_at": "2026-11-26T15:12:59.686828+00:00",
+      "publication_check": {
+        "state": "public_verified",
+        "checked_at": "2026-11-26T15:12:59.686828+00:00",
+        "reason": "YouTube already reports the video as public"
+      }
     },
     "20261126_astrotobby_1000": {
       "job_id": "20261126_astrotobby_1000",
