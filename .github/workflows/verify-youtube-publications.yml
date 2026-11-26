@@ -1,0 +1,88 @@
+name: Verify scheduled YouTube publications
+
+on:
+  # Run frequently enough to catch a delayed YouTube scheduled release.
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  # The same lock as long-form rendering protects the shared YouTube ledger.
+  group: longform-global-visual-history
+  cancel-in-progress: false
+
+jobs:
+  verify-publications:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout AI-GEMS ledger and OAuth restore utility
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check whether a scheduled YouTube release is due
+        id: due
+        shell: bash
+        run: |
+          set -euo pipefail
+          HAS_DUE="$(python .github/scripts/verify_youtube_publications.py --has-due)"
+          echo "has_due=$HAS_DUE" >> "$GITHUB_OUTPUT"
+          echo "Due YouTube publication verification required: $HAS_DUE"
+
+      - name: Report no due YouTube videos
+        if: steps.due.outputs.has_due != 'true'
+        run: echo "No scheduled YouTube video is past its release grace period."
+
+      - name: Restore encrypted OAuth credentials for both YouTube channels
+        if: steps.due.outputs.has_due == 'true'
+        env:
+          YOUTUBE_OAUTH_ASTRO_TOBBY_JSON: ${{ secrets.YOUTUBE_OAUTH_ASTRO_TOBBY_JSON }}
+          YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON: ${{ secrets.YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON }}
+        run: python .github/scripts/youtube_oauth_secret_storage.py --restore
+
+      - name: Install YouTube Data API dependencies
+        if: steps.due.outputs.has_due == 'true'
+        run: |
+          python -m pip install --disable-pip-version-check \
+            google-api-python-client google-auth google-auth-httplib2
+
+      - name: Verify YouTube visibility and repair only safely overdue private releases
+        if: steps.due.outputs.has_due == 'true'
+        env:
+          LONGFORM_LIVE_ENABLED: ${{ vars.LONGFORM_LIVE_ENABLED }}
+        run: python .github/scripts/verify_youtube_publications.py
+
+      - name: Persist verified YouTube publication state
+        if: always() && steps.due.outputs.has_due == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add whop-clipper/state/longform/ledger.json
+          if git diff --cached --quiet; then
+            echo "No YouTube ledger changes to persist."
+            exit 0
+          fi
+          git commit -m "youtube: record scheduled publication verification [skip ci]"
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              echo "Verified YouTube publication state persisted."
+              exit 0
+            fi
+            echo "Ledger push raced with another run; fetch and rebase (attempt $attempt/3)."
+            git fetch origin main
+            git rebase origin/main
+          done
+          echo "Could not persist YouTube verification state after three attempts." >&2
+          exit 1
