@@ -138,6 +138,10 @@ def save_ledger(ledger: dict[str, Any], path: Path = LEDGER_PATH) -> None:
 def _youtube_client(channel_key: str):
     sys.path.insert(0, str(ROOT / "whop-clipper"))
     from clipper import publish
+    # publish.TOKEN_DIR is relative to the clipper working directory in existing
+    # workflows. This verifier runs from repository root, so point it explicitly
+    # at the same restored, encrypted-secret-derived token cache.
+    publish.TOKEN_DIR = ROOT / "whop-clipper" / "work" / "yt_tokens"
     from google.oauth2.credentials import Credentials
     from googleapiclient.discovery import build
 
