@@ -20,7 +20,7 @@ jobs:
     with:
       channel: astrotobby
       slot: "10:00"
-      target_date: "2026-11-28"
+      target_date: "2026-12-01"
       dry_run: false
       publish_now: true
     secrets: inherit
@@ -31,7 +31,7 @@ jobs:
     with:
       channel: digital_nomad
       slot: "12:00"
-      target_date: "2026-11-28"
+      target_date: "2026-12-01"
       dry_run: false
       publish_now: true
     secrets: inherit
