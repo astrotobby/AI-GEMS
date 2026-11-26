@@ -1,0 +1,124 @@
+name: Hold unreviewed scheduled YouTube upload
+
+on:
+  workflow_dispatch:
+    inputs:
+      video_id:
+        description: YouTube video ID to hold private and unscheduled
+        required: true
+        default: 2jXSYr5a-5M
+        type: string
+      channel:
+        description: Expected channel identity
+        required: true
+        default: DIJITOL NOMAD
+        type: choice
+        options:
+          - DIJITOL NOMAD
+          - ASTRO TOBBY
+
+permissions:
+  contents: read
+
+jobs:
+  hold:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout AI-GEMS
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Hold video private and remove its scheduled publication
+        env:
+          VIDEO_ID: \${{ inputs.video_id }}
+          EXPECTED_CHANNEL: \${{ inputs.channel }}
+          YOUTUBE_OAUTH_ASTRO_TOBBY_JSON: \${{ secrets.YOUTUBE_OAUTH_ASTRO_TOBBY_JSON }}
+          YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON: \${{ secrets.YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON }}
+          YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY: \${{ secrets.YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY }}
+          YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD: \${{ secrets.YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD }}
+          REFRESHTOKEN_DIJITOLNOMAD: \${{ secrets.REFRESHTOKEN_DIJITOLNOMAD }}
+          YOUTUBE_REFRESH_TOKEN: \${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          YOUTUBE_CLIENT_ID: \${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: \${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          CLIENT_ID: \${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: \${{ secrets.CLIENT_SECRET }}
+          YOUTUBECLIENT_ID: \${{ secrets.YOUTUBECLIENT_ID }}
+          YOUTUBECLIENT_SECTRET: \${{ secrets.YOUTUBECLIENT_SECTRET }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, pathlib, sys, time, tomllib, urllib.parse, urllib.request
+          sys.path.insert(0, str(pathlib.Path("whop-clipper").resolve()))
+          from clipper import publish
+
+          video_id = os.environ["VIDEO_ID"].strip()
+          expected = os.environ["EXPECTED_CHANNEL"].strip()
+          if not video_id or len(video_id) > 64:
+              raise SystemExit("Invalid video ID.")
+          config = tomllib.loads(pathlib.Path("whop-clipper/config.toml").read_text(encoding="utf-8"))
+          target = next((x for x in config.get("targets", [])
+                         if x.get("platform") == "youtube"
+                         and (x.get("channel") or "").casefold() == expected.casefold()), None)
+          if not target:
+              raise SystemExit("Expected YouTube target not found in configured accounts.")
+          creds = publish._yt_creds(target)
+          if not creds:
+              raise SystemExit("No OAuth credentials are available for the expected channel.")
+          access = publish._yt_access_token(creds)
+          base = "https://www.googleapis.com/youtube/v3"
+          def request(url, method="GET", body=None):
+              data = json.dumps(body).encode("utf-8") if body is not None else None
+              req = urllib.request.Request(
+                  url, data=data, method=method,
+                  headers={"Authorization": "Bearer " + access,
+                           "Content-Type": "application/json"}
+              )
+              with urllib.request.urlopen(req, timeout=60) as response:
+                  return json.load(response)
+
+          channel_rows = request(base + "/channels?part=id,snippet&mine=true").get("items") or []
+          if not channel_rows:
+              raise SystemExit("OAuth identity returned no YouTube channel.")
+          channel = channel_rows[0]
+          actual_name = (channel.get("snippet") or {}).get("title", "")
+          if actual_name.casefold() != expected.casefold():
+              raise SystemExit("OAuth account mismatch: refusing to modify video on " + actual_name)
+          rows = request(base + "/videos?part=status,snippet&id=" + urllib.parse.quote(video_id)).get("items") or []
+          if not rows:
+              raise SystemExit("YouTube did not return the requested video.")
+          item = rows[0]
+          if (item.get("snippet") or {}).get("channelId") != channel.get("id"):
+              raise SystemExit("Video belongs to a different YouTube channel; no change made.")
+          old = item.get("status") or {}
+          print(json.dumps({
+              "video_id": video_id,
+              "channel": actual_name,
+              "previous_privacy": old.get("privacyStatus"),
+              "had_publishAt": bool(old.get("publishAt"))
+          }))
+          if old.get("privacyStatus") == "private" and not old.get("publishAt"):
+              print("Video is already private and unscheduled; nothing to change.")
+              raise SystemExit(0)
+
+          preserved = ("license", "embeddable", "publicStatsViewable",
+                       "selfDeclaredMadeForKids", "containsSyntheticMedia")
+          new_status = {key: old[key] for key in preserved if key in old and old[key] is not None}
+          new_status["privacyStatus"] = "private"
+          # Deliberately omit publishAt. YouTube removes omitted fields in a status-part update.
+          request(base + "/videos?part=status", method="PUT",
+                  body={"id": video_id, "status": new_status})
+
+          verified = {}
+          for attempt in range(12):
+              rows = request(base + "/videos?part=status&id=" + urllib.parse.quote(video_id)).get("items") or []
+              verified = (rows[0].get("status") or {}) if rows else {}
+              if verified.get("privacyStatus") == "private" and not verified.get("publishAt"):
+                  break
+              if attempt < 11:
+                  time.sleep(5)
+          if verified.get("privacyStatus") != "private" or verified.get("publishAt"):
+              raise SystemExit("YouTube did not confirm the private-unscheduled state; investigate immediately.")
+          print("VERIFIED: video remains PRIVATE and its scheduled publication time has been removed.")
+          PY
