@@ -1,0 +1,21 @@
+name: MuseTalk long-form integration dry run
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/musetalk-integration-dry-run.yml'
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  private-render-test:
+    uses: ./.github/workflows/longform-youtube.yml
+    with:
+      channel: astrotobby
+      slot: "10:00"
+      target_date: "2026-11-28"
+      dry_run: true
+    secrets: inherit
