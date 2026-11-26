@@ -30,34 +30,27 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Restore encrypted channel-specific YouTube OAuth
+        env:
+          YOUTUBE_OAUTH_ASTRO_TOBBY_JSON: ${{ secrets.YOUTUBE_OAUTH_ASTRO_TOBBY_JSON }}
+          YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON: ${{ secrets.YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON }}
+        run: python .github/scripts/youtube_oauth_secret_storage.py --restore
       - name: Hold video private and remove its scheduled publication
         env:
           VIDEO_ID: ${{ inputs.video_id }}
           EXPECTED_CHANNEL: ${{ inputs.channel }}
-          YOUTUBE_OAUTH_ASTRO_TOBBY_JSON: ${{ secrets.YOUTUBE_OAUTH_ASTRO_TOBBY_JSON }}
-          YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON: ${{ secrets.YOUTUBE_OAUTH_DIJITOL_NOMAD_JSON }}
-          YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY: ${{ secrets.YOUTUBE_REFRESH_TOKEN_ASTRO_TOBBY }}
-          YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD: ${{ secrets.YOUTUBE_REFRESH_TOKEN_DIJITOL_NOMAD }}
-          REFRESHTOKEN_DIJITOLNOMAD: ${{ secrets.REFRESHTOKEN_DIJITOLNOMAD }}
-          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
-          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-          CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-          YOUTUBECLIENT_ID: ${{ secrets.YOUTUBECLIENT_ID }}
-          YOUTUBECLIENT_SECTRET: ${{ secrets.YOUTUBECLIENT_SECTRET }}
+        working-directory: whop-clipper
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json, os, pathlib, sys, time, tomllib, urllib.parse, urllib.request
-          sys.path.insert(0, str(pathlib.Path("whop-clipper").resolve()))
+          import json, os, pathlib, time, tomllib, urllib.parse, urllib.request
           from clipper import publish
 
           video_id = os.environ["VIDEO_ID"].strip()
           expected = os.environ["EXPECTED_CHANNEL"].strip()
           if not video_id or len(video_id) > 64:
               raise SystemExit("Invalid video ID.")
-          config = tomllib.loads(pathlib.Path("whop-clipper/config.toml").read_text(encoding="utf-8"))
+          config = tomllib.loads(pathlib.Path("config.toml").read_text(encoding="utf-8"))
           target = next((x for x in config.get("targets", [])
                          if x.get("platform") == "youtube"
                          and (x.get("channel") or "").casefold() == expected.casefold()), None)
@@ -83,7 +76,8 @@ jobs:
               raise SystemExit("OAuth identity returned no YouTube channel.")
           channel = channel_rows[0]
           actual_name = (channel.get("snippet") or {}).get("title", "")
-          if actual_name.casefold() != expected.casefold():
+          expected_id = str(target.get("channel_id") or "")
+          if actual_name.casefold() != expected.casefold() or (expected_id and channel.get("id") != expected_id):
               raise SystemExit("OAuth account mismatch: refusing to modify video on " + actual_name)
           rows = request(base + "/videos?part=status,snippet&id=" + urllib.parse.quote(video_id)).get("items") or []
           if not rows:
