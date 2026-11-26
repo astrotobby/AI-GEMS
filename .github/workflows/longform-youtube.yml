@@ -24,6 +24,11 @@ on:
         description: "Render and validate but do not upload"
         type: boolean
         required: true
+      publish_now:
+        description: "Publish this run's newly rendered video immediately after YouTube processing and thumbnail QA"
+        type: boolean
+        required: false
+        default: false
   workflow_dispatch:
     inputs:
       channel:
@@ -47,6 +52,11 @@ on:
         type: boolean
         required: true
         default: true
+      publish_now:
+        description: "Publish this run's newly rendered video immediately after processing and thumbnail QA"
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write
@@ -239,25 +249,33 @@ jobs:
             esac
             TARGET_DATE="$(TZ=Africa/Nairobi date -d tomorrow +%F)"
             DRY_RUN="false"
+            PUBLISH_NOW="false"
           else
             CHANNEL="${{ inputs.channel || github.event.inputs.channel }}"
             SLOT="${{ inputs.slot || github.event.inputs.slot }}"
             TARGET_DATE="${{ inputs.target_date || github.event.inputs.target_date }}"
             DRY_RUN="${{ inputs.dry_run || github.event.inputs.dry_run }}"
+            PUBLISH_NOW="${{ inputs.publish_now || github.event.inputs.publish_now || 'false' }}"
           fi
           echo "channel=$CHANNEL" >> "$GITHUB_OUTPUT"
           echo "slot=$SLOT" >> "$GITHUB_OUTPUT"
           echo "target_date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
           echo "dry_run=$DRY_RUN" >> "$GITHUB_OUTPUT"
-          echo "Selected $CHANNEL / $SLOT EAT / target date ${TARGET_DATE:-next future slot} / dry-run=$DRY_RUN"
+          echo "publish_now=$PUBLISH_NOW" >> "$GITHUB_OUTPUT"
+          echo "Selected $CHANNEL / $SLOT EAT / target date ${TARGET_DATE:-next future slot} / dry-run=$DRY_RUN / publish-now=$PUBLISH_NOW"
 
       - name: Require explicit approval for any live publication
         shell: bash
         env:
           DRY_RUN: ${{ steps.slot.outputs.dry_run }}
+          PUBLISH_NOW: ${{ steps.slot.outputs.publish_now }}
           LONGFORM_LIVE_ENABLED: ${{ vars.LONGFORM_LIVE_ENABLED }}
         run: |
           set -euo pipefail
+          if [ "$PUBLISH_NOW" = "true" ] && [ "$DRY_RUN" = "true" ]; then
+            echo "Immediate publication cannot run in dry-run mode."
+            exit 1
+          fi
           if [ "$DRY_RUN" != "true" ] && [ "$LONGFORM_LIVE_ENABLED" != "true" ]; then
             echo "Live publishing blocked: set the LONGFORM_LIVE_ENABLED repository variable to the literal string true."
             exit 1
@@ -307,12 +325,14 @@ jobs:
           SLOT: ${{ steps.slot.outputs.slot }}
           TARGET_DATE: ${{ steps.slot.outputs.target_date }}
           DRY_RUN: ${{ steps.slot.outputs.dry_run }}
+          PUBLISH_NOW: ${{ steps.slot.outputs.publish_now }}
         shell: bash
         run: |
           set -euo pipefail
           ARGS=(--channel "$CHANNEL" --slot "$SLOT")
           if [ -n "$TARGET_DATE" ]; then ARGS+=(--target-date "$TARGET_DATE"); fi
           if [ "$DRY_RUN" = "true" ]; then ARGS+=(--dry-run); fi
+          if [ "$PUBLISH_NOW" = "true" ]; then ARGS+=(--publish-now); fi
           python ../astro-blog/scripts/longform_pipeline.py "${ARGS[@]}" 2>&1 | tee "$RUNNER_TEMP/longform-result.txt"
 
       - name: Create public handoff asset for Facebook and manual Rumble handoff
