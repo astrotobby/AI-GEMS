@@ -1,0 +1,256 @@
+name: Kling native lip-sync quality preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      narration_text:
+        description: Short test line; keep it under five seconds
+        required: true
+        default: Welcome back. Watch the mouth follow every word.
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kling-native-lipsync-preview
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout AI-GEMS configuration
+        uses: actions/checkout@v4
+      - name: Checkout approved influencer source media
+        uses: actions/checkout@v4
+        with:
+          repository: astrotobby/astro-blog
+          ref: main
+          path: astro-blog
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install FFmpeg and API client
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          python -m pip install --disable-pip-version-check requests edge-tts PyJWT
+      - name: Run five-second Kling native lip-sync A/B preview
+        env:
+          KLING_API_KEYS: ${{ secrets.KLING_API_KEYS }}
+          NARRATION_TEXT: ${{ inputs.narration_text }}
+          SOURCE_VIDEO: assets/influencer/kling/kling_20261125_VIDEO_A_medium_s_613_0.mp4
+          RUN_ID: ${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p kling-lipsync-preview
+          python - <<'PY'
+          import asyncio, base64, json, os, pathlib, re, subprocess, time
+          import requests
+          import edge_tts
+          import jwt
+
+          root = pathlib.Path("astro-blog").resolve()
+          rel = pathlib.Path(os.environ["SOURCE_VIDEO"])
+          video = (root / rel).resolve()
+          if not video.is_file() or not video.is_relative_to(root):
+              raise SystemExit("Approved Kling presenter clip is missing.")
+          text = os.environ["NARRATION_TEXT"].strip()
+          if not text or len(text) > 180:
+              raise SystemExit("Use a short narration (maximum 180 characters).")
+
+          def duration(path):
+              raw = subprocess.check_output([
+                  "ffprobe", "-v", "error", "-show_entries", "format=duration",
+                  "-of", "default=noprint_wrappers=1:nokey=1", str(path)
+              ], text=True).strip()
+              return float(raw)
+
+          video_seconds = duration(video)
+          audio = pathlib.Path("kling-lipsync-preview/narration.mp3")
+          asyncio.run(edge_tts.Communicate(text, "en-US-GuyNeural").save(str(audio)))
+          audio_seconds = duration(audio)
+          if not 2 <= audio_seconds <= video_seconds:
+              raise SystemExit(f"Audio {audio_seconds:.2f}s must be between 2s and source duration {video_seconds:.2f}s.")
+          if video.stat().st_size > 100 * 1024 * 1024:
+              raise SystemExit("Source clip exceeds Kling's 100MB limit.")
+          resolution = subprocess.check_output([
+              "ffprobe", "-v", "error", "-select_streams", "v:0",
+              "-show_entries", "stream=width,height", "-of", "csv=s=x:p=0", str(video)
+          ], text=True).strip()
+          print(json.dumps({"source_seconds": round(video_seconds,3),
+                            "audio_seconds": round(audio_seconds,3),
+                            "source_bytes": video.stat().st_size,
+                            "resolution": resolution}))
+
+          raw = os.environ.get("KLING_API_KEYS", "").strip()
+          if not raw:
+              raise SystemExit("KLING_API_KEYS secret is empty.")
+          try:
+              parsed = json.loads(raw)
+          except Exception:
+              parsed = raw
+          candidates = []
+          def walk(value):
+              if isinstance(value, list):
+                  for item in value: walk(item)
+              elif isinstance(value, dict):
+                  low = {str(k).lower(): v for k,v in value.items()}
+                  for name in ("api_key","apikey","kling_api_key","token","key"):
+                      v = low.get(name)
+                      if isinstance(v,str) and len(v.strip()) > 12:
+                          candidates.append(v.strip().removeprefix("Bearer "))
+                  ak = low.get("access_key") or low.get("ak")
+                  sk = low.get("secret_key") or low.get("secretkey") or low.get("sk")
+                  if isinstance(ak,str) and isinstance(sk,str) and ak and sk:
+                      candidates.append(jwt.encode(
+                          {"iss":ak,"exp":int(time.time())+1800,"nbf":int(time.time())-5},
+                          sk, algorithm="HS256", headers={"alg":"HS256","typ":"JWT"}))
+                  for name in ("keys","api_keys","kling_api_keys","accounts","credentials","data"):
+                      if name in low: walk(low[name])
+              elif isinstance(value,str):
+                  s=value.strip()
+                  try:
+                      nested=json.loads(s)
+                      if nested != value: walk(nested); return
+                  except Exception: pass
+                  if "\n" in s or "=" in s:
+                      for line in s.splitlines():
+                          line=line.strip()
+                          if not line or line.startswith("#"): continue
+                          item=line.split("=",1)[1].strip() if "=" in line else line
+                          if len(item)>12: candidates.append(item.removeprefix("Bearer "))
+                  else:
+                      candidates.extend(x.strip().removeprefix("Bearer ") for x in re.split(r"[,;|]",s) if len(x.strip())>12)
+          walk(parsed)
+          keys=list(dict.fromkeys(k for k in candidates if k))
+          if not keys:
+              shape=type(parsed).__name__
+              if isinstance(parsed,dict): shape += " fields=" + ",".join(sorted(map(str,parsed.keys())))
+              raise SystemExit("No API key entries recognized in KLING_API_KEYS; safe structure: " + shape)
+          print(f"Loaded {len(keys)} credential candidate(s); values are not logged.")
+
+          api="https://api-singapore.klingai.com"
+          source_url="https://raw.githubusercontent.com/astrotobby/astro-blog/main/"+rel.as_posix()
+          headers=None
+          face_response=None
+          for index,key in enumerate(keys,1):
+              h={"Authorization":"Bearer "+key,"Content-Type":"application/json"}
+              try:
+                  r=requests.post(api+"/v1/videos/identify-face",headers=h,
+                                  json={"video_url":source_url},timeout=90)
+                  try: j=r.json()
+                  except Exception: j={}
+                  if r.status_code in (401,403):
+                      print(f"Credential candidate {index}: authorization rejected; trying next.")
+                      continue
+                  if r.status_code>=400 or j.get("code",0) not in (0,None):
+                      face_response=(r.status_code,j)
+                      continue
+                  data=j.get("data") or {}
+                  if data.get("session_id") and data.get("face_data"):
+                      headers=h
+                      face_response=data
+                      break
+                  face_response=(r.status_code,{"message":"No session or faces returned"})
+              except Exception as e:
+                  face_response=("request_error",{"message":str(e)[:180]})
+          if not headers:
+              if isinstance(face_response,tuple):
+                  code,info=face_response
+                  raise SystemExit(f"Face recognition failed safely: HTTP={code}, code={info.get('code')}, message={str(info.get('message',''))[:250]}")
+              raise SystemExit("No Kling credential was accepted for face recognition.")
+
+          faces=face_response["face_data"]
+          face=max(faces,key=lambda f:int(f.get("end_time",0))-int(f.get("start_time",0)))
+          start=int(face.get("start_time",0)); end=int(face.get("end_time",0))
+          if min(end,start+int(audio_seconds*1000))-start < 2000:
+              raise SystemExit("Detected face interval overlaps speech for less than two seconds.")
+          print(f"Face recognition found {len(faces)} face(s); selected interval {start}-{end}ms.")
+
+          payload={
+              "session_id":face_response["session_id"],
+              "face_choose":[{
+                  "face_id":str(face["face_id"]),
+                  "sound_file":base64.b64encode(audio.read_bytes()).decode("ascii"),
+                  "sound_start_time":0,
+                  "sound_end_time":int(audio_seconds*1000),
+                  "sound_insert_time":start,
+                  "sound_volume":1,
+                  "original_audio_volume":0
+              }],
+              "watermark_info":{"enabled":False},
+              "external_task_id":"astro-lipsync-preview-"+os.environ["RUN_ID"]
+          }
+          r=requests.post(api+"/v1/videos/advanced-lip-sync",headers=headers,json=payload,timeout=90)
+          try: j=r.json()
+          except Exception: j={}
+          if r.status_code>=400 or j.get("code",0) not in (0,None):
+              raise SystemExit(f"Lip-sync task rejected: HTTP={r.status_code}, code={j.get('code')}, message={str(j.get('message',''))[:250]}")
+          task=(j.get("data") or {}).get("task_id")
+          if not task: raise SystemExit("Kling returned no task ID.")
+          print("Kling accepted the advanced lip-sync task.")
+          deadline=time.time()+900
+          result=None
+          while time.time()<deadline:
+              r=requests.get(api+"/v1/videos/advanced-lip-sync",headers=headers,
+                             params={"pageNum":1,"pageSize":50},timeout=60)
+              r.raise_for_status()
+              j=r.json()
+              if j.get("code",0) not in (0,None):
+                  raise SystemExit("Task polling returned an API error.")
+              result=next((x for x in (j.get("data") or []) if x.get("task_id")==task),None)
+              if result:
+                  status=result.get("task_status")
+                  print("Lip-sync task status: "+str(status))
+                  if status=="succeed": break
+                  if status=="failed":
+                      raise SystemExit("Kling lip-sync failed: "+str(result.get("task_status_msg",""))[:250])
+              time.sleep(10)
+          else:
+              raise SystemExit("Kling lip-sync task did not finish within 15 minutes.")
+          videos=(result.get("task_result") or {}).get("videos") or []
+          if not videos or not videos[0].get("url"):
+              raise SystemExit("Task succeeded but no result video URL was returned.")
+          output=pathlib.Path("kling-lipsync-preview/kling_native_lipsync.mp4")
+          with requests.get(videos[0]["url"],stream=True,timeout=120) as r:
+              r.raise_for_status()
+              with output.open("wb") as f:
+                  for chunk in r.iter_content(1024*1024):
+                      if chunk: f.write(chunk)
+          if output.stat().st_size<100000: raise SystemExit("Downloaded preview is unexpectedly small.")
+          out_duration=duration(output)
+          meta={
+              "provider":"Kling Advanced Lip Sync",
+              "run_id":os.environ["RUN_ID"],
+              "source_duration_seconds":round(video_seconds,3),
+              "narration_duration_seconds":round(audio_seconds,3),
+              "output_duration_seconds":round(out_duration,3),
+              "face_count":len(faces),
+              "selected_face_interval_ms":[start,end],
+              "units_reported":result.get("final_unit_deduction"),
+              "status":result.get("task_status")
+          }
+          pathlib.Path("kling-lipsync-preview/result.json").write_text(json.dumps(meta,indent=2),encoding="utf-8")
+          print("Preview MP4 downloaded and validated; it has not been published.")
+          PY
+      - name: Preserve preview for private inspection
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kling-lipsync-preview-${{ github.run_id }}
+          path: kling-lipsync-preview/
+          if-no-files-found: ignore
+          retention-days: 3
+      - name: Write preview summary
+        if: always()
+        run: |
+          {
+            echo "## Kling native lip-sync preview"
+            echo "Five-second A/B test only. Nothing was published to YouTube."
+          } >> "$GITHUB_STEP_SUMMARY"
