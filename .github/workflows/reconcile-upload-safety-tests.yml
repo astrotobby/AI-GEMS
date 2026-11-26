@@ -6,7 +6,19 @@ on:
     paths:
       - ".github/scripts/reconcile_existing_longform_upload.py"
       - ".github/scripts/test_reconcile_existing_longform_upload.py"
+      - ".github/scripts/verify_youtube_publications.py"
+      - ".github/scripts/test_verify_youtube_publications.py"
       - ".github/workflows/reconcile-existing-longform-upload.yml"
+      - ".github/workflows/verify-youtube-publications.yml"
+      - ".github/workflows/reconcile-upload-safety-tests.yml"
+  push:
+    branches: [main]
+    paths:
+      - ".github/scripts/reconcile_existing_longform_upload.py"
+      - ".github/scripts/test_reconcile_existing_longform_upload.py"
+      - ".github/scripts/verify_youtube_publications.py"
+      - ".github/scripts/test_verify_youtube_publications.py"
+      - ".github/workflows/verify-youtube-publications.yml"
       - ".github/workflows/reconcile-upload-safety-tests.yml"
   workflow_dispatch:
 
