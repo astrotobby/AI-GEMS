@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Live release verification is scheduled every 15 minutes; this run is also the first integration check.
 """Verify due long-form YouTube releases and safely repair overdue private videos.
 
 The ledger is the source of the intended channel and release time. The YouTube
