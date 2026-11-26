@@ -77,7 +77,7 @@ jobs:
           channel = channel_rows[0]
           actual_name = (channel.get("snippet") or {}).get("title", "")
           expected_id = str(target.get("channel_id") or "")
-          if actual_name.casefold() != expected.casefold() or (expected_id and channel.get("id") != expected_id):
+          if actual_name.strip().casefold() != expected.strip().casefold() or (expected_id and channel.get("id") != expected_id):
               raise SystemExit("OAuth account mismatch: refusing to modify video on " + actual_name)
           rows = request(base + "/videos?part=status,snippet&id=" + urllib.parse.quote(video_id)).get("items") or []
           if not rows:
