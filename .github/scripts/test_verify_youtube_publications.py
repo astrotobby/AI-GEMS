@@ -211,6 +211,29 @@ class YouTubePublicationExecutionTests(unittest.TestCase):
         self.assertNotIn("publication_check", ledger["jobs"]["job123"])
         self.assertEqual(result["counts"]["checked"], 0)
 
+    def test_stale_video_already_public_is_verified_without_promotion(self):
+        old = NOW - timedelta(days=2)
+        old_job = job(publish_at=old.isoformat())
+        youtube = FakeYouTube(video(status={"privacyStatus": "public"}))
+        ledger = {"jobs": {"job123": old_job}}
+        result = run_verification(ledger, {"astrotobby": youtube}, NOW, apply_publication=True)
+
+        self.assertEqual(youtube._videos.update_calls, [])
+        self.assertEqual(ledger["jobs"]["job123"]["status"], "published")
+        self.assertEqual(ledger["jobs"]["job123"]["publication_check"]["state"], "public_verified")
+        self.assertEqual(result["counts"]["stale_public_verified"], 1)
+
+    def test_preflight_runs_one_read_only_audit_for_stale_manual_review(self):
+        old = NOW - timedelta(days=2)
+        ledger = {"jobs": {"job123": job(
+            publish_at=old.isoformat(),
+            publication_check={"state": "stale_manual_review", "reason": "older release"},
+        )}}
+        self.assertTrue(has_due_jobs(ledger, NOW))
+        ledger["jobs"]["job123"]["publication_check"]["state"] = "stale_private_review"
+        self.assertFalse(has_due_jobs(ledger, NOW))
+
+
     def test_stale_overdue_video_is_left_private(self):
         old = NOW - timedelta(days=2)
         old_job = job(publish_at=old.isoformat())
@@ -220,8 +243,9 @@ class YouTubePublicationExecutionTests(unittest.TestCase):
 
         self.assertEqual(youtube._videos.update_calls, [])
         self.assertEqual(ledger["jobs"]["job123"]["status"], "scheduled")
-        self.assertEqual(ledger["jobs"]["job123"]["publication_check"]["state"], "stale_manual_review")
+        self.assertEqual(ledger["jobs"]["job123"]["publication_check"]["state"], "stale_private_review")
         self.assertEqual(result["counts"]["stale"], 1)
+        self.assertEqual(result["counts"]["stale_private_review"], 1)
 
 
 if __name__ == "__main__":
