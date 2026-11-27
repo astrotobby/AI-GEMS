@@ -22774,9 +22774,15 @@
         "word_count": 2407,
         "model": "claude-sonnet-5"
       },
-      "status": "rendering",
+      "status": "failed",
       "created_at": "2026-11-27T17:41:16.847322+00:00",
-      "updated_at": "2026-11-27T17:41:19.131772+00:00"
+      "updated_at": "2026-11-27T17:50:54.370175+00:00",
+      "failure": {
+        "stage": "rendering",
+        "type": "RuntimeError",
+        "message": "Kaggle kernel status request failed: 404 Client Error: Not Found for url: https://api.kaggle.com/v1/kernels.KernelsApiService/GetKernelSessionStatus\n\nThe resource was not found. Check the spelling of the reference you passed.\nReferences are usually '<owner>/<slug>', which you can find in the resource's URL.\nTo search for one, try 'kaggle search <query>'.",
+        "failed_at": "2026-11-27T17:50:54.370052+00:00"
+      }
     }
   },
   "recent_topics": [
