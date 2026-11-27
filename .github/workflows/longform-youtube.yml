@@ -29,6 +29,11 @@ on:
         type: boolean
         required: false
         default: false
+      cancel_stale_run:
+        description: "Explicit recovery only: cancel an older run holding the shared visual-history lock."
+        type: boolean
+        required: false
+        default: false
   workflow_dispatch:
     inputs:
       channel:
@@ -65,7 +70,7 @@ concurrency:
   # All four slots share one visual-history cache. Serialize them so two
   # fresh runners can never restore the same old history and overwrite each other.
   group: longform-global-visual-history
-  cancel-in-progress: false
+  cancel-in-progress: ${{ inputs.cancel_stale_run == true }}
 
 jobs:
   render-and-publish:
