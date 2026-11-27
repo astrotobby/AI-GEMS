@@ -22094,9 +22094,15 @@
         "word_count": 1940,
         "model": "claude-sonnet-5"
       },
-      "status": "rendering",
+      "status": "failed",
       "created_at": "2026-11-27T07:06:20.244579+00:00",
-      "updated_at": "2026-11-27T07:06:22.472181+00:00"
+      "updated_at": "2026-11-27T07:07:18.401695+00:00",
+      "failure": {
+        "stage": "rendering",
+        "type": "RuntimeError",
+        "message": "No usable visual asset for scene 21: stock footage and image fallback failed; refusing to render a black placeholder",
+        "failed_at": "2026-11-27T07:07:18.401542+00:00"
+      }
     }
   },
   "recent_topics": [
