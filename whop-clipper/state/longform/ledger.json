@@ -21731,14 +21731,14 @@
         "word_count": 2058,
         "model": "claude-sonnet-5"
       },
-      "status": "rendering",
+      "status": "failed",
       "created_at": "2026-11-26T16:24:07.384642+00:00",
-      "updated_at": "2026-11-27T08:50:04.577824+00:00",
+      "updated_at": "2026-11-27T08:55:51.553778+00:00",
       "failure": {
         "stage": "rendering",
         "type": "RuntimeError",
-        "message": "Kaggle kernel status request failed: Cannot access kernel 'astrotobby/musetalk-batch-1b5c82afa3' (Permission 'kernels.get' was denied). The most likely cause is a wrong kernel slug. The benchmark_task_slug returned by get_benchmark_leaderboard differs from the actual kernel slug — use the slug from the notebook URL (kaggle.com/code/owner/KERNEL-SLUG), not from the leaderboard. It can also occur if the notebook is private.",
-        "failed_at": "2026-11-27T08:37:13.419481+00:00"
+        "message": "Kaggle kernel status request failed: Cannot access kernel 'astrotobby/musetalk-batch-f03a2f1120' (Permission 'kernels.get' was denied). The most likely cause is a wrong kernel slug. The benchmark_task_slug returned by get_benchmark_leaderboard differs from the actual kernel slug — use the slug from the notebook URL (kaggle.com/code/owner/KERNEL-SLUG), not from the leaderboard. It can also occur if the notebook is private.",
+        "failed_at": "2026-11-27T08:55:51.553661+00:00"
       }
     },
     "20261129_astrotobby_1000": {
