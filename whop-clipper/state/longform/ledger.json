@@ -21743,14 +21743,14 @@
         "word_count": 2058,
         "model": "claude-sonnet-5"
       },
-      "status": "rendering",
+      "status": "failed",
       "created_at": "2026-11-26T16:24:07.384642+00:00",
-      "updated_at": "2026-11-27T14:45:40.912007+00:00",
+      "updated_at": "2026-11-27T14:47:10.309235+00:00",
       "failure": {
         "stage": "rendering",
         "type": "RuntimeError",
         "message": "Scene 15 has no unique visual after 5 attempts (last duplicate: original-editorial:e1ee13899adeabbb9a462f32); refusing to publish repeated footage.",
-        "failed_at": "2026-11-27T12:25:18.269256+00:00"
+        "failed_at": "2026-11-27T14:47:10.309118+00:00"
       }
     },
     "20261129_astrotobby_1000": {
