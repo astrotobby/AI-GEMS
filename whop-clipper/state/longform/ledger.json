@@ -21731,14 +21731,14 @@
         "word_count": 2058,
         "model": "claude-sonnet-5"
       },
-      "status": "rendering",
+      "status": "failed",
       "created_at": "2026-11-26T16:24:07.384642+00:00",
-      "updated_at": "2026-11-27T08:29:38.610692+00:00",
+      "updated_at": "2026-11-27T08:37:13.419651+00:00",
       "failure": {
         "stage": "rendering",
         "type": "RuntimeError",
-        "message": "No usable visual asset for scene 15: stock footage and image fallback failed; refusing to render a black placeholder",
-        "failed_at": "2026-11-27T08:15:48.048222+00:00"
+        "message": "Kaggle kernel status request failed: Cannot access kernel 'astrotobby/musetalk-batch-1b5c82afa3' (Permission 'kernels.get' was denied). The most likely cause is a wrong kernel slug. The benchmark_task_slug returned by get_benchmark_leaderboard differs from the actual kernel slug — use the slug from the notebook URL (kaggle.com/code/owner/KERNEL-SLUG), not from the leaderboard. It can also occur if the notebook is private.",
+        "failed_at": "2026-11-27T08:37:13.419481+00:00"
       }
     },
     "20261129_astrotobby_1000": {
