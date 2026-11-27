@@ -22567,6 +22567,108 @@
         "message": "Kaggle kernel status request failed: Cannot access kernel 'astrotobby/musetalk-batch-5bd5c8d572' (Permission 'kernels.get' was denied). The most likely cause is a wrong kernel slug. The benchmark_task_slug returned by get_benchmark_leaderboard differs from the actual kernel slug — use the slug from the notebook URL (kaggle.com/code/owner/KERNEL-SLUG), not from the leaderboard. It can also occur if the notebook is private.",
         "failed_at": "2026-11-27T15:30:38.040734+00:00"
       }
+    },
+    "20261130_astrotobby_1000": {
+      "job_id": "20261130_astrotobby_1000",
+      "channel": "astrotobby",
+      "channel_title": "Astro Tobby",
+      "owner_account": "goodlucktobby@gmail.com",
+      "slot": "10:00",
+      "publish_at": "2026-11-30T07:00:00+00:00",
+      "workflow_run_id": "46031636489",
+      "artifact_name": "longform-astrotobby-46031636489",
+      "title": "You Can See Everything: The Ultimate Guide to This Year’s Must-See Film",
+      "topic_title": "You Can See Everything: what to know before watching this year’s ‘must-see’ film - The Guardian",
+      "lead": {
+        "title": "You Can See Everything: what to know before watching this year’s ‘must-see’ film - The Guardian",
+        "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQMzVpc1VQWDQxWk04aHBDUHF6eWxTMkNlQmVuTjlGd3BjeDVJWVlNSmlWcFFnd0p4VTlfMWExeG0yN3BXSzE0U05sYkpaUEhWS1ZPbXRhbEtnVFpvU3ZzRmJvLVZyMWlFVTRVX2IybVZpTFJRa2ZobGJoS05VRFlQNUVvUlRjczJVZlNKdmtPUGFZbEtFZGZyd1JkUzNKVkVl?oc=5",
+        "summary": "You Can See Everything: what to know before watching this year’s ‘must-see’ film The Guardian",
+        "publisher": "The Guardian",
+        "publisher_url": "https://www.theguardian.com",
+        "published_at": "2026-11-27T15:21:00+00:00"
+      },
+      "sources": [
+        {
+          "title": "You Can See Everything: what to know before watching this year’s ‘must-see’ film - The Guardian",
+          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQMzVpc1VQWDQxWk04aHBDUHF6eWxTMkNlQmVuTjlGd3BjeDVJWVlNSmlWcFFnd0p4VTlfMWExeG0yN3BXSzE0U05sYkpaUEhWS1ZPbXRhbEtnVFpvU3ZzRmJvLVZyMWlFVTRVX2IybVZpTFJRa2ZobGJoS05VRFlQNUVvUlRjczJVZlNKdmtPUGFZbEtFZGZyd1JkUzNKVkVl?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "You Can See Everything: what to know before watching this year’s ‘must-see’ film The Guardian",
+          "publisher": "The Guardian",
+          "publisher_url": "https://www.theguardian.com",
+          "published_at": "2026-11-27T15:21:00+00:00"
+        },
+        {
+          "title": "The Film Look with Santi Skiappa — LBB - LBB - Little Black Book",
+          "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTFA5SUV6TlM4TzZjY2IzRGFfcWh4d2h0N1FNQzE1R1Ztclc3NVpzeXhTZWJNWUhQc3N0bFdVODlSMWptQXZ2LWV5RHAyeHF2ajF4Q2RZN2FYS0FFa2dVZnFydFdOVkJ6WEpPZnpr?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "The Film Look with Santi Skiappa — LBB LBB - Little Black Book",
+          "publisher": "LBB - Little Black Book",
+          "publisher_url": "https://lbbonline.com",
+          "published_at": "2026-11-27T14:45:11+00:00"
+        },
+        {
+          "title": "IEA chief says $2 billion a year needed to solve Africa’s dirty cooking crisis - CNN",
+          "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5IT0xxQVp6SDNMVF9QOWNsTHV5QkFVWlJ1bkhVTHQxS1MxQ2oxSG9qREdCYUtFemdTOVAtalREZmtYVWR0dGdLbHJYeHktdWtoUHRwUnN5NUpZdG1Ia2ZpY1AzV0tWWU9OajZYMHpreUoyb0k5cVE?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "IEA chief says $2 billion a year needed to solve Africa’s dirty cooking crisis CNN",
+          "publisher": "CNN",
+          "publisher_url": "https://www.cnn.com",
+          "published_at": "2026-11-27T09:23:39+00:00"
+        },
+        {
+          "title": "'I wouldn't be here today without you': Student's praise for man who stopped train attacker - BBC",
+          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE1WN0o0OXU4T3I5R2RjY2VZM0tGbUh5WERIV3J6R3hEWUdsNGNUdjNfd043QWJwQ3RZTXJvUmtvM2NNQjhwYkIxaTduY2s2aFRFMWtfckZhWmxwQzA?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "'I wouldn't be here today without you': Student's praise for man who stopped train attacker BBC",
+          "publisher": "BBC",
+          "publisher_url": "https://www.bbc.com",
+          "published_at": "2026-11-27T07:53:24+00:00"
+        },
+        {
+          "title": "Coach Harbaugh Film Breakdown: Indianapolis Colts - Giants.com",
+          "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxNLUNPX3N0TngtcjVYdUhyRFNoMno1bGUyVTJUZU9hWjU2VEFoVU5fd050UnR6bXg4YzhacVpSVjFlaTIzbFprRWxsTXA4ZXBEb1E1SkZld3BnRGV6b1dyb1Nha3VScGhzbnB4MXlvLWZRVHE0aDdIVXI0X0wzeFZMOTRSTQ?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "Coach Harbaugh Film Breakdown: Indianapolis Colts Giants.com",
+          "publisher": "Giants.com",
+          "publisher_url": "https://www.giants.com",
+          "published_at": "2026-11-27T16:08:15+00:00"
+        },
+        {
+          "title": "New movies on streaming: ‘You Can See Everything,’ ‘Wicker’ and more - Decider",
+          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPeWJfdm1iaEpBc2lMbHF1MHpxZEwzUzV1N1pjM2hReXUzTEhiQ1lIRDVSd0NlU2VLZHJxWTktOFlESWJLeFZQOFkzU0ZrRHgzTWZFVWJpMUYyRGFHX2NnRk4wZU51TUJ4Z3duNmpoT2ZuVFVKcDRPX19TTUFSMEhWZXU3SXlzeUtUNlhvblhaR05IeXNoVlZIOFBNalhPdVhGRlJWVXJHUm9WMGxkMnlFbWR4MllPaHpa?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "New movies on streaming: ‘You Can See Everything,’ ‘Wicker’ and more Decider",
+          "publisher": "Decider",
+          "publisher_url": "https://decider.com",
+          "published_at": "2026-11-27T16:00:00+00:00"
+        },
+        {
+          "title": "Feid, Snoop Dogg, D’Angelo, and All the Songs You Need to Know This Week - Rolling Stone",
+          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOdGdJNHZjNVVkdXZhOUhzaVpwb2ZialJOYUxCVVQxYlJEaE96dEZ5M3dVYUlfbVNJaGJhXzE4d2dMNDA3TTJ4Z1dfTG92ZHFZX0x2ZDB3aW1mdm5YYkE3SFJ3YjNTU1oxdjRSRTlQWDB5VFhnV2dhZUFpbDBIZUMtaVNpemY5U1dtZE83QmhTeGtQV0c0UzhhNzQzOUlxUDdEa2EzSE4teE5rNEx3enZmdUliOVJIN0R5R1E?oc=5&hl=en-US&gl=US&ceid=US:en",
+          "summary": "Feid, Snoop Dogg, D’Angelo, and All the Songs You Need to Know This Week Rolling Stone",
+          "publisher": "Rolling Stone",
+          "publisher_url": "https://www.rollingstone.com",
+          "published_at": "2026-11-27T15:46:02+00:00"
+        }
+      ],
+      "package": {
+        "title": "You Can See Everything: The Ultimate Guide to This Year’s Must-See Film",
+        "description": "Discover everything you need to know about the streaming release of You Can See Everything, plus the latest in entertainment, film, and global news",
+        "tags": [
+          "YouCanSeeEverything",
+          "mustseefilm",
+          "streamingmovies",
+          "TheGuardian",
+          "Decider",
+          "filmbreakdown",
+          "SantiSkiappa",
+          "RollingStone",
+          "musicnews",
+          "globalnews",
+          "AstroTobby",
+          "entertainmentnews"
+        ],
+        "narration": "Welcome back to Astro Tobby, your premier destination for deep dives into the worlds of news, entertainment, film, television, and music. Today, we are looking at a packed landscape of cultural milestones, major streaming debuts, and critical global headlines that have dominated discussions across the media landscape. From highly anticipated cinematic releases hitting streaming platforms to essential music drops and gripping real-world reporting, there is an extraordinary amount of ground to cover. Whether you are tracking the absolute latest cinematic recommendations or following major cultural developments, staying informed means looking closely at how major outlets are framing these stories. Let us dive straight into the heart of this week's most compelling developments, starting with the film everyone is talking about and expanding across the broader spectrum of entertainment and news. At the center of today's cultural conversation is the film titled You Can See Everything, a project that has rapidly captured the attention of critics and audiences alike. Major cultural publications, including The Guardian, have positioned the release as one of the absolute must-see cinematic events of the year. For film enthusiasts trying to navigate what to watch amidst an overwhelming sea of content, understanding the context behind this release is essential. Alongside critical write-ups from outlets like The Guardian, dedicated streaming guides such as Decider have highlighted You Can See Everything as a primary option now available on streaming platforms. This accessibility has fueled widespread public interest, transforming a critically discussed feature into an accessible streaming phenomenon. Viewers scrolling through their digital libraries are now confronted with the choice of diving into this celebrated project, prompting a flurry of questions about what audiences should know before pressing play. While critical consensus highlights its prominent status, the film arrives within a broader ecosystem of visual storytelling and media production that continually redefines how we consume narrative art. To fully appreciate the cinematic landscape surrounding releases like You Can See Everything, it helps to examine how contemporary visual aesthetics are discussed by industry professionals. In recent coverage from Little Black Book, creator Santi Skiappa explored the nuanced elements of visual craft through a feature aptly titled The Film Look. Discussions concerning the distinct texture, lighting, and technical execution of modern cinema frequently intersect with how viewers experience narrative features on streaming services. When audiences sit down to watch a highly touted project, the artistic choices behind the camera—ranging from color grading to framing decisions—play a massive role in why certain productions achieve must-see status. This technical appreciation mirrors the analytical depth found in sports and media breakdowns elsewhere in the cultural sphere. For instance, detailed athletic analyses, such as the Coach Harbaugh film breakdown regarding the Indianapolis Colts featured on Giants.com, demonstrate how meticulous frame-by-frame examination applies equally to high-stakes athletic strategy and prestige filmmaking. Across multiple disciplines, the desire to break down visual movement and strategic execution highlights a collective cultural appetite for deep, analytical engagement with the media we consume. Shifting our focus from cinema screens to the vibrant world of music, the cultural momentum this week extends far beyond the silver screen. According to recent reports from Rolling Stone, music lovers have been treated to a powerhouse lineup of new tracks and artistic projects from major industry figures. The publication highlighted fresh musical offerings and essential songs to know this week, featuring prominent artists such as Feid, Snoop Dogg, and D’Angelo. The simultaneous presence of these musical heavyweights in current release cycles underscores the diverse auditory landscape currently capturing public attention. From the smooth, neo-soul stylings associated with D’Angelo to the enduring West Coast legacy of Snoop Dogg and the contemporary global dominance of Feid, music journalism continues to map out a dynamic sonic environment. For entertainment consumers balancing prestige film viewings with the latest album drops, this week offers an embarrassment of riches across both auditory and visual mediums. The interplay between film soundtracks, streaming releases, and standalone musical singles reinforces the interconnected nature of modern entertainment, where cinematic visibility and musical innovation frequently amplify one another within the broader cultural zeitgeist. Beyond the realms of film and music, the current news cycle encompasses gripping human-interest stories and critical global challenges that demand our attention. In a powerful report published by the BBC, the media highlighted an inspiring moment of profound gratitude and survival. A student publicly expressed life-saving appreciation, stating they would not be here today without the courageous intervention of a man who stepped in to stop a violent train attacker. This harrowing yet ultimately uplifting account resonated deeply with readers, shedding light on acts of extraordinary civilian bravery in public transit spaces. The BBC's coverage of the incident emphasizes the fragile nature of everyday safety while celebrating the swift, decisive heroism of individuals who risk their own well-being to protect strangers. Stories of this magnitude serve as a vital reminder of the profound empathy and courage that exist within our communities, cutting through the noise of daily headlines to spotlight humanity at its most resilient. Simultaneously, international journalism is drawing urgent focus toward massive developmental and humanitarian challenges facing regions across the globe. According to a recent report by CNN, the International Energy Agency chief has issued a stark assessment regarding Africa's ongoing dirty cooking crisis, estimating that two billion dollars a year is urgently required to formulate and execute an effective solution. This pressing economic and environmental dilemma highlights the intersection of global health, sustainable infrastructure, and international finance. CNN's coverage details the staggering scale of reliance on traditional, highly polluting cooking fuels across African nations, a practice that carries severe health and environmental consequences. Addressing this crisis requires coordinated global investment and targeted policy initiatives, placing the issue firmly on the radar of international policymakers and engaged global citizens alike. By juxtaposing cultural entertainment milestones with rigorous reports on global health and safety, the modern news ecosystem demands that audiences maintain a dual focus on both personal leisure and planetary responsibility. Analyzing the reception of this year's entertainment highlights alongside serious global reporting reveals fascinating insights into how audiences consume information today. When publications like The Guardian and Decider position a project like You Can See Everything as a mandatory viewing experience, they tap into a collective desire for shared cultural touchstones. However, the enthusiasm surrounding streaming releases exists in a complex tension with the sobering realities documented by outlets like CNN and the BBC. Cultural commentary and hard news share equal space in the daily media diet of the modern viewer. Critics and analysts examining the success of contemporary streaming films often point to how digital platforms democratize access to prestige art, allowing complex narratives to reach global audiences instantly. Yet, this same digital connectivity ensures that viewers are simultaneously confronted with the urgent financial needs of international climate initiatives and the harrowing real-life accounts of heroism on public transit. This multifaceted media consumption pattern encourages a more comprehensive, worldly perspective among entertainment enthusiasts, bridging the gap between escapist cinematic art and pressing real-world realities. As we look ahead to what comes next in the closing months of the year, the trajectory of both entertainment and global news points toward continued rapid evolution. In the film and television sphere, the massive discussion generated by streaming debuts and critical appraisals suggests that audiences will increasingly demand high-concept storytelling paired with distinct visual execution, a trend further illuminated by technical explorations like Santi Skiappa's insights on the film look. Meanwhile, the music industry continues to thrive on high-profile releases from enduring legends and contemporary stars alike, ensuring that our auditory senses remain as stimulated as our visual ones. On the broader news front, ongoing coverage of infrastructural challenges, such as the IEA's multi-billion-dollar funding call for Africa's cooking crisis, will require sustained international attention and transparent accountability. Whether you are settling in to watch this season's most talked-about streaming films, tracking the newest chart-eligible tracks, or staying informed on vital global developments, the current media landscape offers an abundance of material to digest. Thank you for joining us on Astro Tobby as we broke down these essential stories, and we look forward to exploring the next big cultural and news milestones with you very soon. Let us look a bit closer at how streaming platforms are curating their libraries right now, especially with outlets like Decider pointing audiences toward additional fresh cinematic arrivals such as Wicker alongside You Can See Everything. This expanding menu of digital viewing choices ensures that home audiences have access to an eclectic mix of narrative styles, ranging from deeply psychological character studies to atmospheric thrillers. When critics from platforms like Decider and The Guardian evaluate these releases side by side, they provide a roadmap for viewers navigating a crowded digital landscape where standing out requires distinct artistic vision. That distinct vision often boils down to the meticulous craft discussed by creators in professional forums. For instance, when diving into Little Black Book's feature on The Film Look with Santi Skiappa, we gain a fascinating appreciation for the granular decisions that separate a standard digital video from a truly cinematic experience. Every shadow, every choice of lens, and every subtle shift in color grading contributes to an immersive atmosphere that draws viewers directly into the emotional core of a story. This analytical mindset is by no means restricted to narrative fiction. In the world of professional athletics, the exact same dedication to frame-by-frame scrutiny dictates how teams prepare for high-stakes competition. Consider the meticulous approach highlighted in the Coach Harbaugh film breakdown regarding the Indianapolis Colts on Giants.com. Coaches and analysts pore over game tape with the same intensity that cinematographers and directors apply to rushes on a feature film set, dissecting positioning, momentum, and split-second decisions to understand what separates success from failure. Whether examining the strategic formations of an NFL offense or the carefully calibrated lighting of a prestige streaming drama, our collective fascination with how things are put together reflects a deeper cultural hunger for expertise and precision. Of course, our auditory senses are treated to an equally rigorous level of curation when we turn our attention to the music charts. Rolling Stone’s comprehensive weekly roundups consistently remind us of the sheer breadth of talent currently shaping the global soundscape. From the genre-blending rhythms of Feid to the iconic West Coast presence of Snoop Dogg and the soulful, velvety delivery of D’Angelo, listeners are enveloped in an auditory environment that rewards both nostalgic appreciation and forward-thinking experimentation. These artists continue to push boundaries, offering soundtracks that accompany our daily commutes, our weekend relaxations, and our most introspective moments alike. Yet, as we immerse ourselves in the rich textures of film, sports analysis, and music, the real world continually calls for our attention with stories of profound gravity and urgent need. The human capacity for both extreme peril and extraordinary grace was thrown into sharp relief by recent reporting from the BBC, detailing the harrowing account of a student saved from a violent train attacker. The sheer bravery of the individual who intervened—and the profound, life-affirming gratitude expressed by the student who stated they simply would not be here today without that intervention—serves as a humbling reminder of the unpredictable nature of public life and the monumental impact of ordinary people stepping up in moments of crisis. It is a story that cuts through the routine noise of the news cycle, forcing us to reflect on community safety, courage, and the bonds that tie strangers together in times of emergency. Simultaneously, international journalism demands our active engagement with monumental economic and humanitarian challenges that shape the future of entire continents. CNN’s vital reporting on the International Energy Agency chief's assessment of Africa’s dirty cooking crisis underscores an issue of staggering proportions. With estimates indicating that two billion dollars a year is urgently required to tackle the deeply entrenched reliance on polluting cooking fuels, the stakes involve global public health, environmental sustainability, and economic development on a massive scale. Addressing a crisis of this magnitude requires robust international cooperation, sustained financial commitment, and innovative infrastructure planning that prioritizes cleaner, safer alternatives for millions of households. Navigating this vast spectrum of human experience—from the comforting escapism of a newly released streaming film and the infectious energy of a chart-topping single to the sobering realities of international development and urban safety—defines the modern media landscape. It asks us to be versatile consumers, capable of appreciating the artistic heights of a thoughtfully graded film or an expertly executed sports play, while remaining deeply attuned to the pressing humanitarian needs of our global community. As these diverse narratives continue to unfold across our screens, speakers, and news feeds, staying informed and empathetic remains our most important task. Thank you once again for taking this journey through the week's most significant cultural and global milestones with us here on Astro Tobby.",
+        "word_count": 2152,
+        "model": "claude-sonnet-5"
+      },
+      "status": "scripted",
+      "created_at": "2026-11-27T16:16:37.652627+00:00",
+      "updated_at": "2026-11-27T16:16:37.652765+00:00"
     }
   },
   "recent_topics": [
@@ -22701,6 +22803,10 @@
     {
       "title": "Hackers reportedly breach US Air Force’s flagship cloud computing platform - The Guardian",
       "job_id": "20261128_digital_nomad_1200"
+    },
+    {
+      "title": "You Can See Everything: what to know before watching this year’s ‘must-see’ film - The Guardian",
+      "job_id": "20261130_astrotobby_1000"
     }
   ]
 }
