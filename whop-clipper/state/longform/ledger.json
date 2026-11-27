@@ -21643,12 +21643,7 @@
       "upload_response_received_at": "2026-11-26T12:06:49.946178+00:00",
       "thumbnail_verified": true,
       "thumbnail_verified_at": "2026-11-26T12:06:54.984689+00:00",
-      "scheduled_at": "2026-11-26T12:07:03.145804+00:00",
-      "publication_check": {
-        "state": "manual_review",
-        "checked_at": "2026-11-27T15:35:29.556895+00:00",
-        "reason": "YouTube publishAt does not exactly match the ledger release time"
-      }
+      "scheduled_at": "2026-11-26T12:07:03.145804+00:00"
     },
     "20261128_astrotobby_1000": {
       "job_id": "20261128_astrotobby_1000",
@@ -21748,9 +21743,9 @@
         "word_count": 2058,
         "model": "claude-sonnet-5"
       },
-      "status": "failed",
+      "status": "rendering",
       "created_at": "2026-11-26T16:24:07.384642+00:00",
-      "updated_at": "2026-11-27T15:00:01.010573+00:00",
+      "updated_at": "2026-11-27T15:37:02.079131+00:00",
       "failure": {
         "stage": "rendering",
         "type": "RuntimeError",
