@@ -21858,9 +21858,9 @@
         "word_count": 2030,
         "model": "claude-sonnet-5"
       },
-      "status": "failed",
+      "status": "rendering",
       "created_at": "2026-11-26T16:53:50.448082+00:00",
-      "updated_at": "2026-11-28T06:24:13.600355+00:00",
+      "updated_at": "2026-11-28T06:34:12.198500+00:00",
       "failure": {
         "stage": "rendering",
         "type": "RuntimeError",
