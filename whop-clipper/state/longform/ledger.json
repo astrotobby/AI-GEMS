@@ -21858,14 +21858,14 @@
         "word_count": 2030,
         "model": "claude-sonnet-5"
       },
-      "status": "rendering",
+      "status": "failed",
       "created_at": "2026-11-26T16:53:50.448082+00:00",
-      "updated_at": "2026-11-28T04:15:13.510493+00:00",
+      "updated_at": "2026-11-28T06:01:24.010860+00:00",
       "failure": {
         "stage": "rendering",
         "type": "RuntimeError",
-        "message": "MuseTalk Kaggle kernel failed. Recent logs:\n00:05, 10.07it/s]libpng error: Write Error\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":5062.900060333,\"data\":\"libpng error: Write Error\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":5062.900062658,\"data\":\"\\r 99%|█████████▉| 10157/10212 [20:23\\u003c00:05,  9.93it/s]libpng error: Write Error\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":5062.900065199,\"data\":\"libpng error: Write Error\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":5062.900067509,\"data\":\"\\r 99%|█████████▉| 10159/10212 [20:24\\u",
-        "failed_at": "2026-11-28T03:55:13.310777+00:00"
+        "message": "MuseTalk Kaggle kernel failed. Recent logs:\nte Error\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":4638.63148646,\"data\":\"\\r100%|█████████▉| 10129/10177 [20:14\\u003c00:04, 10.27it/s]libpng error: Write Error\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":4638.63148878,\"data\":\"libpng error: Write Error\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":4638.631490918,\"data\":\"\\r100%|█████████▉| 10131/10177 [20:14\\u003c00:04, 10.29it/s]libpng error: Write Error\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":4638.631493252,\"data\":\"libpng error: W",
+        "failed_at": "2026-11-28T06:01:24.010774+00:00"
       }
     },
     "20261201_astrotobby_1000": {
