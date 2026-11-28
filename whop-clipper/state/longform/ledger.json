@@ -21858,14 +21858,14 @@
         "word_count": 2030,
         "model": "claude-sonnet-5"
       },
-      "status": "rendering",
+      "status": "failed",
       "created_at": "2026-11-26T16:53:50.448082+00:00",
-      "updated_at": "2026-11-28T06:15:29.329120+00:00",
+      "updated_at": "2026-11-28T06:24:13.600355+00:00",
       "failure": {
         "stage": "rendering",
         "type": "RuntimeError",
-        "message": "MuseTalk Kaggle kernel failed. Recent logs:\nte Error\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":4638.63148646,\"data\":\"\\r100%|█████████▉| 10129/10177 [20:14\\u003c00:04, 10.27it/s]libpng error: Write Error\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":4638.63148878,\"data\":\"libpng error: Write Error\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":4638.631490918,\"data\":\"\\r100%|█████████▉| 10131/10177 [20:14\\u003c00:04, 10.29it/s]libpng error: Write Error\\n\"}\n,{\"stream_name\":\"stderr\",\"time\":4638.631493252,\"data\":\"libpng error: W",
-        "failed_at": "2026-11-28T06:01:24.010774+00:00"
+        "message": "MuseTalk Kaggle kernel failed. Recent logs:\nnkres xtcocotools yapf\\\\n\\\"$MUSEPY\\\" -m pip install -q huggingface_hub==0.30.2 gdown\\\\n\\\\n# MuseTalk\\\\'s preprocessing imports its bundled face_detection package by\\\\n# its top-level module name; expose that source folder as well as the repo root.\\\\nexport PYTHONPATH=\\\"$PWD/musetalk/utils:$PWD${PYTHONPATH:+:$PYTHONPATH}\\\"\\\\n# Kaggle sets an IPython-only Matplotlib backend. MuseTalk runs in a separate\\\\n# Python 3.10 environment, so force a headless bac",
+        "failed_at": "2026-11-28T06:24:13.600189+00:00"
       }
     },
     "20261201_astrotobby_1000": {
