@@ -21858,14 +21858,14 @@
         "word_count": 2030,
         "model": "claude-sonnet-5"
       },
-      "status": "rendering",
+      "status": "failed",
       "created_at": "2026-11-26T16:53:50.448082+00:00",
-      "updated_at": "2026-11-28T12:44:26.062658+00:00",
+      "updated_at": "2026-11-28T14:15:24.513618+00:00",
       "failure": {
         "stage": "rendering",
         "type": "RuntimeError",
-        "message": "MuseTalk GPU inference completed, but Kaggle rate-limited the output download. The private notebook is preserved at https://www.kaggle.com/code/astrotobby/musetalk-batch-bdfa2a0b05.",
-        "failed_at": "2026-11-28T12:18:27.976794+00:00"
+        "message": "MuseTalk GPU inference completed, but Kaggle rate-limited the output download. The private notebook is preserved at https://www.kaggle.com/code/astrotobby/musetalk-batch-fd8c4f8e18.",
+        "failed_at": "2026-11-28T14:15:24.513486+00:00"
       }
     },
     "20261201_astrotobby_1000": {
